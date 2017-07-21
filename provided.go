@@ -9,6 +9,14 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
+// ProvidedInputs ...
+type ProvidedInputs map[string]ProvidedInput
+
+// NewInputs ...
+func NewInputs() ProvidedInputs {
+	return ProvidedInputs{}
+}
+
 // ProvidedInput ...
 type ProvidedInput struct {
 	Self  interface{}
@@ -28,8 +36,8 @@ func (provided ProvidedInput) Arg() string {
 	return ""
 }
 
-// ParseProvidedInputs ...
-func ParseProvidedInputs(r io.Reader, result map[string]ProvidedInput) error {
+// DecodeProvidedInputs ...
+func DecodeProvidedInputs(r io.Reader, result ProvidedInputs) error {
 	dict := map[string]interface{}{}
 	b, err := ioutil.ReadAll(r)
 	if err != nil {
