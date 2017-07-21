@@ -22,7 +22,8 @@ do
 
 ```go
 f, _ := os.Open("given-cwl.yaml")
-root, _ := cwl.Decode(f)
+root := cwl.NewCWL()
+err := cwl.Decode(f, root)
 ```
 
 then
@@ -30,7 +31,7 @@ then
 ```go
 // root
 &cwl.Root{
-  Version:     "1.0",
+  Version:     "v1.0",
   Class:       "CommandLineTool",
   BaseCommand: "echo",
   Inputs:      map[string]RequiredInput{

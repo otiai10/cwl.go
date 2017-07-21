@@ -1,0 +1,4 @@
+message: Hello world!
+inputfile:
+  class: File
+  path: hogee.txt
