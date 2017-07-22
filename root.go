@@ -2,8 +2,20 @@ package cwl
 
 import (
 	"fmt"
+	"io"
+	"io/ioutil"
 	"sort"
+
+	yaml "gopkg.in/yaml.v2"
 )
+
+// NewCWL ...
+func NewCWL() *Root {
+	root := new(Root)
+	root.RequiredInputs = map[string]RequiredInput{}
+	root.ProvidedInputs = ProvidedInputs{}
+	return root
+}
 
 // Root ...
 type Root struct {
@@ -12,7 +24,7 @@ type Root struct {
 	Class          string                   `yaml:"class"`
 	BaseCommand    string                   `yaml:"baseCommand"`
 	RequiredInputs map[string]RequiredInput `yaml:"inputs"`
-	ProvidedInputs map[string]ProvidedInput `yaml:"-"`
+	ProvidedInputs ProvidedInputs           `yaml:"-"`
 }
 
 // RequiredInput ...
@@ -58,4 +70,17 @@ func (root *Root) Args() ([]string, error) {
 		args = append(args, root.ProvidedInputs[required.Name].Arg())
 	}
 	return args, nil
+}
+
+// Decode decodes specified io.Reader to this root
+func (root *Root) Decode(r io.Reader) error {
+	buf, err := ioutil.ReadAll(r)
+	if err != nil {
+		return err
+	}
+	err = yaml.Unmarshal(buf, root)
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -36,8 +36,8 @@ func (provided ProvidedInput) Arg() string {
 	return ""
 }
 
-// DecodeProvidedInputs ...
-func DecodeProvidedInputs(r io.Reader, result ProvidedInputs) error {
+// Decode ...
+func (inputs ProvidedInputs) Decode(r io.Reader) error {
 	dict := map[string]interface{}{}
 	b, err := ioutil.ReadAll(r)
 	if err != nil {
@@ -49,12 +49,12 @@ func DecodeProvidedInputs(r io.Reader, result ProvidedInputs) error {
 	for key, val := range dict {
 		switch reflect.ValueOf(val).Kind() {
 		case reflect.String:
-			result[key] = ProvidedInput{
+			inputs[key] = ProvidedInput{
 				Self: val,
 				Type: reflect.String,
 			}
 		case reflect.Map:
-			result[key] = ProvidedInput{
+			inputs[key] = ProvidedInput{
 				Self:  val,
 				Type:  reflect.Map,
 				Class: reflect.ValueOf(val).MapIndex(reflect.ValueOf("class")).Interface().(string),

@@ -15,7 +15,7 @@ func TestDecode(t *testing.T) {
 	}
 	root := NewCWL()
 	Expect(t, root).TypeOf("*cwl.Root")
-	err = Decode(file, root)
+	err = root.Decode(file)
 	Expect(t, err).ToBe(nil)
 	Expect(t, root.Version).ToBe("v1.0")
 }
@@ -26,7 +26,7 @@ func TestDecodeInputs(t *testing.T) {
 		panic(nil)
 	}
 	inputs := NewInputs()
-	err = DecodeProvidedInputs(file, inputs)
+	err = inputs.Decode(file)
 	Expect(t, err).ToBe(nil)
 	Expect(t, inputs["message"]).ToBe(ProvidedInput{Self: "Hello world!", Type: reflect.String})
 	Expect(t, inputs["inputfile"].Class).ToBe("File")
