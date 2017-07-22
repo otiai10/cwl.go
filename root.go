@@ -2,7 +2,6 @@ package cwl
 
 import (
 	"fmt"
-	"os/exec"
 	"sort"
 )
 
@@ -42,12 +41,12 @@ type InputBinding struct {
 	Position int `yaml:"position"`
 }
 
-// Run ...
-func (root *Root) Run() error {
+// Args TODO: should be Workflow
+func (root *Root) Args() ([]string, error) {
 	inputs := RequiredInputsSortable{}
 	for key, val := range root.RequiredInputs {
 		if _, ok := root.ProvidedInputs[key]; !ok {
-			return fmt.Errorf("Input `%s` is required but not provided", key)
+			return nil, fmt.Errorf("Input `%s` is required but not provided", key)
 		}
 		val.Name = key
 		inputs = append(inputs, val)
@@ -58,11 +57,5 @@ func (root *Root) Run() error {
 	for _, required := range inputs {
 		args = append(args, root.ProvidedInputs[required.Name].Arg())
 	}
-	cmd := exec.Command(root.BaseCommand, args...)
-	b, err := cmd.Output()
-	if err != nil {
-		return err
-	}
-	fmt.Println(string(b))
-	return nil
+	return args, nil
 }
