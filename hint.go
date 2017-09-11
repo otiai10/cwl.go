@@ -3,6 +3,7 @@ package cwl
 // Hints ...
 type Hints []Hint
 
+// New constructs "Hints" struct.
 func (hints Hints) New(i interface{}) Hints {
 	list, ok := i.([]interface{})
 	if !ok {
