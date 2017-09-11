@@ -26,6 +26,7 @@ type Root struct {
 	// BaseCommand    string         `json:"baseCommand"`
 	RequiredInputs RequiredInputs `json:"inputs"`
 	// ProvidedInputs ProvidedInputs `json:"-"`
+	Outputs Outputs
 }
 
 // UnmarshalJSON ...
@@ -44,6 +45,8 @@ func (root *Root) UnmarshalJSON(b []byte) error {
 			root.Hints = root.Hints.New(val)
 		case "inputs":
 			root.RequiredInputs = root.RequiredInputs.New(val)
+		case "outputs":
+			root.Outputs = root.Outputs.New(val)
 		}
 	}
 	return nil
