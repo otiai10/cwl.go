@@ -26,4 +26,7 @@ func TestDecode_bwa_mem_tool(t *testing.T) {
 	Expect(t, err).ToBe(nil)
 	Expect(t, root.Version).ToBe("v1.0")
 	Expect(t, root.Class).ToBe("CommandLineTool")
+	Expect(t, root.Hints).TypeOf("cwl.Hints")
+	Expect(t, root.Hints[0]["class"]).ToBe("ResourceRequirement")
+	Expect(t, root.Hints[0]["coresMin"]).ToBe(float64(2))
 }
