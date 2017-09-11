@@ -19,8 +19,8 @@ func NewCWL() *Root {
 
 // Root ...
 type Root struct {
-	Version string `json:"cwlVersion"`
-	// Class          string         `json:"class"`
+	Version string
+	Class   string
 	// BaseCommand    string         `json:"baseCommand"`
 	// RequiredInputs RequiredInputs `json:"inputs"`
 	// ProvidedInputs ProvidedInputs `json:"-"`
@@ -36,6 +36,8 @@ func (root *Root) UnmarshalJSON(b []byte) error {
 		switch key {
 		case "cwlVersion":
 			root.Version = val.(string)
+		case "class":
+			root.Class = val.(string)
 		}
 	}
 	return nil
