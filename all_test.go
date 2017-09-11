@@ -44,4 +44,5 @@ func TestDecode_cat3_nodocker(t *testing.T) {
 	Expect(t, root.Class).ToBe("CommandLineTool")
 	Expect(t, root.BaseCommand).ToBe("cat")
 	Expect(t, root.Stdout).ToBe("output.txt")
+	// TODO inputs and outputs
 }
