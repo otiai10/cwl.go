@@ -567,6 +567,4 @@ func TestDecode_env_wf1(t *testing.T) {
 	Expect(t, root.Requirements[0].Class).ToBe("EnvVarRequirement")
 	Expect(t, root.Requirements[0].EnvDef[0].envName).ToBe("TEST_ENV")
 	Expect(t, root.Requirements[0].EnvDef[0].envValue).ToBe(`override`)
-	//Expect(t, root.Requirements[0].Types[0].Name).ToBe("Map1")
-	//Expect(t, root.Requirements[0].Types[0].Type).ToBe("record")
 }
