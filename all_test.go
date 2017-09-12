@@ -497,21 +497,35 @@ func TestDecode_cat5_tool(t *testing.T) {
 	Expect(t, len(root.Namespaces)).ToBe(1)
 	Expect(t, root.Namespaces[0]["ex"]).ToBe("http://example.com/")
 }
+
 func TestDecode_metadata(t *testing.T) {
-	f := cwl("metadata.cwl")
-	// TODO in: string support
-	Expect(t, len(root.Outputs)).ToBe(1)
-	Expect(t, root.Outputs[0].ID).ToBe("out")
-	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Outputs[0].Binding.Glob).ToBe("out")
-	Expect(t, len(root.BaseCommands)).ToBe(3)
-	Expect(t, root.BaseCommands[0]).ToBe("/bin/bash")
-	Expect(t, root.BaseCommands[1]).ToBe("-c")
-	Expect(t, root.BaseCommands[2]).ToBe("echo $TEST_ENV")
-	//
-	Expect(t, root.Hints).TypeOf("cwl.Hints")
-	Expect(t, root.Hints[0]["class"]).ToBe("EnvVarRequirement")
-	Expect(t, root.Hints[0]["envDef"]).ToBe("debian:wheezy")
+        f := cwl("metadata.cwl")
+        root := NewCWL()
+        Expect(t, root).TypeOf("*cwl.Root")
+        err := root.Decode(f)
+        Expect(t, err).ToBe(nil)
+        Expect(t, root.Version).ToBe("v1.0")
+        Expect(t, root.Class).ToBe("CommandLineTool")
+        Expect(t, root.Doc).ToBe("Print the contents of a file to stdout using 'cat' running in a docker container.")
+        Expect(t, len(root.Hints)).ToBe(1)
+        Expect(t, root.Hints).TypeOf("cwl.Hints")
+        Expect(t, root.Hints[0]["class"]).ToBe("DockerRequirement")
+        Expect(t, root.Hints[0]["dockerPull"]).ToBe("debian:wheezy")
+        Expect(t, len(root.Inputs)).ToBe(2)
+        Expect(t, root.Inputs[0].ID).ToBe("file1")
+        Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
+        Expect(t, root.Inputs[0].Binding.Position).ToBe(1)
+        Expect(t, len(root.Outputs)).ToBe(0)
+        Expect(t, len(root.BaseCommands)).ToBe(1)
+        Expect(t, root.BaseCommands[0]).ToBe("cat")
+        // $namespaces
+        Expect(t, len(root.Namespaces)).ToBe(2)
+        Expect(t, root.Namespaces[0]["dct"]).ToBe("http://purl.org/dc/terms/")
+        Expect(t, root.Namespaces[1]["foaf"]).ToBe("http://xmlns.com/foaf/0.1/")
+        // $namespaces
+        Expect(t, len(root.Schemas)).ToBe(2)
+        Expect(t, root.Schemas[0]).ToBe("foaf.rdf")
+        Expect(t, root.Schemas[1]).ToBe("dcterms.rdf")
 }
 
 func TestDecode_env_tool2(t *testing.T) {
@@ -522,24 +536,15 @@ func TestDecode_env_tool2(t *testing.T) {
 	Expect(t, err).ToBe(nil)
 	Expect(t, root.Version).ToBe("v1.0")
 	Expect(t, root.Class).ToBe("CommandLineTool")
-	Expect(t, root.Doc).ToBe("Print the contents of a file to stdout using 'cat' running in a docker container.")
 	Expect(t, len(root.Hints)).ToBe(1)
 	Expect(t, root.Hints).TypeOf("cwl.Hints")
-	Expect(t, root.Hints[0]["class"]).ToBe("DockerRequirement")
-	Expect(t, root.Hints[0]["dockerPull"]).ToBe("debian:wheezy")
-	Expect(t, len(root.Inputs)).ToBe(2)
-	Expect(t, root.Inputs[0].ID).ToBe("file1")
-	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Inputs[0].Binding.Position).ToBe(1)
-	Expect(t, len(root.Outputs)).ToBe(0)
-	Expect(t, len(root.BaseCommands)).ToBe(1)
-	Expect(t, root.BaseCommands[0]).ToBe("cat")
-	// $namespaces
-	Expect(t, len(root.Namespaces)).ToBe(2)
-	Expect(t, root.Namespaces[0]["dct"]).ToBe("http://purl.org/dc/terms/")
-	Expect(t, root.Namespaces[1]["foaf"]).ToBe("http://xmlns.com/foaf/0.1/")
-	// $namespaces
-	Expect(t, len(root.Schemas)).ToBe(2)
-	Expect(t, root.Schemas[0]).ToBe("foaf.rdf")
-	Expect(t, root.Schemas[1]).ToBe("dcterms.rdf")
+	Expect(t, root.Hints[0]["class"]).ToBe("EnvVarRequirement")
+	// TODO support envDef and key value
+	Expect(t, len(root.Inputs)).ToBe(1)
+	// TODO in: string
+	Expect(t, len(root.Outputs)).ToBe(1)
+	Expect(t, len(root.BaseCommands)).ToBe(3)
+	Expect(t, root.BaseCommands[0]).ToBe("/bin/bash")
+	Expect(t, root.BaseCommands[1]).ToBe("-c")
+	Expect(t, root.BaseCommands[2]).ToBe("echo $TEST_ENV")
 }
