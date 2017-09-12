@@ -675,6 +675,35 @@ func TestDecode_dir(t *testing.T) {
 	Expect(t, root.Stdout).ToBe("output.txt")
 }
 
+func TestDecode_dir2(t *testing.T) {
+	f := cwl("dir2.cwl")
+	root := NewCWL()
+	err := root.Decode(f)
+	Expect(t, err).ToBe(nil)
+
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, root.Class).ToBe("CommandLineTool")
+
+	Expect(t, root.Hints[0].Class).ToBe("DockerRequirement")
+	Expect(t, root.Hints[0].DockerPull).ToBe("debian:8")
+	Expect(t, root.Hints[1].Class).ToBe("ShellCommandRequirement")
+	Expect(t, root.Inputs[0].ID).ToBe("indir")
+	Expect(t, root.Inputs[0].Types[0].Type).ToBe("Directory")
+	Expect(t, root.Outputs[0].ID).ToBe("outlist")
+	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe("output.txt")
+	Expect(t, root.Arguments[0].Value).ToBe("cd")
+	Expect(t, root.Arguments[1].Value).ToBe("$(inputs.indir.path)")
+	Expect(t, root.Arguments[2].CommandLineBinding["shellQuote"]).ToBe(false)
+	Expect(t, root.Arguments[2].CommandLineBinding["valueFrom"]).ToBe("&&")
+	Expect(t, root.Arguments[3].Value).ToBe("find")
+	Expect(t, root.Arguments[4].Value).ToBe(".")
+	Expect(t, root.Arguments[5].CommandLineBinding["shellQuote"]).ToBe(false)
+	Expect(t, root.Arguments[5].CommandLineBinding["valueFrom"]).ToBe("|")
+	Expect(t, root.Arguments[6].Value).ToBe("sort")
+	Expect(t, root.Stdout).ToBe("output.txt")
+}
+
 func TestDecode_cat3_nodocker(t *testing.T) {
 	f := cwl("cat3-nodocker.cwl")
 	root := NewCWL()
