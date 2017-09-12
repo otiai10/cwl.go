@@ -23,8 +23,9 @@ func (outputs Outputs) New(i interface{}) Outputs {
 
 // Output represents an element of "outputs".
 type Output struct {
-	ID    string
-	Types []OutputType // Possible types
+	ID      string
+	Types   []OutputType // Possible types
+	Binding *OutputBinding
 }
 
 // New constructs "Output" struct from interface.
@@ -38,6 +39,8 @@ func (output Output) New(i interface{}) Output {
 				dest.ID = val.(string)
 			case "type":
 				dest.Types = OutputType{}.NewList(val)
+			case "outputBinding":
+				dest.Binding = OutputBinding{}.New(val)
 			}
 		}
 	case string: // If it's simple dictionary, value represents Type.
@@ -71,6 +74,26 @@ func (typ OutputType) NewList(i interface{}) []OutputType {
 			}
 		}
 		dest = append(dest, t)
+	}
+	return dest
+}
+
+// OutputBinding represents "outputBinding" of "outputs" field.
+type OutputBinding struct {
+	Glob string
+}
+
+// New constructs "OutputBinding" from interface{}
+func (binding OutputBinding) New(i interface{}) *OutputBinding {
+	dest := new(OutputBinding)
+	switch x := i.(type) {
+	case map[string]interface{}:
+		for key, val := range x {
+			switch key {
+			case "glob":
+				dest.Glob = val.(string)
+			}
+		}
 	}
 	return dest
 }

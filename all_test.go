@@ -47,6 +47,8 @@ func TestDecode_bwa_mem_tool(t *testing.T) {
 	Expect(t, root.RequiredInputs[4].Default.Location).ToBe("args.py")
 	Expect(t, root.Outputs[0].ID).ToBe("sam")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("null")
+	Expect(t, root.Outputs[0].Types[1].Type).ToBe("File")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe("output.sam")
 	Expect(t, root.Outputs[1].ID).ToBe("args")
 	Expect(t, root.Outputs[1].Types[0].Type).ToBe("array")
 	Expect(t, root.Outputs[1].Types[0].Items).ToBe("string")
