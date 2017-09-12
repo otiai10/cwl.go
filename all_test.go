@@ -216,4 +216,32 @@ func TestDecode_env_tool1(t *testing.T) {
 	Expect(t, root.BaseCommands[0]).ToBe("/bin/bash")
 	Expect(t, root.BaseCommands[1]).ToBe("-c")
 	Expect(t, root.BaseCommands[2]).ToBe("echo $TEST_ENV")
+	Expect(t, len(root.RequiredInputs)).ToBe(int(1))
+	// TODO ignore "in: string'
+	Expect(t, len(root.Outputs)).ToBe(int(1))
+	Expect(t, root.Outputs[0].ID).ToBe("out")
+	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe("out")
 }
+
+func TestDecode_default_path(t *testing.T) {
+	f := cwl("default_path.cwl")
+	root := NewCWL()
+	Expect(t, root).TypeOf("*cwl.Root")
+	err := root.Decode(f)
+	Expect(t, err).ToBe(nil)
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, root.Class).ToBe("CommandLineTool")
+	//Expect(t, len(root.BaseCommands)).ToBe(int(1))
+	//Expect(t, root.BaseCommands[0]).ToBe("cat")
+	//Expect(t, root.BaseCommands[0]).ToBe("cat")
+	Expect(t, len(root.RequiredInputs)).ToBe(int(1))
+	Expect(t, root.RequiredInputs[0].ID).ToBe("file1")
+	Expect(t, root.RequiredInputs[0].Type.Type).ToBe("File")
+	// TODO support default: section
+	// TODO support outputs: []
+	Expect(t, len(root.Arguments)).ToBe(int(2))
+	Expect(t, root.Arguments[0]).ToBe("cat")
+	Expect(t, root.Arguments[1]).ToBe("$(inputs.file1.path)")
+}
+
