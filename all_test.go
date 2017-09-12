@@ -1031,6 +1031,7 @@ func TestDecode_formattest(t *testing.T) {
 	Expect(t, len(root.Inputs)).ToBe(1)
 	Expect(t, root.Inputs[0].ID).ToBe("input")
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
+	Expect(t, root.Inputs[0].Format).ToBe("edam:format_2330")
 	// TODO check inputBuinding position default value
 	//Expect(t, root.Inputs[0].Binding.Position).ToBe(1)
 	Expect(t, len(root.Outputs)).ToBe(1)
