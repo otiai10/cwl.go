@@ -3,6 +3,7 @@ package cwl
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 
@@ -28,6 +29,7 @@ type Root struct {
 	BaseCommands BaseCommands
 	Arguments    Arguments
 	Namespaces   Namespaces
+	Schemas      Schemas
 	Stdin        string
 	Stdout       string
 	Inputs       Inputs `json:"inputs"`
@@ -59,6 +61,8 @@ func (root *Root) UnmarshalJSON(b []byte) error {
 			root.Arguments = root.Arguments.New(val)
 		case "$namespaces":
 			root.Namespaces = root.Namespaces.New(val)
+		case "$schemas":
+			root.Schemas = root.Schemas.New(val)
 		case "stdin":
 			root.Stdin = val.(string)
 		case "stdout":
@@ -77,7 +81,12 @@ func (root *Root) UnmarshalJSON(b []byte) error {
 }
 
 // Decode decodes specified io.Reader to this root
-func (root *Root) Decode(r io.Reader) error {
+func (root *Root) Decode(r io.Reader) (err error) {
+	defer func() {
+		if e := recover(); e != nil {
+			err = fmt.Errorf("Parse error: %v", e)
+		}
+	}()
 	buf, err := ioutil.ReadAll(r)
 	if err != nil {
 		return err
