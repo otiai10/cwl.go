@@ -13,11 +13,10 @@ func (baseCommands Arguments) New(i interface{}) Arguments {
 		for _, elm := range x {
 			str, ok := elm.(string)
 			if !ok {
-                                return dest
-                        }
+				return dest
+			}
 			dest = append(dest, str)
 		}
 	}
 	return dest
 }
-

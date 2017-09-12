@@ -21,16 +21,16 @@ func NewCWL() *Root {
 
 // Root ...
 type Root struct {
-	Version        string
-	Class          string
-	Hints          Hints
-	Doc            string
-	BaseCommands   BaseCommands
-	Arguments      Arguments
-	Namespaces     Namespaces
-	Stdin          string
-	Stdout         string
-	Inputs Inputs `json:"inputs"`
+	Version      string
+	Class        string
+	Hints        Hints
+	Doc          string
+	BaseCommands BaseCommands
+	Arguments    Arguments
+	Namespaces   Namespaces
+	Stdin        string
+	Stdout       string
+	Inputs       Inputs `json:"inputs"`
 	// ProvidedInputs ProvidedInputs `json:"-"`
 	Outputs      Outputs
 	Requirements Requirements
