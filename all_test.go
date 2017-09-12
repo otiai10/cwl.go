@@ -539,7 +539,8 @@ func TestDecode_env_tool2(t *testing.T) {
 	Expect(t, len(root.Hints)).ToBe(1)
 	Expect(t, root.Hints).TypeOf("cwl.Hints")
 	Expect(t, root.Hints[0]["class"]).ToBe("EnvVarRequirement")
-	// TODO support envDef and key value
+	envdef := root.Hints[0]["envDef"].(map[string]interface{})
+	Expect(t, envdef["TEST_ENV"]).ToBe("$(inputs.in)")
 	Expect(t, len(root.Inputs)).ToBe(1)
 	// TODO in: string
 	Expect(t, len(root.Outputs)).ToBe(1)
