@@ -27,6 +27,7 @@ type Root struct {
 	Doc            string
 	BaseCommands   BaseCommands
 	Arguments      Arguments
+	Namespaces     Namespaces
 	Stdin          string
 	Stdout         string
 	Inputs Inputs `json:"inputs"`
@@ -55,6 +56,8 @@ func (root *Root) UnmarshalJSON(b []byte) error {
 			root.BaseCommands = root.BaseCommands.New(val)
 		case "arguments":
 			root.Arguments = root.Arguments.New(val)
+		case "$namespaces":
+			root.Namespaces = root.Namespaces.New(val)
 		case "stdin":
 			root.Stdin = val.(string)
 		case "stdout":
