@@ -21,10 +21,11 @@ func (steps Steps) New(i interface{}) Steps {
 
 // Step represents an element of "steps"
 type Step struct {
-	ID  string
-	Run *Root
-	In  []StepInput
-	Out []StepOutput
+	ID      string
+	Run     *Root
+	In      []StepInput
+	Out     []StepOutput
+	Scatter string
 }
 
 // New constructs "Step" from interface.
@@ -40,6 +41,8 @@ func (step Step) New(i interface{}) Step {
 				dest.In = StepInput{}.NewList(v)
 			case "out":
 				dest.Out = StepOutput{}.NewList(v)
+			case "scatter":
+				dest.Scatter = v.(string)
 			}
 		}
 	}
@@ -48,8 +51,9 @@ func (step Step) New(i interface{}) Step {
 
 // StepInput ...
 type StepInput struct {
-	Name     string
-	Location string
+	ID        string
+	Source    []string
+	LinkMerge string
 }
 
 // NewList constructs a list of StepInput from interface.
@@ -61,8 +65,28 @@ func (si StepInput) NewList(i interface{}) []StepInput {
 	case map[string]interface{}:
 		input := StepInput{}
 		for key, v := range x {
-			input.Name = key
-			input.Location = v.(string)
+			input.ID = key
+			switch e := v.(type) {
+			case string:
+				input.Source = []string{e}
+			case []interface{}:
+				for _, s := range e {
+					input.Source = append(input.Source, s.(string))
+				}
+			case map[string]interface{}:
+				for key, v := range e {
+					switch key {
+					case "source":
+						if list, ok := v.([]interface{}); ok {
+							for _, s := range list {
+								input.Source = append(input.Source, s.(string))
+							}
+						}
+					case "linkMerge":
+						input.LinkMerge = v.(string)
+					}
+				}
+			}
 		}
 		dest = append(dest, input)
 	}

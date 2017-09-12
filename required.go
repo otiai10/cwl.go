@@ -34,11 +34,14 @@ type RequiredInput struct {
 
 // New constructs "RequiredInput" struct from interface{}.
 func (input RequiredInput) New(i interface{}) RequiredInput {
-	dict, ok := i.(map[string]interface{})
-	if !ok {
-		return RequiredInput{}
+	dest := RequiredInput{}
+	switch x := i.(type) {
+	case map[string]interface{}:
+		dest = input.NewFromDict(x)
+	case string:
+		dest.Types = []InputType{{Type: x}}
 	}
-	return input.NewFromDict(dict)
+	return dest
 }
 
 // NewFromDict constructs "RequiredInput" from dictionary formed map.
