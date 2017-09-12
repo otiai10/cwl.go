@@ -60,7 +60,7 @@ func (input RequiredInput) NewFromDict(dict map[string]interface{}) RequiredInpu
 		case "inputBinding":
 			dest.Binding = dest.NewBinding(val)
 		case "default":
-			dest.Default = dest.NewDefault(val)
+			dest.Default = InputDefault{}.New(val)
 		}
 	}
 	return dest
@@ -134,8 +134,8 @@ type InputDefault struct {
 	Location string
 }
 
-// NewDefault constructs new "InputDefault".
-func (input RequiredInput) NewDefault(i interface{}) *InputDefault {
+// New constructs new "InputDefault".
+func (def InputDefault) New(i interface{}) *InputDefault {
 	dest := new(InputDefault)
 	switch x := i.(type) {
 	case map[string]interface{}:

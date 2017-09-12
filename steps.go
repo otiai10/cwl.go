@@ -54,6 +54,7 @@ type StepInput struct {
 	ID        string
 	Source    []string
 	LinkMerge string
+	Default   *InputDefault
 }
 
 // NewList constructs a list of StepInput from interface.
@@ -84,6 +85,8 @@ func (si StepInput) NewList(i interface{}) []StepInput {
 						}
 					case "linkMerge":
 						input.LinkMerge = v.(string)
+					case "default":
+						input.Default = InputDefault{}.New(v)
 					}
 				}
 			}
