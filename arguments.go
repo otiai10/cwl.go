@@ -1,22 +1,34 @@
 package cwl
 
 // Arguments ...
-type Arguments []string
+type Arguments []Argument
 
 // New constructs "Arguments" struct.
 func (baseCommands Arguments) New(i interface{}) Arguments {
 	dest := Arguments{}
 	switch x := i.(type) {
 	case string:
-		dest = append(dest, x)
+		argument := Argument{}
+		argument.Value = x
+		dest = append(dest, argument)
 	case []interface{}:
 		for _, elm := range x {
-			str, ok := elm.(string)
-			if !ok {
-				return dest
+			argument := Argument{}
+			switch val := elm.(type) {
+			case string:
+				argument.Value = val
+			case map[string]interface{}:
+				argument.CommandLineBinding = val
 			}
-			dest = append(dest, str)
+			dest = append(dest, argument)
 		}
 	}
 	return dest
+}
+
+// Argument
+type Argument struct {
+	Value              string
+	CommandLineBinding map[string]interface{}
+	// TODO support Expression
 }
