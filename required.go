@@ -13,8 +13,11 @@ func (inputs RequiredInputs) New(i interface{}) RequiredInputs {
 			dest = append(dest, input)
 		}
 	case map[string]interface{}:
-		// TODO
-		return dest
+		for key, val := range x {
+			input := RequiredInput{}.New(val)
+			input.ID = key
+			dest = append(dest, input)
+		}
 	}
 	return dest
 }
@@ -23,6 +26,8 @@ func (inputs RequiredInputs) New(i interface{}) RequiredInputs {
 type RequiredInput struct {
 	ID      string
 	Type    *InputType
+	Doc     string
+	Label   string
 	Binding *InputBinding
 	Default *InputDefault
 }
@@ -45,6 +50,10 @@ func (input RequiredInput) NewFromDict(dict map[string]interface{}) RequiredInpu
 			dest.ID = val.(string)
 		case "type":
 			dest.Type = dest.NewType(val)
+		case "label":
+			dest.Label = val.(string)
+		case "doc":
+			dest.Doc = val.(string)
 		case "inputBinding":
 			dest.Binding = dest.NewBinding(val)
 		case "default":
