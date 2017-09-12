@@ -16,12 +16,11 @@ func (baseCommands BaseCommands) New(i interface{}) BaseCommands {
 		for i, elm := range x {
 			str, ok := elm.(string)
 			if !ok {
-                                return dest
-                        }
+				return dest
+			}
 			dest[i] = str
 		}
 		return dest
 	}
 	return BaseCommands{}
 }
-

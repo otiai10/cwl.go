@@ -21,15 +21,16 @@ func NewCWL() *Root {
 
 // Root ...
 type Root struct {
-	Version        string
-	Class          string
-	Hints          Hints
-	Doc            string
-	BaseCommands   BaseCommands
-	Arguments      Arguments
-	Stdin          string
-	Stdout         string
-	Inputs Inputs `json:"inputs"`
+	Version      string
+	Class        string
+	Hints        Hints
+	Doc          string
+	BaseCommands BaseCommands
+	Arguments    Arguments
+	Namespaces   Namespaces
+	Stdin        string
+	Stdout       string
+	Inputs       Inputs `json:"inputs"`
 	// ProvidedInputs ProvidedInputs `json:"-"`
 	Outputs      Outputs
 	Requirements Requirements
@@ -55,6 +56,8 @@ func (root *Root) UnmarshalJSON(b []byte) error {
 			root.BaseCommands = root.BaseCommands.New(val)
 		case "arguments":
 			root.Arguments = root.Arguments.New(val)
+		case "$namespaces":
+			root.Namespaces = root.Namespaces.New(val)
 		case "stdin":
 			root.Stdin = val.(string)
 		case "stdout":
