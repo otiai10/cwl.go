@@ -98,9 +98,10 @@ func (typ InputType) NewList(i interface{}) []InputType {
 
 // InputBinding represents "inputBinding" field in an element of "inputs".
 type InputBinding struct {
-	Position  int
-	Prefix    string
-	Separator string
+	Position     int
+	Prefix       string
+	Separator    string
+	LoadContents bool
 }
 
 // NewBinding constructs new "InputBinding".
@@ -116,6 +117,8 @@ func (input RequiredInput) NewBinding(i interface{}) *InputBinding {
 				dest.Prefix = val.(string)
 			case "itemSeparator":
 				dest.Separator = val.(string)
+			case "loadContents":
+				dest.LoadContents = val.(bool)
 			}
 		}
 	}

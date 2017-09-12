@@ -37,14 +37,12 @@ type Root struct {
 	Outputs      Outputs
 	Requirements Requirements
 	Steps        Steps
+	ID           string // ID only appears if this Root is a step in "steps"
+	Expression   string // appears only if Class is "ExpressionTool"
 }
 
-// UnmarshalJSON ...
-func (root *Root) UnmarshalJSON(b []byte) error {
-	docs := map[string]interface{}{}
-	if err := json.Unmarshal(b, &docs); err != nil {
-		return err
-	}
+// UnmarshalMap decode map[string]interface{} to *Root.
+func (root *Root) UnmarshalMap(docs map[string]interface{}) error {
 	for key, val := range docs {
 		switch key {
 		case "cwlVersion":
@@ -75,9 +73,22 @@ func (root *Root) UnmarshalJSON(b []byte) error {
 			root.Requirements = root.Requirements.New(val)
 		case "steps":
 			root.Steps = root.Steps.New(val)
+		case "id":
+			root.ID = val.(string)
+		case "expression":
+			root.Expression = val.(string)
 		}
 	}
 	return nil
+}
+
+// UnmarshalJSON ...
+func (root *Root) UnmarshalJSON(b []byte) error {
+	docs := map[string]interface{}{}
+	if err := json.Unmarshal(b, &docs); err != nil {
+		return err
+	}
+	return root.UnmarshalMap(docs)
 }
 
 // Decode decodes specified io.Reader to this root
@@ -99,4 +110,19 @@ func (root *Root) Decode(r io.Reader) (err error) {
 		return err
 	}
 	return nil
+}
+
+// AsStep constructs Root as a step of "steps" from interface.
+func (root *Root) AsStep(i interface{}) *Root {
+	dest := new(Root)
+	switch x := i.(type) {
+	case string:
+		dest.ID = x
+	case map[string]interface{}:
+		err := dest.UnmarshalMap(x)
+		if err != nil {
+			panic(fmt.Sprintf("Failed to parse step as CWL.Root: %v", err))
+		}
+	}
+	return dest
 }
