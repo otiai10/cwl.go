@@ -11,8 +11,8 @@ function exec_test() {
             exit 1
         fi
         count=`expr $count + 1`
-        sleep 0.01s
         echo "[NG: TRY AGAIN] ${count}"
+        echo "-"
         exec_test
     fi
 }
