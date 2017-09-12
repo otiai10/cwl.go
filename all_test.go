@@ -259,7 +259,7 @@ func TestDecode_cat1_testcli(t *testing.T) {
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("string[]")
 
 	Expect(t, root.BaseCommands[0]).ToBe("python")
-	Expect(t, root.Arguments[0].String).ToBe("cat")
+	Expect(t, root.Arguments[0].Value).ToBe("cat")
 }
 
 func TestDecode_template_tool(t *testing.T) {
@@ -588,8 +588,8 @@ func TestDecode_default_path(t *testing.T) {
 	// TODO support default: section
 	// TODO support outputs: []
 	Expect(t, len(root.Arguments)).ToBe(2)
-	Expect(t, root.Arguments[0].String).ToBe("cat")
-	Expect(t, root.Arguments[1].String).ToBe("$(inputs.file1.path)")
+	Expect(t, root.Arguments[0].Value).ToBe("cat")
+	Expect(t, root.Arguments[1].Value).ToBe("$(inputs.file1.path)")
 }
 
 func TestDecode_cat4_tool(t *testing.T) {
@@ -730,21 +730,21 @@ func TestDecode_envvar(t *testing.T) {
 	Expect(t, len(root.Requirements)).ToBe(1)
 	Expect(t, root.Requirements[0].Class).ToBe("ShellCommandRequirement")
 	Expect(t, len(root.Arguments)).ToBe(12)
-	Expect(t, root.Arguments[0].String).ToBe("echo")
+	Expect(t, root.Arguments[0].Value).ToBe("echo")
 	Expect(t, root.Arguments[1].CommandLineBinding["valueFrom"]).ToBe("\"HOME=$HOME\"")
 	Expect(t, root.Arguments[1].CommandLineBinding["shellQuote"]).ToBe(false)
 	Expect(t, root.Arguments[2].CommandLineBinding["valueFrom"]).ToBe("\"TMPDIR=$TMPDIR\"")
 	Expect(t, root.Arguments[2].CommandLineBinding["shellQuote"]).ToBe(false)
 	Expect(t, root.Arguments[3].CommandLineBinding["valueFrom"]).ToBe("&&")
 	Expect(t, root.Arguments[3].CommandLineBinding["shellQuote"]).ToBe(false)
-	Expect(t, root.Arguments[4].String).ToBe("test")
+	Expect(t, root.Arguments[4].Value).ToBe("test")
 	Expect(t, root.Arguments[5].CommandLineBinding["valueFrom"]).ToBe("\"$HOME\"")
 	Expect(t, root.Arguments[5].CommandLineBinding["shellQuote"]).ToBe(false)
-	Expect(t, root.Arguments[6].String).ToBe("=")
-	Expect(t, root.Arguments[7].String).ToBe("$(runtime.outdir)")
-	Expect(t, root.Arguments[8].String).ToBe("-a")
+	Expect(t, root.Arguments[6].Value).ToBe("=")
+	Expect(t, root.Arguments[7].Value).ToBe("$(runtime.outdir)")
+	Expect(t, root.Arguments[8].Value).ToBe("-a")
 	Expect(t, root.Arguments[9].CommandLineBinding["valueFrom"]).ToBe("\"$TMPDIR\"")
 	Expect(t, root.Arguments[9].CommandLineBinding["shellQuote"]).ToBe(false)
-	Expect(t, root.Arguments[10].String).ToBe("=")
-	Expect(t, root.Arguments[11].String).ToBe("$(runtime.tmpdir)")
+	Expect(t, root.Arguments[10].Value).ToBe("=")
+	Expect(t, root.Arguments[11].Value).ToBe("$(runtime.tmpdir)")
 }

@@ -9,14 +9,14 @@ func (baseCommands Arguments) New(i interface{}) Arguments {
 	switch x := i.(type) {
 	case string:
 		argument := Argument{}
-		argument.String = x
+		argument.Value = x
 		dest = append(dest, argument)
 	case []interface{}:
 		for _, elm := range x {
 			argument := Argument{}
 			switch val := elm.(type) {
 			case string:
-				argument.String = val
+				argument.Value = val
 			case map[string]interface{}:
 				argument.CommandLineBinding = val
 			}
@@ -28,7 +28,7 @@ func (baseCommands Arguments) New(i interface{}) Arguments {
 
 // Argument
 type Argument struct {
-	String             string
+	Value             string
 	CommandLineBinding map[string]interface{}
 	// TODO support Expression
 }
