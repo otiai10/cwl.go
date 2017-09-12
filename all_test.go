@@ -14,6 +14,7 @@ const version = "1.0"
 func cwl(name string) string {
 	return fmt.Sprintf("./cwl/v%[1]s/v%[1]s/%s", version, name)
 }
+
 func TestDecode_bwa_mem_tool(t *testing.T) {
 	f, err := os.Open(cwl("bwa-mem-tool.cwl"))
 	if err != nil {
@@ -48,6 +49,41 @@ func TestDecode_bwa_mem_tool(t *testing.T) {
 	Expect(t, root.Outputs[1].Types[0].Type).ToBe("array")
 	Expect(t, root.Outputs[1].Types[0].Items).ToBe("string")
 }
+
+func TestDecode_binding_test(t *testing.T) {
+	f, err := os.Open(cwl("binding-test.cwl"))
+	if err != nil {
+		panic(err)
+	}
+	root := NewCWL()
+	err = root.Decode(f)
+	Expect(t, err).ToBe(nil)
+
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, root.Class).ToBe("CommandLineTool")
+
+	Expect(t, root.Hints[0]["class"]).ToBe("DockerRequirement")
+	Expect(t, root.Hints[0]["dockerPull"]).ToBe("python:2-slim")
+
+	Expect(t, root.RequiredInputs[0].ID).ToBe("reference")
+	Expect(t, root.RequiredInputs[0].Type.Type).ToBe("File")
+	Expect(t, root.RequiredInputs[0].Binding.Position).ToBe(2)
+	Expect(t, root.RequiredInputs[1].ID).ToBe("reads")
+	Expect(t, root.RequiredInputs[1].Type.Type).ToBe("array")
+	Expect(t, root.RequiredInputs[1].Type.Items).ToBe("File")
+	Expect(t, root.RequiredInputs[1].Type.Binding.Prefix).ToBe("-YYY")
+	Expect(t, root.RequiredInputs[1].Binding.Position).ToBe(3)
+	Expect(t, root.RequiredInputs[1].Binding.Prefix).ToBe("-XXX")
+	Expect(t, root.RequiredInputs[2].ID).ToBe("#args.py")
+	Expect(t, root.RequiredInputs[2].Type.Type).ToBe("File")
+	Expect(t, root.RequiredInputs[2].Default.Class).ToBe("File")
+	Expect(t, root.RequiredInputs[2].Default.Location).ToBe("args.py")
+	Expect(t, root.RequiredInputs[2].Binding.Position).ToBe(-1)
+
+	Expect(t, root.Outputs[0].ID).ToBe("args")
+	Expect(t, root.Outputs[0].Types[0].Type).ToBe("string[]")
+}
+
 func TestDecode_cat3_nodocker(t *testing.T) {
 	f, err := os.Open(cwl("cat3-nodocker.cwl"))
 	if err != nil {
@@ -69,6 +105,7 @@ func TestDecode_cat3_nodocker(t *testing.T) {
 	Expect(t, root.RequiredInputs[0].Doc).ToBe("The file that will be copied using 'cat'")
 	Expect(t, root.RequiredInputs[0].Binding.Position).ToBe(1)
 }
+
 func TestDecode_cat3_tool_mediumcut(t *testing.T) {
 	f, err := os.Open(cwl("cat3-tool-mediumcut.cwl"))
 	if err != nil {
@@ -93,6 +130,7 @@ func TestDecode_cat3_tool_mediumcut(t *testing.T) {
 	Expect(t, root.RequiredInputs[0].Doc).ToBe("The file that will be copied using 'cat'")
 	Expect(t, root.RequiredInputs[0].Binding.Position).ToBe(1)
 }
+
 func TestDecode_cat3_tool_shortcut(t *testing.T) {
 	f, err := os.Open(cwl("cat3-tool-shortcut.cwl"))
 	if err != nil {
@@ -116,6 +154,7 @@ func TestDecode_cat3_tool_shortcut(t *testing.T) {
 	Expect(t, root.RequiredInputs[0].Doc).ToBe("The file that will be copied using 'cat'")
 	Expect(t, root.RequiredInputs[0].Binding.Position).ToBe(1)
 }
+
 func TestDecode_cat3_tool(t *testing.T) {
 	f, err := os.Open(cwl("cat3-tool.cwl"))
 	if err != nil {

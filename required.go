@@ -65,8 +65,9 @@ func (input RequiredInput) NewFromDict(dict map[string]interface{}) RequiredInpu
 
 // InputType represents "type" field in an element of "inputs".
 type InputType struct {
-	Type  string
-	Items string
+	Type    string
+	Items   string
+	Binding *InputBinding
 }
 
 // NewType constructs new "InputType".
@@ -81,6 +82,9 @@ func (input RequiredInput) NewType(i interface{}) *InputType {
 		}
 		if val, ok := x["items"]; ok {
 			dest.Items = val.(string)
+		}
+		if val, ok := x["inputBinding"]; ok {
+			dest.Binding = RequiredInput{}.NewBinding(val)
 		}
 	}
 	return dest

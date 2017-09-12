@@ -11,6 +11,12 @@ func (outputs Outputs) New(i interface{}) Outputs {
 		for _, elm := range x {
 			dest = append(dest, Output{}.New(elm))
 		}
+	case map[string]interface{}:
+		for key, val := range x {
+			output := Output{}.New(val)
+			output.ID = key
+			dest = append(dest, output)
+		}
 	}
 	return dest
 }
@@ -34,6 +40,8 @@ func (output Output) New(i interface{}) Output {
 				dest.Types = OutputType{}.NewList(val)
 			}
 		}
+	case string: // If it's simple dictionary, value represents Type.
+		dest.Types = []OutputType{{Type: x}}
 	}
 	return dest
 }
