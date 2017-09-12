@@ -5,23 +5,19 @@ type Arguments []string
 
 // New constructs "Arguments" struct.
 func (baseCommands Arguments) New(i interface{}) Arguments {
+	dest := Arguments{}
 	switch x := i.(type) {
-
 	case string:
-		dest := []string{}
 		dest = append(dest, x)
-		return dest
 	case []interface{}:
-		dest := make([]string, len(x))
-		for i, elm := range x {
+		for _, elm := range x {
 			str, ok := elm.(string)
 			if !ok {
                                 return dest
                         }
-			dest[i] = str
+			dest = append(dest, str)
 		}
-		return dest
 	}
-	return Arguments{}
+	return dest
 }
 
