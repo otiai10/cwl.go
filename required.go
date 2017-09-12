@@ -25,7 +25,7 @@ func (inputs RequiredInputs) New(i interface{}) RequiredInputs {
 // RequiredInput represents an element of "inputs" in "CWL".
 type RequiredInput struct {
 	ID      string
-	Type    *InputType
+	Types   []InputType
 	Doc     string
 	Label   string
 	Binding *InputBinding
@@ -49,7 +49,7 @@ func (input RequiredInput) NewFromDict(dict map[string]interface{}) RequiredInpu
 		case "id":
 			dest.ID = val.(string)
 		case "type":
-			dest.Type = dest.NewType(val)
+			dest.Types = InputType{}.NewList(val)
 		case "label":
 			dest.Label = val.(string)
 		case "doc":
@@ -70,21 +70,27 @@ type InputType struct {
 	Binding *InputBinding
 }
 
-// NewType constructs new "InputType".
-func (input RequiredInput) NewType(i interface{}) *InputType {
-	dest := new(InputType)
+// NewList constructs a list of InputType from interface
+func (typ InputType) NewList(i interface{}) []InputType {
+	dest := []InputType{}
 	switch x := i.(type) {
 	case string:
-		dest.Type = x
+		dest = append(dest, InputType{Type: x})
 	case map[string]interface{}:
+		t := InputType{}
 		if val, ok := x["type"]; ok {
-			dest.Type = val.(string)
+			t.Type = val.(string)
 		}
 		if val, ok := x["items"]; ok {
-			dest.Items = val.(string)
+			t.Items = val.(string)
 		}
 		if val, ok := x["inputBinding"]; ok {
-			dest.Binding = RequiredInput{}.NewBinding(val)
+			t.Binding = RequiredInput{}.NewBinding(val)
+		}
+		dest = append(dest, t)
+	case []interface{}:
+		for _, s := range x {
+			dest = append(dest, InputType{Type: s.(string)})
 		}
 	}
 	return dest
