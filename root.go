@@ -3,6 +3,7 @@ package cwl
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 
@@ -80,7 +81,12 @@ func (root *Root) UnmarshalJSON(b []byte) error {
 }
 
 // Decode decodes specified io.Reader to this root
-func (root *Root) Decode(r io.Reader) error {
+func (root *Root) Decode(r io.Reader) (err error) {
+	defer func() {
+		if e := recover(); e != nil {
+			err = fmt.Errorf("Parse error: %v", e)
+		}
+	}()
 	buf, err := ioutil.ReadAll(r)
 	if err != nil {
 		return err
