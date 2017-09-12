@@ -27,7 +27,7 @@ type Requirement struct {
 	Types         []RequirementType
 	ExpressionLib []RequirementExpression // For InlineJavascriptRequirement
 	Listing       []RequirementEntry      // For InitialWorkDirRequirement
-	EnvDef        []EnvDef      // For EnvVarRequirement
+	EnvDef        []EnvDef                // For EnvVarRequirement
 }
 
 // New constructs "Requirement" struct from interface.
