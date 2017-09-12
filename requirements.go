@@ -17,8 +17,10 @@ func (requirements Requirements) New(i interface{}) Requirements {
 
 // Requirement represent an element of "requirements".
 type Requirement struct {
-	Class string
-	Types []RequirementType
+	Class         string
+	Types         []RequirementType
+	ExpressionLib []RequirementExpression // For InlineJavascriptRequirement
+	Listing       []RequirementEntry      // For InitialWorkDirRequirement
 }
 
 // New constructs "Requirement" struct from interface.
@@ -32,6 +34,10 @@ func (requirement Requirement) New(i interface{}) Requirement {
 				dest.Class = val.(string)
 			case "types":
 				dest.Types = RequirementType{}.NewList(val)
+			case "expressionLib":
+				dest.ExpressionLib = RequirementExpression{}.NewList(val)
+			case "listing":
+				dest.Listing = RequirementEntry{}.NewList(val)
 			}
 		}
 	}
@@ -177,6 +183,68 @@ func (rtfb RequirementTypeFieldBinding) New(i interface{}) RequirementTypeFieldB
 				dest.Prefix = val.(string)
 			case "separate":
 				dest.Separate = val.(bool)
+			}
+		}
+	}
+	return dest
+}
+
+// RequirementExpression only appears if requirement class is "InlineJavascriptRequirement"
+type RequirementExpression struct {
+	Include string
+	Execute string
+}
+
+// NewList constructs a list of RequirementExpression from interface.
+func (expr RequirementExpression) NewList(i interface{}) []RequirementExpression {
+	dest := []RequirementExpression{}
+	switch x := i.(type) {
+	case []interface{}:
+		for _, v := range x {
+			switch e := v.(type) {
+			case map[string]interface{}:
+				exp := RequirementExpression{}
+				if include, ok := e["$include"]; ok {
+					exp.Include = include.(string)
+				}
+				dest = append(dest, exp)
+			case string:
+				dest = append(dest, RequirementExpression{Execute: e})
+			}
+		}
+	}
+	return dest
+}
+
+// RequirementEntry only appears if requirement class is "InitialWorkDirRequirement"
+type RequirementEntry struct {
+	Name  string // WTF naming!?
+	Entry string // WTF naming!?
+}
+
+// NewList constructs a list of RequirementEntry from interface
+func (list RequirementEntry) NewList(i interface{}) []RequirementEntry {
+	dest := []RequirementEntry{}
+	switch x := i.(type) {
+	case []interface{}:
+		for _, v := range x {
+			dest = append(dest, RequirementEntry{}.New(v))
+		}
+	}
+	return dest
+}
+
+// New constructs a RequirementEntry from interface
+func (list RequirementEntry) New(i interface{}) RequirementEntry {
+	dest := RequirementEntry{}
+	switch x := i.(type) {
+	case map[string]interface{}:
+		for key, v := range x {
+			switch key {
+			case "entryname":
+				dest.Name = v.(string)
+			case "entry":
+				dest.Entry = v.(string)
 			}
 		}
 	}
