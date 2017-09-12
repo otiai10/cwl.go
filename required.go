@@ -58,7 +58,7 @@ func (input RequiredInput) NewFromDict(dict map[string]interface{}) RequiredInpu
 		case "doc":
 			dest.Doc = val.(string)
 		case "inputBinding":
-			dest.Binding = dest.NewBinding(val)
+			dest.Binding = InputBinding{}.New(val)
 		case "default":
 			dest.Default = InputDefault{}.New(val)
 		}
@@ -88,7 +88,7 @@ func (typ InputType) NewList(i interface{}) []InputType {
 			t.Items = val.(string)
 		}
 		if val, ok := x["inputBinding"]; ok {
-			t.Binding = RequiredInput{}.NewBinding(val)
+			t.Binding = InputBinding{}.New(val)
 		}
 		dest = append(dest, t)
 	case []interface{}:
@@ -107,8 +107,8 @@ type InputBinding struct {
 	LoadContents bool
 }
 
-// NewBinding constructs new "InputBinding".
-func (input RequiredInput) NewBinding(i interface{}) *InputBinding {
+// New constructs new "InputBinding".
+func (binding InputBinding) New(i interface{}) *InputBinding {
 	dest := new(InputBinding)
 	switch x := i.(type) {
 	case map[string]interface{}:
