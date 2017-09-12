@@ -235,6 +235,8 @@ type RequirementEntry struct {
 func (list RequirementEntry) NewList(i interface{}) []RequirementEntry {
 	dest := []RequirementEntry{}
 	switch x := i.(type) {
+	case string:
+		dest = append(dest, RequirementEntry{Name: x, Entry: x})
 	case []interface{}:
 		for _, v := range x {
 			dest = append(dest, RequirementEntry{}.New(v))
