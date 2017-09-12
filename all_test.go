@@ -1085,6 +1085,58 @@ func TestDecode_envvar2(t *testing.T) {
 	Expect(t, root.Arguments[11].Value).ToBe("$(runtime.tmpdir)")
 }
 
+func TestDecode_env_wf2(t *testing.T) {
+	f := cwl("env-wf2.cwl")
+	root := NewCWL()
+	Expect(t, root).TypeOf("*cwl.Root")
+	err := root.Decode(f)
+	Expect(t, err).ToBe(nil)
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, root.Class).ToBe("Workflow")
+	Expect(t, len(root.Inputs)).ToBe(1)
+	// TODO in: string
+	Expect(t, len(root.Outputs)).ToBe(1)
+	Expect(t, root.Outputs[0].ID).ToBe("out")
+	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
+	Expect(t, root.Outputs[0].Source).ToBe("step1/out")
+	Expect(t, len(root.Requirements)).ToBe(1)
+	Expect(t, root.Requirements[0].Class).ToBe("EnvVarRequirement")
+	Expect(t, root.Requirements[0].EnvDef[0].Name).ToBe("TEST_ENV")
+	Expect(t, root.Requirements[0].EnvDef[0].Value).ToBe(`override`)
+	// step
+	Expect(t, root.Steps[0].ID).ToBe("step1")
+	Expect(t, root.Steps[0].Run.ID).ToBe("env-tool2.cwl")
+	Expect(t, root.Steps[0].In[0].ID).ToBe("in")
+	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("in")
+	Expect(t, root.Steps[0].Out[0].Name).ToBe("out")
+}
+
+func TestDecode_env_wf3(t *testing.T) {
+	f := cwl("env-wf3.cwl")
+	root := NewCWL()
+	Expect(t, root).TypeOf("*cwl.Root")
+	err := root.Decode(f)
+	Expect(t, err).ToBe(nil)
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, root.Class).ToBe("Workflow")
+	Expect(t, len(root.Inputs)).ToBe(1)
+	// TODO in: string
+	Expect(t, len(root.Outputs)).ToBe(1)
+	Expect(t, root.Outputs[0].ID).ToBe("out")
+	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
+	Expect(t, root.Outputs[0].Source).ToBe("step1/out")
+	// step
+	Expect(t, root.Steps[0].ID).ToBe("step1")
+	Expect(t, root.Steps[0].Run.ID).ToBe("env-tool2.cwl")
+	Expect(t, root.Steps[0].In[0].ID).ToBe("in")
+	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("in")
+	Expect(t, root.Steps[0].Out[0].Name).ToBe("out")
+	// TODO check step1 requiments
+	Expect(t, root.Steps[0].Requirements[0].Class).ToBe("EnvVarRequirement")
+	Expect(t, root.Steps[0].Requirements[0].EnvDef[0].Name).ToBe("TEST_ENV")
+	Expect(t, root.Steps[0].Requirements[0].EnvDef[0].Value).ToBe(`override`)
+}
+
 func TestDecode_formattest(t *testing.T) {
 	f := cwl("formattest.cwl")
 	root := NewCWL()
@@ -1096,6 +1148,7 @@ func TestDecode_formattest(t *testing.T) {
 	Expect(t, len(root.Inputs)).ToBe(1)
 	Expect(t, root.Inputs[0].ID).ToBe("input")
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
+	Expect(t, root.Inputs[0].Format).ToBe("edam:format_2330")
 	// TODO check inputBuinding position default value
 	//Expect(t, root.Inputs[0].Binding.Position).ToBe(1)
 	Expect(t, len(root.Outputs)).ToBe(1)
@@ -1103,26 +1156,31 @@ func TestDecode_formattest(t *testing.T) {
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
 	Expect(t, root.Outputs[0].Binding.Glob).ToBe("output.txt")
 	Expect(t, root.Outputs[0].Format).ToBe("edam:format_2330")
-	/*
-		Expect(t, root.Requirements[0].Class).ToBe("ShellCommandRequirement")
-		Expect(t, root.Hints[0].Class).ToBe("DockerRequirement")
-		Expect(t, root.Hints[0].DockerPull).ToBe("debian:8")
-		Expect(t, len(root.Arguments)).ToBe(12)
-		Expect(t, root.Arguments[0].Value).ToBe("echo")
-		Expect(t, root.Arguments[1].CommandLineBinding["valueFrom"]).ToBe("\"HOME=$HOME\"")
-		Expect(t, root.Arguments[1].CommandLineBinding["shellQuote"]).ToBe(false)
-		Expect(t, root.Arguments[2].CommandLineBinding["valueFrom"]).ToBe("\"TMPDIR=$TMPDIR\"")
-		Expect(t, root.Arguments[2].CommandLineBinding["shellQuote"]).ToBe(false)
-		Expect(t, root.Arguments[3].CommandLineBinding["valueFrom"]).ToBe("&&")
-		Expect(t, root.Arguments[3].CommandLineBinding["shellQuote"]).ToBe(false)
-		Expect(t, root.Arguments[4].Value).ToBe("test")
-		Expect(t, root.Arguments[5].CommandLineBinding["valueFrom"]).ToBe("\"$HOME\"")
-		Expect(t, root.Arguments[5].CommandLineBinding["shellQuote"]).ToBe(false)
-		Expect(t, root.Arguments[6].Value).ToBe("=")
-		Expect(t, root.Arguments[7].Value).ToBe("$(runtime.outdir)")
-		Expect(t, root.Arguments[8].Value).ToBe("-a")
-		Expect(t, root.Arguments[9].CommandLineBinding["valueFrom"]).ToBe("\"$TMPDIR\"")
-		Expect(t, root.Arguments[9].CommandLineBinding["shellQuote"]).ToBe(false)
-		Expect(t, root.Arguments[10].Value).ToBe("=")
-	*/
+	Expect(t, len(root.BaseCommands)).ToBe(1)
+	Expect(t, root.BaseCommands[0]).ToBe("rev")
+	Expect(t, root.Stdout).ToBe("output.txt")
+}
+
+func TestDecode_formattest2(t *testing.T) {
+	f := cwl("formattest2.cwl")
+	root := NewCWL()
+	Expect(t, root).TypeOf("*cwl.Root")
+	err := root.Decode(f)
+	Expect(t, err).ToBe(nil)
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, root.Class).ToBe("CommandLineTool")
+	Expect(t, len(root.Inputs)).ToBe(1)
+	Expect(t, root.Inputs[0].ID).ToBe("input")
+	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
+	Expect(t, root.Inputs[0].Format).ToBe("edam:format_2330")
+	// TODO check inputBuinding position default value
+	//Expect(t, root.Inputs[0].Binding.Position).ToBe(1)
+	Expect(t, len(root.Outputs)).ToBe(1)
+	Expect(t, root.Outputs[0].ID).ToBe("output")
+	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe("output.txt")
+	Expect(t, root.Outputs[0].Format).ToBe("$(inputs.input.format)")
+	Expect(t, len(root.BaseCommands)).ToBe(1)
+	Expect(t, root.BaseCommands[0]).ToBe("rev")
+	Expect(t, root.Stdout).ToBe("output.txt")
 }
