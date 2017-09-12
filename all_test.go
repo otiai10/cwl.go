@@ -904,3 +904,28 @@ func TestDecode_envvar2(t *testing.T) {
 	Expect(t, root.Arguments[10].Value).ToBe("=")
 	Expect(t, root.Arguments[11].Value).ToBe("$(runtime.tmpdir)")
 }
+func TestDecode_env_wf2(t *testing.T) {
+	f := cwl("env-wf2.cwl")
+	root := NewCWL()
+	Expect(t, root).TypeOf("*cwl.Root")
+	err := root.Decode(f)
+	Expect(t, err).ToBe(nil)
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, root.Class).ToBe("Workflow")
+	Expect(t, len(root.Inputs)).ToBe(1)
+	// TODO in: string
+	Expect(t, len(root.Outputs)).ToBe(1)
+	Expect(t, root.Outputs[0].ID).ToBe("out")
+	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
+	Expect(t, root.Outputs[0].Source).ToBe("step1/out")
+	Expect(t, len(root.Requirements)).ToBe(1)
+	Expect(t, root.Requirements[0].Class).ToBe("EnvVarRequirement")
+	Expect(t, root.Requirements[0].EnvDef[0].Name).ToBe("TEST_ENV")
+	Expect(t, root.Requirements[0].EnvDef[0].Value).ToBe(`override`)
+	// step
+	Expect(t, root.Steps[0].ID).ToBe("step1")
+	Expect(t, root.Steps[0].Run.ID).ToBe("env-tool2.cwl")
+	Expect(t, root.Steps[0].In[0].ID).ToBe("in")
+	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("in")
+	Expect(t, root.Steps[0].Out[0].Name).ToBe("out")
+}
