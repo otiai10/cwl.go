@@ -29,6 +29,7 @@ func TestDecode_bwa_mem_tool(t *testing.T) {
 	Expect(t, root.Hints[0]["class"]).ToBe("ResourceRequirement")
 	Expect(t, root.Hints[0]["coresMin"]).ToBe(float64(2))
 
+	Expect(t, len(root.RequiredInputs)).ToBe(int(5))
 	Expect(t, root.RequiredInputs[0]).TypeOf("cwl.RequiredInput")
 	Expect(t, root.RequiredInputs[0].ID).ToBe("reference")
 	Expect(t, root.RequiredInputs[0].Type.Type).ToBe("File")
