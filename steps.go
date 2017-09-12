@@ -51,8 +51,8 @@ func (step Step) New(i interface{}) Step {
 
 // StepInput ...
 type StepInput struct {
-	Name     string
-	Location string
+	ID     string
+	Source []string
 }
 
 // NewList constructs a list of StepInput from interface.
@@ -64,8 +64,15 @@ func (si StepInput) NewList(i interface{}) []StepInput {
 	case map[string]interface{}:
 		input := StepInput{}
 		for key, v := range x {
-			input.Name = key
-			input.Location = v.(string)
+			input.ID = key
+			switch src := v.(type) {
+			case string:
+				input.Source = []string{v.(string)}
+			case []interface{}:
+				for _, s := range src {
+					input.Source = append(input.Source, s.(string))
+				}
+			}
 		}
 		dest = append(dest, input)
 	}
