@@ -62,7 +62,12 @@ func TestDecode_cat3_nodocker(t *testing.T) {
 	Expect(t, root.Class).ToBe("CommandLineTool")
 	Expect(t, root.BaseCommand).ToBe("cat")
 	Expect(t, root.Stdout).ToBe("output.txt")
-	// TODO inputs and outputs
+	Expect(t, len(root.RequiredInputs)).ToBe(int(1))
+	Expect(t, root.RequiredInputs[0].ID).ToBe("file1")
+	Expect(t, root.RequiredInputs[0].Type.Type).ToBe("File")
+	Expect(t, root.RequiredInputs[0].Label).ToBe("Input File")
+	Expect(t, root.RequiredInputs[0].Doc).ToBe("The file that will be copied using 'cat'")
+	Expect(t, root.RequiredInputs[0].Binding.Position).ToBe(1)
 }
 func TestDecode_cat3_tool_mediumcut(t *testing.T) {
 	f, err := os.Open(cwl("cat3-tool-mediumcut.cwl"))
@@ -78,8 +83,13 @@ func TestDecode_cat3_tool_mediumcut(t *testing.T) {
 	Expect(t, root.Class).ToBe("CommandLineTool")
 	Expect(t, root.BaseCommand).ToBe("cat")
 	Expect(t, root.Stdout).ToBe("cat-out")
-	// TODO inputs and outputs
 	Expect(t, root.Hints).TypeOf("cwl.Hints")
 	Expect(t, root.Hints[0]["class"]).ToBe("DockerRequirement")
 	Expect(t, root.Hints[0]["dockerPull"]).ToBe("debian:wheezy")
+	Expect(t, len(root.RequiredInputs)).ToBe(int(1))
+	Expect(t, root.RequiredInputs[0].ID).ToBe("file1")
+	Expect(t, root.RequiredInputs[0].Type.Type).ToBe("File")
+	Expect(t, root.RequiredInputs[0].Label).ToBe("Input File")
+	Expect(t, root.RequiredInputs[0].Doc).ToBe("The file that will be copied using 'cat'")
+	Expect(t, root.RequiredInputs[0].Binding.Position).ToBe(1)
 }
