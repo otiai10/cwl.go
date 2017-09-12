@@ -12,6 +12,7 @@ import (
 // NewCWL ...
 func NewCWL() *Root {
 	root := new(Root)
+	root.BaseCommands = BaseCommands{}
 	root.Hints = Hints{}
 	root.RequiredInputs = RequiredInputs{}
 	// root.ProvidedInputs = ProvidedInputs{}
@@ -24,7 +25,7 @@ type Root struct {
 	Class          string
 	Hints          Hints
 	Doc            string
-	BaseCommand    string `json:"baseCommand"`
+	BaseCommands   BaseCommands
 	Stdout         string
 	RequiredInputs RequiredInputs `json:"inputs"`
 	// ProvidedInputs ProvidedInputs `json:"-"`
@@ -48,7 +49,7 @@ func (root *Root) UnmarshalJSON(b []byte) error {
 		case "doc":
 			root.Doc = val.(string)
 		case "baseCommand":
-			root.BaseCommand = val.(string)
+			root.BaseCommands = root.BaseCommands.New(val)
 		case "stdout":
 			root.Stdout = val.(string)
 		case "inputs":
