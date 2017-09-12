@@ -361,6 +361,30 @@ func TestDecode_count_lines2_wf(t *testing.T) {
 	Expect(t, root.Steps[1].Run.Expression).ToBe("${return {'parseInt_output': parseInt(inputs.parseInt_file1.contents)};}\n")
 }
 
+func TestDecode_count_lines3_wf(t *testing.T) {
+	f := cwl("count-lines3-wf.cwl")
+	root := NewCWL()
+	err := root.Decode(f)
+	Expect(t, err).ToBe(nil)
+
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, root.Class).ToBe("Workflow")
+
+	Expect(t, root.Inputs[0].ID).ToBe("file1")
+	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File[]")
+	Expect(t, root.Outputs[0].ID).ToBe("count_output")
+	Expect(t, root.Outputs[0].Types[0].Type).ToBe("int[]")
+	Expect(t, root.Outputs[0].Source).ToBe("step1/output")
+
+	Expect(t, root.Requirements[0].Class).ToBe("ScatterFeatureRequirement")
+	Expect(t, root.Steps[0].ID).ToBe("step1")
+	Expect(t, root.Steps[0].Run.ID).ToBe("wc2-tool.cwl")
+	Expect(t, root.Steps[0].Scatter).ToBe("file1")
+	Expect(t, root.Steps[0].In[0].Name).ToBe("file1")
+	Expect(t, root.Steps[0].In[0].Location).ToBe("file1")
+	Expect(t, root.Steps[0].Out[0].Name).ToBe("output")
+}
+
 func TestDecode_cat3_nodocker(t *testing.T) {
 	f := cwl("cat3-nodocker.cwl")
 	root := NewCWL()

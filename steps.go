@@ -21,10 +21,11 @@ func (steps Steps) New(i interface{}) Steps {
 
 // Step represents an element of "steps"
 type Step struct {
-	ID  string
-	Run *Root
-	In  []StepInput
-	Out []StepOutput
+	ID      string
+	Run     *Root
+	In      []StepInput
+	Out     []StepOutput
+	Scatter string
 }
 
 // New constructs "Step" from interface.
@@ -40,6 +41,8 @@ func (step Step) New(i interface{}) Step {
 				dest.In = StepInput{}.NewList(v)
 			case "out":
 				dest.Out = StepOutput{}.NewList(v)
+			case "scatter":
+				dest.Scatter = v.(string)
 			}
 		}
 	}
