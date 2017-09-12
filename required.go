@@ -40,6 +40,13 @@ func (input RequiredInput) New(i interface{}) RequiredInput {
 		dest = input.NewFromDict(x)
 	case string:
 		dest.Types = []InputType{{Type: x}}
+	case []interface{}: // count-lines12-wf.cwl suggests it can be array with length 1.
+		if len(x) == 0 {
+			return dest
+		}
+		if dict, ok := x[0].(map[string]interface{}); ok {
+			dest.Types = InputType{}.NewList(dict)
+		}
 	}
 	return dest
 }
