@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"testing"
+	"unicode/utf8"
 
 	. "github.com/otiai10/mint"
 )
@@ -1271,4 +1272,27 @@ func TestDecode_imported_hint(t *testing.T) {
 	Expect(t, root.BaseCommands[1]).ToBe("-c")
 	Expect(t, root.BaseCommands[2]).ToBe("echo $TEST_ENV")
 	Expect(t, root.Stdout).ToBe("out")
+}
+
+func TestDecode_initialwork_path(t *testing.T) {
+	f := cwl("initialwork-path.cwl")
+	root := NewCWL()
+	Expect(t, root).TypeOf("*cwl.Root")
+	err := root.Decode(f)
+	Expect(t, err).ToBe(nil)
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, root.Class).ToBe("CommandLineTool")
+	Expect(t, len(root.Inputs)).ToBe(1)
+	Expect(t, root.Inputs[0].ID).ToBe("file1")
+	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
+	Expect(t, len(root.Outputs)).ToBe(0)
+	Expect(t, root.Requirements[0].Class).ToBe("InitialWorkDirRequirement")
+	Expect(t, root.Requirements[0].Listing[0].Name).ToBe("bob.txt")
+	Expect(t, root.Requirements[0].Listing[0].Entry).ToBe(`$(inputs.file1)`)
+	Expect(t, root.Requirements[1].Class).ToBe("ShellCommandRequirement")
+	fmt.Println(root.Arguments[0])
+	a := root.Arguments[0].CommandLineBinding
+	Expect(t, a["shellQuote"]).ToBe(false)
+	str := a["valueFrom"].(string)[0 : utf8.RuneCountInString(a["valueFrom"].(string))-1]
+	Expect(t, str).ToBe("test \"$(inputs.file1.path)\" = \"$(runtime.outdir)/bob.txt\"")
 }
