@@ -10,19 +10,21 @@ import (
 
 const version = "1.0"
 
-// Provides path for testable official .cwl files.
-func cwl(name string) string {
-	return fmt.Sprintf("./cwl/v%[1]s/v%[1]s/%s", version, name)
-}
-
-func TestDecode_bwa_mem_tool(t *testing.T) {
-	f, err := os.Open(cwl("bwa-mem-tool.cwl"))
+// Provides file object for testable official .cwl files.
+func cwl(name string) *os.File {
+	fpath := fmt.Sprintf("./cwl/v%[1]s/v%[1]s/%s", version, name)
+	f, err := os.Open(fpath)
 	if err != nil {
 		panic(err)
 	}
+	return f
+}
+
+func TestDecode_bwa_mem_tool(t *testing.T) {
+	f := cwl("bwa-mem-tool.cwl")
 	root := NewCWL()
 	Expect(t, root).TypeOf("*cwl.Root")
-	err = root.Decode(f)
+	err := root.Decode(f)
 	Expect(t, err).ToBe(nil)
 	Expect(t, root.Version).ToBe("v1.0")
 	Expect(t, root.Class).ToBe("CommandLineTool")
@@ -51,12 +53,9 @@ func TestDecode_bwa_mem_tool(t *testing.T) {
 }
 
 func TestDecode_binding_test(t *testing.T) {
-	f, err := os.Open(cwl("binding-test.cwl"))
-	if err != nil {
-		panic(err)
-	}
+	f := cwl("binding-test.cwl")
 	root := NewCWL()
-	err = root.Decode(f)
+	err := root.Decode(f)
 	Expect(t, err).ToBe(nil)
 
 	Expect(t, root.Version).ToBe("v1.0")
@@ -85,13 +84,10 @@ func TestDecode_binding_test(t *testing.T) {
 }
 
 func TestDecode_cat3_nodocker(t *testing.T) {
-	f, err := os.Open(cwl("cat3-nodocker.cwl"))
-	if err != nil {
-		panic(err)
-	}
+	f := cwl("cat3-nodocker.cwl")
 	root := NewCWL()
 	Expect(t, root).TypeOf("*cwl.Root")
-	err = root.Decode(f)
+	err := root.Decode(f)
 	Expect(t, err).ToBe(nil)
 	Expect(t, root.Version).ToBe("v1.0")
 	Expect(t, root.Doc).ToBe("Print the contents of a file to stdout using 'cat'.")
@@ -107,13 +103,10 @@ func TestDecode_cat3_nodocker(t *testing.T) {
 }
 
 func TestDecode_cat3_tool_mediumcut(t *testing.T) {
-	f, err := os.Open(cwl("cat3-tool-mediumcut.cwl"))
-	if err != nil {
-		panic(err)
-	}
+	f := cwl("cat3-tool-mediumcut.cwl")
 	root := NewCWL()
 	Expect(t, root).TypeOf("*cwl.Root")
-	err = root.Decode(f)
+	err := root.Decode(f)
 	Expect(t, err).ToBe(nil)
 	Expect(t, root.Version).ToBe("v1.0")
 	Expect(t, root.Doc).ToBe("Print the contents of a file to stdout using 'cat' running in a docker container.")
@@ -132,13 +125,10 @@ func TestDecode_cat3_tool_mediumcut(t *testing.T) {
 }
 
 func TestDecode_cat3_tool_shortcut(t *testing.T) {
-	f, err := os.Open(cwl("cat3-tool-shortcut.cwl"))
-	if err != nil {
-		panic(err)
-	}
+	f := cwl("cat3-tool-shortcut.cwl")
 	root := NewCWL()
 	Expect(t, root).TypeOf("*cwl.Root")
-	err = root.Decode(f)
+	err := root.Decode(f)
 	Expect(t, err).ToBe(nil)
 	Expect(t, root.Version).ToBe("v1.0")
 	Expect(t, root.Doc).ToBe("Print the contents of a file to stdout using 'cat' running in a docker container.")
@@ -156,13 +146,10 @@ func TestDecode_cat3_tool_shortcut(t *testing.T) {
 }
 
 func TestDecode_cat3_tool(t *testing.T) {
-	f, err := os.Open(cwl("cat3-tool.cwl"))
-	if err != nil {
-		panic(err)
-	}
+	f := cwl("cat3-tool.cwl")
 	root := NewCWL()
 	Expect(t, root).TypeOf("*cwl.Root")
-	err = root.Decode(f)
+	err := root.Decode(f)
 	Expect(t, err).ToBe(nil)
 	Expect(t, root.Version).ToBe("v1.0")
 	Expect(t, root.Doc).ToBe("Print the contents of a file to stdout using 'cat' running in a docker container.")
