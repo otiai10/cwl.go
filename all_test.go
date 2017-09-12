@@ -769,6 +769,53 @@ func TestDecode_dir5(t *testing.T) {
 	Expect(t, root.Stdout).ToBe("output.txt")
 }
 
+func TestDecode_dir6(t *testing.T) {
+	f := cwl("dir6.cwl")
+	root := NewCWL()
+	err := root.Decode(f)
+	Expect(t, err).ToBe(nil)
+
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, root.Class).ToBe("CommandLineTool")
+
+	Expect(t, root.Requirements[0].Class).ToBe("ShellCommandRequirement")
+	Expect(t, root.Inputs[0].ID).ToBe("indir")
+	Expect(t, root.Inputs[0].Types[0].Type).ToBe("Directory")
+	Expect(t, root.Inputs[0].Binding.Position).ToBe(-1)
+	Expect(t, root.Inputs[0].Binding.Prefix).ToBe("cd")
+	Expect(t, root.Outputs[0].ID).ToBe("outlist")
+	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe("output.txt")
+	Expect(t, root.Arguments[0].CommandLineBinding["shellQuote"]).ToBe(false)
+	Expect(t, root.Arguments[0].CommandLineBinding["valueFrom"]).ToBe("&&")
+	Expect(t, root.Arguments[1].Value).ToBe("find")
+	Expect(t, root.Arguments[2].Value).ToBe(".")
+	Expect(t, root.Arguments[3].CommandLineBinding["shellQuote"]).ToBe(false)
+	Expect(t, root.Arguments[3].CommandLineBinding["valueFrom"]).ToBe("|")
+	Expect(t, root.Arguments[4].Value).ToBe("sort")
+	Expect(t, root.Stdout).ToBe("output.txt")
+}
+
+func TestDecode_dir7(t *testing.T) {
+	f := cwl("dir7.cwl")
+	root := NewCWL()
+	err := root.Decode(f)
+	Expect(t, err).ToBe(nil)
+
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, root.Class).ToBe("ExpressionTool")
+
+	Expect(t, root.Requirements[0].Class).ToBe("InlineJavascriptRequirement")
+
+	Expect(t, root.Inputs[0].ID).ToBe("files")
+	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File[]")
+	Expect(t, root.Outputs[0].ID).ToBe("dir")
+	Expect(t, root.Outputs[0].Types[0].Type).ToBe("Directory")
+	Expect(t, root.Expression).ToBe(`${
+return {"dir": {"class": "Directory", "basename": "a_directory", "listing": inputs.files}};
+}`)
+}
+
 func TestDecode_cat3_nodocker(t *testing.T) {
 	f := cwl("cat3-nodocker.cwl")
 	root := NewCWL()
@@ -1085,58 +1132,6 @@ func TestDecode_envvar2(t *testing.T) {
 	Expect(t, root.Arguments[11].Value).ToBe("$(runtime.tmpdir)")
 }
 
-func TestDecode_env_wf2(t *testing.T) {
-	f := cwl("env-wf2.cwl")
-	root := NewCWL()
-	Expect(t, root).TypeOf("*cwl.Root")
-	err := root.Decode(f)
-	Expect(t, err).ToBe(nil)
-	Expect(t, root.Version).ToBe("v1.0")
-	Expect(t, root.Class).ToBe("Workflow")
-	Expect(t, len(root.Inputs)).ToBe(1)
-	// TODO in: string
-	Expect(t, len(root.Outputs)).ToBe(1)
-	Expect(t, root.Outputs[0].ID).ToBe("out")
-	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Outputs[0].Source).ToBe("step1/out")
-	Expect(t, len(root.Requirements)).ToBe(1)
-	Expect(t, root.Requirements[0].Class).ToBe("EnvVarRequirement")
-	Expect(t, root.Requirements[0].EnvDef[0].Name).ToBe("TEST_ENV")
-	Expect(t, root.Requirements[0].EnvDef[0].Value).ToBe(`override`)
-	// step
-	Expect(t, root.Steps[0].ID).ToBe("step1")
-	Expect(t, root.Steps[0].Run.ID).ToBe("env-tool2.cwl")
-	Expect(t, root.Steps[0].In[0].ID).ToBe("in")
-	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("in")
-	Expect(t, root.Steps[0].Out[0].Name).ToBe("out")
-}
-
-func TestDecode_env_wf3(t *testing.T) {
-	f := cwl("env-wf3.cwl")
-	root := NewCWL()
-	Expect(t, root).TypeOf("*cwl.Root")
-	err := root.Decode(f)
-	Expect(t, err).ToBe(nil)
-	Expect(t, root.Version).ToBe("v1.0")
-	Expect(t, root.Class).ToBe("Workflow")
-	Expect(t, len(root.Inputs)).ToBe(1)
-	// TODO in: string
-	Expect(t, len(root.Outputs)).ToBe(1)
-	Expect(t, root.Outputs[0].ID).ToBe("out")
-	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Outputs[0].Source).ToBe("step1/out")
-	// step
-	Expect(t, root.Steps[0].ID).ToBe("step1")
-	Expect(t, root.Steps[0].Run.ID).ToBe("env-tool2.cwl")
-	Expect(t, root.Steps[0].In[0].ID).ToBe("in")
-	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("in")
-	Expect(t, root.Steps[0].Out[0].Name).ToBe("out")
-	// TODO check step1 requiments
-	Expect(t, root.Steps[0].Requirements[0].Class).ToBe("EnvVarRequirement")
-	Expect(t, root.Steps[0].Requirements[0].EnvDef[0].Name).ToBe("TEST_ENV")
-	Expect(t, root.Steps[0].Requirements[0].EnvDef[0].Value).ToBe(`override`)
-}
-
 func TestDecode_formattest(t *testing.T) {
 	f := cwl("formattest.cwl")
 	root := NewCWL()
@@ -1215,4 +1210,48 @@ func TestDecode_formattest3(t *testing.T) {
 	Expect(t, len(root.BaseCommands)).ToBe(1)
 	Expect(t, root.BaseCommands[0]).ToBe("rev")
 	Expect(t, root.Stdout).ToBe("output.txt")
+}
+
+func TestDecode_glob_expr_list(t *testing.T) {
+	f := cwl("glob-expr-list.cwl")
+	root := NewCWL()
+	Expect(t, root).TypeOf("*cwl.Root")
+	err := root.Decode(f)
+	Expect(t, err).ToBe(nil)
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, root.Class).ToBe("CommandLineTool")
+	Expect(t, len(root.Inputs)).ToBe(1)
+	Expect(t, root.Inputs[0].ID).ToBe("ids")
+	Expect(t, root.Inputs[0].Types[0].Type).ToBe("string[]")
+	Expect(t, root.Inputs[0].Binding.Position).ToBe(1)
+	Expect(t, len(root.Outputs)).ToBe(1)
+	Expect(t, root.Outputs[0].ID).ToBe("files")
+	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File[]")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe("$(inputs.ids)")
+	Expect(t, len(root.BaseCommands)).ToBe(1)
+	Expect(t, root.BaseCommands[0]).ToBe("touch")
+}
+
+func TestDecode_imported_hint(t *testing.T) {
+	f := cwl("imported-hint.cwl")
+	root := NewCWL()
+	Expect(t, root).TypeOf("*cwl.Root")
+	err := root.Decode(f)
+	Expect(t, err).ToBe(nil)
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, root.Class).ToBe("CommandLineTool")
+	Expect(t, len(root.Inputs)).ToBe(0)
+	Expect(t, len(root.Outputs)).ToBe(1)
+	Expect(t, root.Outputs[0].ID).ToBe("out")
+	// TODO test out: stdout 's stdout
+/*
+	Expect(t, len(root.BaseCommands)).ToBe(1)
+*/
+	Expect(t, root.Hints).TypeOf("cwl.Hints")
+	Expect(t, root.Hints[0].Class).ToBe("ResourceRequirement")
+	fmt.Println(root.Hints[0])
+	Expect(t, len(root.BaseCommands)).ToBe(3)
+	Expect(t, root.BaseCommands[0]).ToBe("/bin/bash")
+	Expect(t, root.BaseCommands[1]).ToBe("-c")
+	Expect(t, root.BaseCommands[2]).ToBe("echo $TEST_ENV")
 }
