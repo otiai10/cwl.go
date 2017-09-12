@@ -30,6 +30,7 @@ type RequiredInput struct {
 	Label   string
 	Binding *InputBinding
 	Default *InputDefault
+	Format  string
 }
 
 // New constructs "RequiredInput" struct from interface{}.
@@ -68,6 +69,8 @@ func (input RequiredInput) NewFromDict(dict map[string]interface{}) RequiredInpu
 			dest.Binding = InputBinding{}.New(val)
 		case "default":
 			dest.Default = InputDefault{}.New(val)
+		case "format":
+			dest.Format = val.(string)
 		}
 	}
 	return dest
