@@ -1,11 +1,11 @@
 package cwl
 
-// RequiredInputs represents "inputs" field in CWL.
-type RequiredInputs []RequiredInput
+// Inputs represents "inputs" field in CWL.
+type Inputs []RequiredInput
 
-// New constructs new "RequiredInputs" struct.
-func (inputs RequiredInputs) New(i interface{}) RequiredInputs {
-	dest := RequiredInputs{}
+// New constructs new "Inputs" struct.
+func (inputs Inputs) New(i interface{}) Inputs {
+	dest := Inputs{}
 	switch x := i.(type) {
 	case []interface{}:
 		for _, elm := range x {
