@@ -216,4 +216,6 @@ func TestDecode_env_tool1(t *testing.T) {
 	Expect(t, root.BaseCommands[0]).ToBe("/bin/bash")
 	Expect(t, root.BaseCommands[1]).ToBe("-c")
 	Expect(t, root.BaseCommands[2]).ToBe("echo $TEST_ENV")
+	Expect(t, len(root.RequiredInputs)).ToBe(int(1))
+	// TODO ignore "in: string'
 }
