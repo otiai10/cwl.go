@@ -74,6 +74,9 @@ func (typ OutputType) NewList(i interface{}) []OutputType {
 			}
 		}
 		dest = append(dest, t)
+	case string: // If it's simple dictionary, the value represents Type.
+		t := OutputType{Type: x}
+		dest = append(dest, t)
 	}
 	return dest
 }

@@ -85,6 +85,38 @@ func TestDecode_binding_test(t *testing.T) {
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("string[]")
 }
 
+func TestDecode_tmap_tool(t *testing.T) {
+	f := cwl("tmap-tool.cwl")
+	root := NewCWL()
+	err := root.Decode(f)
+	Expect(t, err).ToBe(nil)
+
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, root.Class).ToBe("CommandLineTool")
+
+	Expect(t, root.Hints[0]["class"]).ToBe("DockerRequirement")
+	Expect(t, root.Hints[0]["dockerPull"]).ToBe("python:2-slim")
+
+	Expect(t, root.RequiredInputs[0].ID).ToBe("reads")
+	Expect(t, root.RequiredInputs[0].Type.Type).ToBe("File")
+	Expect(t, root.RequiredInputs[1].ID).ToBe("stages")
+	Expect(t, root.RequiredInputs[1].Type.Type).ToBe("array")
+	Expect(t, root.RequiredInputs[1].Type.Items).ToBe("#Stage")
+	Expect(t, root.RequiredInputs[1].Binding.Position).ToBe(1)
+	Expect(t, root.RequiredInputs[2].ID).ToBe("#args.py")
+	Expect(t, root.RequiredInputs[2].Type.Type).ToBe("File")
+	Expect(t, root.RequiredInputs[2].Default.Class).ToBe("File")
+	Expect(t, root.RequiredInputs[2].Default.Location).ToBe("args.py")
+	Expect(t, root.RequiredInputs[2].Binding.Position).ToBe(-1)
+
+	Expect(t, root.Outputs[0].ID).ToBe("sam")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe("output.sam")
+	Expect(t, root.Outputs[0].Types[0].Type).ToBe("null")
+	Expect(t, root.Outputs[0].Types[1].Type).ToBe("File")
+	Expect(t, root.Outputs[1].ID).ToBe("args")
+	Expect(t, root.Outputs[1].Types[0].Type).ToBe("string[]")
+}
+
 func TestDecode_cat3_nodocker(t *testing.T) {
 	f := cwl("cat3-nodocker.cwl")
 	root := NewCWL()
