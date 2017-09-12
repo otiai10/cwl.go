@@ -1264,14 +1264,11 @@ func TestDecode_imported_hint(t *testing.T) {
 	Expect(t, len(root.Outputs)).ToBe(1)
 	Expect(t, root.Outputs[0].ID).ToBe("out")
 	// TODO test out: stdout 's stdout
-/*
-	Expect(t, len(root.BaseCommands)).ToBe(1)
-*/
 	Expect(t, root.Hints).TypeOf("cwl.Hints")
-	Expect(t, root.Hints[0].Class).ToBe("ResourceRequirement")
-	fmt.Println(root.Hints[0])
+	Expect(t, root.Hints[0].Import).ToBe("envvar.yml")
 	Expect(t, len(root.BaseCommands)).ToBe(3)
 	Expect(t, root.BaseCommands[0]).ToBe("/bin/bash")
 	Expect(t, root.BaseCommands[1]).ToBe("-c")
 	Expect(t, root.BaseCommands[2]).ToBe("echo $TEST_ENV")
+	Expect(t, root.Stdout).ToBe("out")
 }
