@@ -28,7 +28,7 @@ func (baseCommands Arguments) New(i interface{}) Arguments {
 
 // Argument
 type Argument struct {
-        String         string
-        CommandLineBinding         map[string]interface{}
-        // TODO support Expression
+	String             string
+	CommandLineBinding map[string]interface{}
+	// TODO support Expression
 }
