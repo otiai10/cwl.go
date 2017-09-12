@@ -27,6 +27,7 @@ type Requirement struct {
 	Types         []RequirementType
 	ExpressionLib []RequirementExpression // For InlineJavascriptRequirement
 	Listing       []RequirementEntry      // For InitialWorkDirRequirement
+	EnvDef        []RequirementEnvDef      // For EnvVarRequirement
 }
 
 // New constructs "Requirement" struct from interface.
@@ -42,6 +43,8 @@ func (requirement Requirement) New(i interface{}) Requirement {
 				dest.Types = RequirementType{}.NewList(val)
 			case "expressionLib":
 				dest.ExpressionLib = RequirementExpression{}.NewList(val)
+			case "envDef":
+				dest.EnvDef = RequirementEnvDef{}.NewList(val)
 			case "listing":
 				dest.Listing = RequirementEntry{}.NewList(val)
 			}
@@ -252,6 +255,27 @@ func (list RequirementEntry) New(i interface{}) RequirementEntry {
 			case "entry":
 				dest.Entry = v.(string)
 			}
+		}
+	}
+	return dest
+}
+
+// RequirementEnvDef only appears if requirement class is "InitialWorkDirRequirement"
+type RequirementEnvDef struct {
+	envName  string
+	envValue string
+}
+
+// NewList constructs a list of RequirementEntry from interface
+func (list RequirementEnvDef) NewList(i interface{}) []RequirementEnvDef {
+	dest := []RequirementEnvDef{}
+	switch x := i.(type) {
+	case map[string]interface{}:
+		for key, v := range x {
+			r := RequirementEnvDef{}
+			r.envName = key
+			r.envValue = v.(string)
+			dest = append(dest, r)
 		}
 	}
 	return dest

@@ -548,3 +548,25 @@ func TestDecode_env_tool2(t *testing.T) {
 	Expect(t, root.BaseCommands[1]).ToBe("-c")
 	Expect(t, root.BaseCommands[2]).ToBe("echo $TEST_ENV")
 }
+
+func TestDecode_env_wf1(t *testing.T) {
+	f := cwl("env-wf1.cwl")
+	root := NewCWL()
+	Expect(t, root).TypeOf("*cwl.Root")
+	err := root.Decode(f)
+	Expect(t, err).ToBe(nil)
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, root.Class).ToBe("Workflow")
+	Expect(t, len(root.Inputs)).ToBe(1)
+	// TODO in: string
+	Expect(t, len(root.Outputs)).ToBe(1)
+	Expect(t, root.Outputs[0].ID).ToBe("out")
+	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
+	Expect(t, root.Outputs[0].Source).ToBe("step1/out")
+	Expect(t, len(root.Requirements)).ToBe(1)
+	Expect(t, root.Requirements[0].Class).ToBe("EnvVarRequirement")
+	Expect(t, root.Requirements[0].EnvDef[0].envName).ToBe("TEST_ENV")
+	Expect(t, root.Requirements[0].EnvDef[0].envValue).ToBe(`override`)
+	//Expect(t, root.Requirements[0].Types[0].Name).ToBe("Map1")
+	//Expect(t, root.Requirements[0].Types[0].Type).ToBe("record")
+}
