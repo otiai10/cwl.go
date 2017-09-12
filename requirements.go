@@ -11,6 +11,12 @@ func (requirements Requirements) New(i interface{}) Requirements {
 		for _, r := range x {
 			dest = append(dest, Requirement{}.New(r))
 		}
+	case map[string]interface{}:
+		for key, v := range x {
+			r := Requirement{}.New(v)
+			r.Class = key
+			dest = append(dest, r)
+		}
 	}
 	return dest
 }
