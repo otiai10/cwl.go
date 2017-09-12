@@ -218,4 +218,8 @@ func TestDecode_env_tool1(t *testing.T) {
 	Expect(t, root.BaseCommands[2]).ToBe("echo $TEST_ENV")
 	Expect(t, len(root.RequiredInputs)).ToBe(int(1))
 	// TODO ignore "in: string'
+	Expect(t, len(root.Outputs)).ToBe(int(1))
+	Expect(t, root.Outputs[0].ID).ToBe("out")
+	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe("out")
 }
