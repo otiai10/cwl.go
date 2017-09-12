@@ -30,6 +30,7 @@ type RequiredInput struct {
 	Label   string
 	Binding *InputBinding
 	Default *InputDefault
+	Format  string
 }
 
 // New constructs "RequiredInput" struct from interface{}.
@@ -40,6 +41,13 @@ func (input RequiredInput) New(i interface{}) RequiredInput {
 		dest = input.NewFromDict(x)
 	case string:
 		dest.Types = []InputType{{Type: x}}
+	case []interface{}: // count-lines12-wf.cwl suggests it can be array with length 1.
+		if len(x) == 0 {
+			return dest
+		}
+		if dict, ok := x[0].(map[string]interface{}); ok {
+			dest.Types = InputType{}.NewList(dict)
+		}
 	}
 	return dest
 }
@@ -61,6 +69,8 @@ func (input RequiredInput) NewFromDict(dict map[string]interface{}) RequiredInpu
 			dest.Binding = InputBinding{}.New(val)
 		case "default":
 			dest.Default = InputDefault{}.New(val)
+		case "format":
+			dest.Format = val.(string)
 		}
 	}
 	return dest

@@ -5,39 +5,57 @@ type Hints []Hint
 
 // New constructs "Hints" struct.
 func (hints Hints) New(i interface{}) Hints {
+	dest := []Hint{}
 	switch x := i.(type) {
 	case []interface{}:
-		dest := make([]Hint, len(x))
-		for i, elm := range x {
-			m, ok := elm.(map[string]interface{})
-			if !ok {
-				return dest
+		for _, val := range x {
+			switch e := val.(type) {
+			case map[string]interface{}:
+				hint := Hint{}.New(e)
+				dest = append(dest, hint)
 			}
-			hint := Hint{}
-			for key, val := range m {
-				hint[key] = val
-			}
-			dest[i] = hint
 		}
-		return dest
 	case map[string]interface{}:
-		dest := []Hint{}
 		for key, val := range x {
-			hint := Hint{}
-			hint["class"] = key
-			dict, ok := val.(map[string]interface{})
-			if !ok {
-				return dest
+			switch e := val.(type) {
+			case map[string]interface{}:
+				hint := Hint{}.New(e)
+				hint.Class = key
+				dest = append(dest, hint)
 			}
-			for name, v := range dict {
-				hint[name] = v
-			}
-			dest = append(dest, hint)
 		}
-		return dest
 	}
-	return Hints{}
+	return dest
 }
 
 // Hint ...
-type Hint map[string]interface{}
+type Hint struct {
+	Class      string
+	DockerPull string   // Only appears if class is "DockerRequirement"
+	CoresMin   int      // Only appears if class is "ResourceRequirement"
+	Envs       []EnvDef // Only appears if class is "EnvVarRequirement"
+	FakeField  string   // Only appears if class is "ex:BlibberBlubberFakeRequirement"
+}
+
+// New constructs Hint from interface.
+func (hint Hint) New(i interface{}) Hint {
+	dest := Hint{}
+	switch x := i.(type) {
+	case map[string]interface{}:
+		for key, val := range x {
+			switch key {
+			case "class":
+				dest.Class = val.(string)
+			case "dockerPull":
+				dest.DockerPull = val.(string)
+			case "coresMin":
+				dest.CoresMin = int(val.(float64))
+			case "fakeField":
+				dest.FakeField = val.(string)
+			case "envDef":
+				dest.Envs = EnvDef{}.NewList(val)
+			}
+		}
+	}
+	return dest
+}
