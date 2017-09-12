@@ -27,6 +27,7 @@ type Output struct {
 	Types   []OutputType // Possible types
 	Binding *OutputBinding
 	Source  string
+	Format  string
 }
 
 // New constructs "Output" struct from interface.
@@ -44,6 +45,8 @@ func (output Output) New(i interface{}) Output {
 				dest.Binding = OutputBinding{}.New(val)
 			case "outputSource":
 				dest.Source = val.(string)
+			case "format":
+				dest.Format = val.(string)
 			}
 		}
 	case string: // If it's simple dictionary, value represents Type.
