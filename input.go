@@ -1,14 +1,15 @@
 package cwl
 
-// Input represents an element of "inputs" in "CWL".
+// Input represents "CommandInputParameter".
+// @see http://www.commonwl.org/v1.0/CommandLineTool.html#CommandInputParameter
 type Input struct {
-	ID      string
-	Types   []Type
-	Doc     string
-	Label   string
-	Binding *Binding
-	Default *InputDefault
-	Format  string
+	ID      string        `json:"id"`
+	Label   string        `json:"label"`
+	Doc     string        `json:"doc"`
+	Format  string        `json:"format"`
+	Binding *Binding      `json:"inputBinding"`
+	Default *InputDefault `json:"default"`
+	Types   []Type        `json:"type"`
 }
 
 // New constructs "Input" struct from interface{}.

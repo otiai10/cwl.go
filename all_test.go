@@ -48,10 +48,10 @@ func TestDecode_bwa_mem_tool(t *testing.T) {
 	Expect(t, root.Outputs[0].ID).ToBe("sam")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("null")
 	Expect(t, root.Outputs[0].Types[1].Type).ToBe("File")
-	Expect(t, root.Outputs[0].Binding.Glob).ToBe("output.sam")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe([]string{"output.sam"})
 	Expect(t, root.Outputs[1].ID).ToBe("args")
 	Expect(t, root.Outputs[1].Types[0].Type).ToBe("array")
-	Expect(t, root.Outputs[1].Types[0].Items).ToBe("string")
+	Expect(t, root.Outputs[1].Types[0].Items[0].Type).ToBe("string")
 }
 
 func TestDecode_binding_test(t *testing.T) {
@@ -110,7 +110,7 @@ func TestDecode_tmap_tool(t *testing.T) {
 	Expect(t, root.Inputs[2].Binding.Position).ToBe(-1)
 
 	Expect(t, root.Outputs[0].ID).ToBe("sam")
-	Expect(t, root.Outputs[0].Binding.Glob).ToBe("output.sam")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe([]string{"output.sam"})
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("null")
 	Expect(t, root.Outputs[0].Types[1].Type).ToBe("File")
 	Expect(t, root.Outputs[1].ID).ToBe("args")
@@ -287,7 +287,7 @@ func TestDecode_template_tool(t *testing.T) {
 
 	Expect(t, root.Outputs[0].ID).ToBe("foo")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Outputs[0].Binding.Glob).ToBe("foo.txt")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe([]string{"foo.txt"})
 
 	Expect(t, root.BaseCommands[0]).ToBe("cat")
 	Expect(t, root.BaseCommands[1]).ToBe("foo.txt")
@@ -306,17 +306,17 @@ func TestDecode_count_lines1_wf(t *testing.T) {
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
 	Expect(t, root.Outputs[0].ID).ToBe("count_output")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("int")
-	Expect(t, root.Outputs[0].Source).ToBe("step2/output")
+	Expect(t, root.Outputs[0].Source).ToBe([]string{"step2/output"})
 
 	Expect(t, root.Steps[0].ID).ToBe("step1")
 	Expect(t, root.Steps[0].Run.ID).ToBe("wc-tool.cwl")
 	Expect(t, root.Steps[0].In[0].ID).ToBe("file1")
-	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("file1")
+	Expect(t, root.Steps[0].In[0].Source).ToBe([]string{"file1"})
 	Expect(t, root.Steps[0].Out[0].Name).ToBe("output")
 	Expect(t, root.Steps[1].ID).ToBe("step2")
 	Expect(t, root.Steps[1].Run.ID).ToBe("parseInt-tool.cwl")
 	Expect(t, root.Steps[1].In[0].ID).ToBe("file1")
-	Expect(t, root.Steps[1].In[0].Source[0]).ToBe("step1/output")
+	Expect(t, root.Steps[1].In[0].Source).ToBe([]string{"step1/output"})
 	Expect(t, root.Steps[1].Out[0].Name).ToBe("output")
 }
 
@@ -334,7 +334,7 @@ func TestDecode_count_lines2_wf(t *testing.T) {
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
 	Expect(t, root.Outputs[0].ID).ToBe("count_output")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("int")
-	Expect(t, root.Outputs[0].Source).ToBe("step2/parseInt_output")
+	Expect(t, root.Outputs[0].Source).ToBe([]string{"step2/parseInt_output"})
 
 	Expect(t, root.Steps[0].In[0].ID).ToBe("wc_file1")
 	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("file1")
@@ -346,7 +346,7 @@ func TestDecode_count_lines2_wf(t *testing.T) {
 	Expect(t, root.Steps[0].Run.Inputs[0].Types[0].Type).ToBe("File")
 	Expect(t, root.Steps[0].Run.Outputs[0].ID).ToBe("wc_output")
 	Expect(t, root.Steps[0].Run.Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Steps[0].Run.Outputs[0].Binding.Glob).ToBe("output.txt")
+	Expect(t, root.Steps[0].Run.Outputs[0].Binding.Glob).ToBe([]string{"output.txt"})
 	Expect(t, root.Steps[0].Run.Stdout).ToBe("output.txt")
 	Expect(t, root.Steps[0].Run.BaseCommands[0]).ToBe("wc")
 	Expect(t, root.Steps[1].In[0].ID).ToBe("parseInt_file1")
@@ -374,7 +374,7 @@ func TestDecode_count_lines3_wf(t *testing.T) {
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File[]")
 	Expect(t, root.Outputs[0].ID).ToBe("count_output")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("int[]")
-	Expect(t, root.Outputs[0].Source).ToBe("step1/output")
+	Expect(t, root.Outputs[0].Source).ToBe([]string{"step1/output"})
 
 	Expect(t, root.Requirements[0].Class).ToBe("ScatterFeatureRequirement")
 	Expect(t, root.Steps[0].ID).ToBe("step1")
@@ -400,7 +400,7 @@ func TestDecode_count_lines4_wf(t *testing.T) {
 	Expect(t, root.Inputs[1].Types[0].Type).ToBe("File")
 	Expect(t, root.Outputs[0].ID).ToBe("count_output")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("int[]")
-	Expect(t, root.Outputs[0].Source).ToBe("step1/output")
+	Expect(t, root.Outputs[0].Source).ToBe([]string{"step1/output"})
 
 	Expect(t, root.Requirements[0].Class).ToBe("ScatterFeatureRequirement")
 	Expect(t, root.Requirements[1].Class).ToBe("MultipleInputFeatureRequirement")
@@ -428,7 +428,7 @@ func TestDecode_count_lines5_wf(t *testing.T) {
 	Expect(t, root.Inputs[0].Default.Location).ToBe("hello.txt")
 	Expect(t, root.Outputs[0].ID).ToBe("count_output")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("int")
-	Expect(t, root.Outputs[0].Source).ToBe("step1/output")
+	Expect(t, root.Outputs[0].Source).ToBe([]string{"step1/output"})
 
 	Expect(t, root.Steps[0].ID).ToBe("step1")
 	Expect(t, root.Steps[0].Run.ID).ToBe("wc2-tool.cwl")
@@ -452,7 +452,7 @@ func TestDecode_count_lines6_wf(t *testing.T) {
 	Expect(t, root.Inputs[1].Types[0].Type).ToBe("File[]")
 	Expect(t, root.Outputs[0].ID).ToBe("count_output")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("int[]")
-	Expect(t, root.Outputs[0].Source).ToBe("step1/output")
+	Expect(t, root.Outputs[0].Source).ToBe([]string{"step1/output"})
 
 	Expect(t, root.Requirements[0].Class).ToBe("ScatterFeatureRequirement")
 	Expect(t, root.Requirements[1].Class).ToBe("MultipleInputFeatureRequirement")
@@ -482,7 +482,7 @@ func TestDecode_count_lines7_wf(t *testing.T) {
 	Expect(t, root.Inputs[1].Types[0].Type).ToBe("File[]")
 	Expect(t, root.Outputs[0].ID).ToBe("count_output")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("int")
-	Expect(t, root.Outputs[0].Source).ToBe("step1/output")
+	Expect(t, root.Outputs[0].Source).ToBe([]string{"step1/output"})
 
 	Expect(t, root.Requirements[0].Class).ToBe("MultipleInputFeatureRequirement")
 
@@ -508,7 +508,7 @@ func TestDecode_count_lines8_wf(t *testing.T) {
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
 	Expect(t, root.Outputs[0].ID).ToBe("count_output")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("int")
-	Expect(t, root.Outputs[0].Source).ToBe("step1/count_output")
+	Expect(t, root.Outputs[0].Source).ToBe([]string{"step1/count_output"})
 
 	Expect(t, root.Requirements[0].Class).ToBe("SubworkflowFeatureRequirement")
 
@@ -532,7 +532,7 @@ func TestDecode_count_lines9_wf(t *testing.T) {
 
 	Expect(t, root.Outputs[0].ID).ToBe("count_output")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("int")
-	Expect(t, root.Outputs[0].Source).ToBe("step2/output")
+	Expect(t, root.Outputs[0].Source).ToBe([]string{"step2/output"})
 
 	Expect(t, root.Steps[0].ID).ToBe("step1")
 	Expect(t, root.Steps[0].Run.ID).ToBe("wc-tool.cwl")
@@ -561,7 +561,7 @@ func TestDecode_count_lines10_wf(t *testing.T) {
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
 	Expect(t, root.Outputs[0].ID).ToBe("count_output")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("int")
-	Expect(t, root.Outputs[0].Source).ToBe("step1/count_output")
+	Expect(t, root.Outputs[0].Source).ToBe([]string{"step1/count_output"})
 
 	Expect(t, root.Requirements[0].Class).ToBe("SubworkflowFeatureRequirement")
 
@@ -575,7 +575,7 @@ func TestDecode_count_lines10_wf(t *testing.T) {
 	Expect(t, root.Steps[0].Run.Inputs[0].Types[0].Type).ToBe("File")
 	Expect(t, root.Steps[0].Run.Outputs[0].ID).ToBe("count_output")
 	Expect(t, root.Steps[0].Run.Outputs[0].Types[0].Type).ToBe("int")
-	Expect(t, root.Steps[0].Run.Outputs[0].Source).ToBe("step2/output")
+	Expect(t, root.Steps[0].Run.Outputs[0].Source).ToBe([]string{"step2/output"})
 	// Recursive steps
 	Expect(t, root.Steps[0].Run.Steps[0].ID).ToBe("step1")
 	Expect(t, root.Steps[0].Run.Steps[0].Run.ID).ToBe("wc-tool.cwl")
@@ -602,7 +602,7 @@ func TestDecode_count_lines11_wf(t *testing.T) {
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File?")
 	Expect(t, root.Outputs[0].ID).ToBe("count_output")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("int")
-	Expect(t, root.Outputs[0].Source).ToBe("step2/output")
+	Expect(t, root.Outputs[0].Source).ToBe([]string{"step2/output"})
 
 	Expect(t, root.Steps[0].ID).ToBe("step1")
 	Expect(t, root.Steps[0].Run.ID).ToBe("wc-tool.cwl")
@@ -635,7 +635,7 @@ func TestDecode_count_lines12_wf(t *testing.T) {
 	Expect(t, root.Inputs[1].Types[0].Items[0].Type).ToBe("File")
 	Expect(t, root.Outputs[0].ID).ToBe("count_output")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("int")
-	Expect(t, root.Outputs[0].Source).ToBe("step1/output")
+	Expect(t, root.Outputs[0].Source).ToBe([]string{"step1/output"})
 
 	Expect(t, root.Requirements[0].Class).ToBe("MultipleInputFeatureRequirement")
 
@@ -662,7 +662,7 @@ func TestDecode_dir(t *testing.T) {
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("Directory")
 	Expect(t, root.Outputs[0].ID).ToBe("outlist")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Outputs[0].Binding.Glob).ToBe("output.txt")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe([]string{"output.txt"})
 	Expect(t, root.Arguments[0].Value).ToBe("cd")
 	Expect(t, root.Arguments[1].Value).ToBe("$(inputs.indir.path)")
 	Expect(t, root.Arguments[2].CommandLineBinding["shellQuote"]).ToBe(false)
@@ -691,7 +691,7 @@ func TestDecode_dir2(t *testing.T) {
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("Directory")
 	Expect(t, root.Outputs[0].ID).ToBe("outlist")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Outputs[0].Binding.Glob).ToBe("output.txt")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe([]string{"output.txt"})
 	Expect(t, root.Arguments[0].Value).ToBe("cd")
 	Expect(t, root.Arguments[1].Value).ToBe("$(inputs.indir.path)")
 	Expect(t, root.Arguments[2].CommandLineBinding["shellQuote"]).ToBe(false)
@@ -719,7 +719,7 @@ func TestDecode_dir3(t *testing.T) {
 	Expect(t, root.Inputs[0].Binding.Position).ToBe(1)
 	Expect(t, root.Outputs[0].ID).ToBe("outdir")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("Directory")
-	Expect(t, root.Outputs[0].Binding.Glob).ToBe(".")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe([]string{"."})
 }
 
 func TestDecode_dir4(t *testing.T) {
@@ -733,7 +733,7 @@ func TestDecode_dir4(t *testing.T) {
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
 	Expect(t, root.Outputs[0].ID).ToBe("outlist")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Outputs[0].Binding.Glob).ToBe("output.txt")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe([]string{"output.txt"})
 	Expect(t, root.Arguments[0].Value).ToBe("cd")
 	Expect(t, root.Arguments[1].Value).ToBe("$(inputs.inf.dirname)/xtestdir")
 	Expect(t, root.Arguments[2].CommandLineBinding["shellQuote"]).ToBe(false)
@@ -759,7 +759,7 @@ func TestDecode_dir5(t *testing.T) {
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("Directory")
 	Expect(t, root.Outputs[0].ID).ToBe("outlist")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Outputs[0].Binding.Glob).ToBe("output.txt")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe([]string{"output.txt"})
 	Expect(t, root.Arguments[0].Value).ToBe("find")
 	Expect(t, root.Arguments[1].Value).ToBe("-L")
 	Expect(t, root.Arguments[2].Value).ToBe(".")
@@ -785,7 +785,7 @@ func TestDecode_dir6(t *testing.T) {
 	Expect(t, root.Inputs[0].Binding.Prefix).ToBe("cd")
 	Expect(t, root.Outputs[0].ID).ToBe("outlist")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Outputs[0].Binding.Glob).ToBe("output.txt")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe([]string{"output.txt"})
 	Expect(t, root.Arguments[0].CommandLineBinding["shellQuote"]).ToBe(false)
 	Expect(t, root.Arguments[0].CommandLineBinding["valueFrom"]).ToBe("&&")
 	Expect(t, root.Arguments[1].Value).ToBe("find")
@@ -940,7 +940,7 @@ func TestDecode_env_tool1(t *testing.T) {
 	Expect(t, len(root.Outputs)).ToBe(1)
 	Expect(t, root.Outputs[0].ID).ToBe("out")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Outputs[0].Binding.Glob).ToBe("out")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe([]string{"out"})
 }
 
 func TestDecode_default_path(t *testing.T) {
@@ -974,7 +974,7 @@ func TestDecode_cat4_tool(t *testing.T) {
 	Expect(t, len(root.Outputs)).ToBe(1)
 	Expect(t, root.Outputs[0].ID).ToBe("output_txt")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Outputs[0].Binding.Glob).ToBe("output.txt")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe([]string{"output.txt"})
 	Expect(t, len(root.BaseCommands)).ToBe(1)
 	Expect(t, root.BaseCommands[0]).ToBe("cat")
 	Expect(t, root.Stdout).ToBe("output.txt")
@@ -1005,7 +1005,7 @@ func TestDecode_cat5_tool(t *testing.T) {
 	Expect(t, len(root.Outputs)).ToBe(1)
 	Expect(t, root.Outputs[0].ID).ToBe("output_file")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Outputs[0].Binding.Glob).ToBe("output.txt")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe([]string{"output.txt"})
 	Expect(t, len(root.BaseCommands)).ToBe(1)
 	Expect(t, root.BaseCommands[0]).ToBe("cat")
 	Expect(t, root.Stdout).ToBe("output.txt")
@@ -1079,7 +1079,7 @@ func TestDecode_env_wf1(t *testing.T) {
 	Expect(t, len(root.Outputs)).ToBe(1)
 	Expect(t, root.Outputs[0].ID).ToBe("out")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Outputs[0].Source).ToBe("step1/out")
+	Expect(t, root.Outputs[0].Source).ToBe([]string{"step1/out"})
 	Expect(t, len(root.Requirements)).ToBe(1)
 	Expect(t, root.Requirements[0].Class).ToBe("EnvVarRequirement")
 	Expect(t, root.Requirements[0].EnvDef[0].Name).ToBe("TEST_ENV")
@@ -1168,7 +1168,7 @@ func TestDecode_formattest(t *testing.T) {
 	Expect(t, len(root.Outputs)).ToBe(1)
 	Expect(t, root.Outputs[0].ID).ToBe("output")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Outputs[0].Binding.Glob).ToBe("output.txt")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe([]string{"output.txt"})
 	Expect(t, root.Outputs[0].Format).ToBe("edam:format_2330")
 	Expect(t, len(root.BaseCommands)).ToBe(1)
 	Expect(t, root.BaseCommands[0]).ToBe("rev")
@@ -1191,7 +1191,7 @@ func TestDecode_formattest2(t *testing.T) {
 	Expect(t, len(root.Outputs)).ToBe(1)
 	Expect(t, root.Outputs[0].ID).ToBe("output")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Outputs[0].Binding.Glob).ToBe("output.txt")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe([]string{"output.txt"})
 	Expect(t, root.Outputs[0].Format).ToBe("$(inputs.input.format)")
 	Expect(t, len(root.BaseCommands)).ToBe(1)
 	Expect(t, root.BaseCommands[0]).ToBe("rev")
@@ -1225,7 +1225,7 @@ func TestDecode_formattest3(t *testing.T) {
 	Expect(t, len(root.Outputs)).ToBe(1)
 	Expect(t, root.Outputs[0].ID).ToBe("output")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Outputs[0].Binding.Glob).ToBe("output.txt")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe([]string{"output.txt"})
 	Expect(t, root.Outputs[0].Format).ToBe("$(inputs.input.format)")
 	Expect(t, len(root.BaseCommands)).ToBe(1)
 	Expect(t, root.BaseCommands[0]).ToBe("rev")
@@ -1247,7 +1247,7 @@ func TestDecode_glob_expr_list(t *testing.T) {
 	Expect(t, len(root.Outputs)).ToBe(1)
 	Expect(t, root.Outputs[0].ID).ToBe("files")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File[]")
-	Expect(t, root.Outputs[0].Binding.Glob).ToBe("$(inputs.ids)")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe([]string{"$(inputs.ids)"})
 	Expect(t, len(root.BaseCommands)).ToBe(1)
 	Expect(t, root.BaseCommands[0]).ToBe("touch")
 }
@@ -1310,7 +1310,7 @@ func TestDecode_initialworkdirrequirement_docker_out(t *testing.T) {
 	Expect(t, len(root.Outputs)).ToBe(1)
 	Expect(t, root.Outputs[0].ID).ToBe("OUTPUT")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Outputs[0].Binding.Glob).ToBe("$(inputs.INPUT.basename)")
+	Expect(t, root.Outputs[0].Binding.Glob).ToBe([]string{"$(inputs.INPUT.basename)"})
 	Expect(t, root.Outputs[0].SecondaryFiles[0].Entry).ToBe(".fai")
 	// TODO outputs
 	Expect(t, len(root.Requirements)).ToBe(2)
@@ -1351,7 +1351,7 @@ func TestDecode_inline_js(t *testing.T) {
 	Expect(t, len(root.Outputs)).ToBe(1)
 	Expect(t, root.Outputs[0].ID).ToBe("args")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("array")
-	Expect(t, root.Outputs[0].Types[0].Items).ToBe("string")
+	Expect(t, root.Outputs[0].Types[0].Items[0].Type).ToBe("string")
 	Expect(t, len(root.Arguments)).ToBe(3)
 	Expect(t, root.Arguments[0].CommandLineBinding["prefix"]).ToBe("-A")
 	Expect(t, root.Arguments[0].CommandLineBinding["valueFrom"]).ToBe("$(1+1)")
