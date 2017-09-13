@@ -1369,7 +1369,6 @@ func TestDecode_inline_js(t *testing.T) {
 func TestDecode_js_expr_req_wf(t *testing.T) {
 	f := cwl("js-expr-req-wf.cwl")
 	root := NewCWL()
-	Expect(t, root).TypeOf("*cwl.Root")
 	err := root.Decode(f)
 	Expect(t, err).ToBe(nil)
 	Expect(t, root.Version).ToBe("v1.0")
