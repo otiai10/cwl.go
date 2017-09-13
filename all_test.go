@@ -1317,8 +1317,7 @@ func TestDecode_initialworkdirrequirement_docker_out(t *testing.T) {
 	Expect(t, root.Requirements[0].DockerPull).ToBe("debian:8")
 	Expect(t, root.Requirements[1].Class).ToBe("InitialWorkDirRequirement")
 	Expect(t, root.Requirements[1].Listing[0].Entry).ToBe("$(inputs.INPUT)")
-	a := root.Arguments[0].CommandLineBinding
-	Expect(t, a["valueFrom"]).ToBe("$(inputs.INPUT.basename).fai")
+	Expect(t, root.Arguments[0].Binding.ValueFrom).ToBe("$(inputs.INPUT.basename).fai")
 	// TODO test against "position" but currently just put 0 is failed
 	Expect(t, len(root.BaseCommands)).ToBe(1)
 	Expect(t, root.BaseCommands[0]).ToBe("touch")
@@ -1352,12 +1351,12 @@ func TestDecode_inline_js(t *testing.T) {
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("array")
 	Expect(t, root.Outputs[0].Types[0].Items[0].Type).ToBe("string")
 	Expect(t, len(root.Arguments)).ToBe(3)
-	Expect(t, root.Arguments[0].CommandLineBinding["prefix"]).ToBe("-A")
-	Expect(t, root.Arguments[0].CommandLineBinding["valueFrom"]).ToBe("$(1+1)")
-	Expect(t, root.Arguments[1].CommandLineBinding["prefix"]).ToBe("-B")
-	Expect(t, root.Arguments[1].CommandLineBinding["valueFrom"]).ToBe(`$("/foo/bar/baz".split('/').slice(-1)[0])`)
-	Expect(t, root.Arguments[2].CommandLineBinding["prefix"]).ToBe("-C")
-	Expect(t, root.Arguments[2].CommandLineBinding["valueFrom"]).ToBe(`${
+	Expect(t, root.Arguments[0].Binding.Prefix).ToBe("-A")
+	Expect(t, root.Arguments[0].Binding.ValueFrom).ToBe("$(1+1)")
+	Expect(t, root.Arguments[1].Binding.Prefix).ToBe("-B")
+	Expect(t, root.Arguments[1].Binding.ValueFrom).ToBe(`$("/foo/bar/baz".split('/').slice(-1)[0])`)
+	Expect(t, root.Arguments[2].Binding.Prefix).ToBe("-C")
+	Expect(t, root.Arguments[2].Binding.ValueFrom).ToBe(`${
   var r = [];
   for (var i = 10; i >= 1; i--) {
     r.push(i);
