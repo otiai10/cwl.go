@@ -1,16 +1,16 @@
 package cwl
 
-// InputBinding represents "inputBinding" field in an element of "inputs".
-type InputBinding struct {
+// Binding represents "inputBinding" field in an element of "inputs".
+type Binding struct {
 	Position     int
 	Prefix       string
 	Separator    string
 	LoadContents bool
 }
 
-// New constructs new "InputBinding".
-func (binding InputBinding) New(i interface{}) *InputBinding {
-	dest := new(InputBinding)
+// New constructs new "Binding".
+func (binding Binding) New(i interface{}) *Binding {
+	dest := new(Binding)
 	switch x := i.(type) {
 	case map[string]interface{}:
 		for key, val := range x {

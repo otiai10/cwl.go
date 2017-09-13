@@ -25,10 +25,10 @@ func (inputs Inputs) New(i interface{}) Inputs {
 // Input represents an element of "inputs" in "CWL".
 type Input struct {
 	ID      string
-	Types   []InputType
+	Types   []Type
 	Doc     string
 	Label   string
-	Binding *InputBinding
+	Binding *Binding
 	Default *InputDefault
 	Format  string
 }
@@ -40,13 +40,13 @@ func (input Input) New(i interface{}) Input {
 	case map[string]interface{}:
 		dest = input.NewFromDict(x)
 	case string:
-		dest.Types = []InputType{{Type: x}}
+		dest.Types = Type{}.NewList(x)
 	case []interface{}: // count-lines12-wf.cwl suggests it can be array with length 1.
 		if len(x) == 0 {
 			return dest
 		}
 		if dict, ok := x[0].(map[string]interface{}); ok {
-			dest.Types = InputType{}.NewList(dict)
+			dest.Types = Type{}.NewList(dict)
 		}
 	}
 	return dest
@@ -60,13 +60,13 @@ func (input Input) NewFromDict(dict map[string]interface{}) Input {
 		case "id":
 			dest.ID = val.(string)
 		case "type":
-			dest.Types = InputType{}.NewList(val)
+			dest.Types = Type{}.NewList(val)
 		case "label":
 			dest.Label = val.(string)
 		case "doc":
 			dest.Doc = val.(string)
 		case "inputBinding":
-			dest.Binding = InputBinding{}.New(val)
+			dest.Binding = Binding{}.New(val)
 		case "default":
 			dest.Default = InputDefault{}.New(val)
 		case "format":

@@ -40,7 +40,7 @@ then
     "message": Input{
       Name:    "message",
       Type:    reflect.String,
-      Binding: InputBinding{
+      Binding: Binding{
         Position: 1,
       },
     }
