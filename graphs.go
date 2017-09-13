@@ -9,7 +9,7 @@ type Graph struct {
 }
 
 // New constructs "Graphs" from interface.
-func (steps Graphs) New(i interface{}) Graphs {
+func (_ Graphs) New(i interface{}) Graphs {
 	dest := Graphs{}
 	switch x := i.(type) {
 	case []interface{}:
