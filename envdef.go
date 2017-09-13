@@ -1,21 +1,20 @@
 package cwl
 
-// EnvDef only appears if requirement class is "EnvVarRequirement"
+// EnvDef represents "EnvironmentDef",
+// only appears if requirement class is "EnvVarRequirement"
+// @see http://www.commonwl.org/v1.0/CommandLineTool.html#EnvironmentDef
 type EnvDef struct {
 	Name  string
 	Value string
 }
 
 // NewList constructs a list of EnvDef from interface
-func (list EnvDef) NewList(i interface{}) []EnvDef {
+func (_ EnvDef) NewList(i interface{}) []EnvDef {
 	dest := []EnvDef{}
 	switch x := i.(type) {
 	case map[string]interface{}:
 		for key, v := range x {
-			r := EnvDef{}
-			r.Name = key
-			r.Value = v.(string)
-			dest = append(dest, r)
+			dest = append(dest, EnvDef{Name: key, Value: v.(string)})
 		}
 	}
 	return dest
