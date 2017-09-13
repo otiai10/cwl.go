@@ -35,6 +35,7 @@ type Hint struct {
 	CoresMin   int      // Only appears if class is "ResourceRequirement"
 	Envs       []EnvDef // Only appears if class is "EnvVarRequirement"
 	FakeField  string   // Only appears if class is "ex:BlibberBlubberFakeRequirement"
+	Import     string
 }
 
 // New constructs Hint from interface.
@@ -54,6 +55,8 @@ func (hint Hint) New(i interface{}) Hint {
 				dest.FakeField = val.(string)
 			case "envDef":
 				dest.Envs = EnvDef{}.NewList(val)
+			case "$import":
+				dest.Import = val.(string)
 			}
 		}
 	}
