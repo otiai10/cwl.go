@@ -3,6 +3,7 @@ package cwl
 import (
 	"fmt"
 	"os"
+	"reflect"
 	"testing"
 
 	. "github.com/otiai10/mint"
@@ -43,8 +44,7 @@ func TestDecode_bwa_mem_tool(t *testing.T) {
 	Expect(t, root.Inputs[1].Binding.Position).ToBe(3)
 	Expect(t, root.Inputs[2].Binding.Prefix).ToBe("-m")
 	Expect(t, root.Inputs[3].Binding.Separator).ToBe(",")
-	Expect(t, root.Inputs[4].Default.Class).ToBe("File")
-	Expect(t, root.Inputs[4].Default.Location).ToBe("args.py")
+	Expect(t, root.Inputs[4].Default.Kind).ToBe(reflect.Map)
 	Expect(t, root.Outputs[0].ID).ToBe("sam")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("null")
 	Expect(t, root.Outputs[0].Types[1].Type).ToBe("File")
@@ -77,8 +77,7 @@ func TestDecode_binding_test(t *testing.T) {
 	Expect(t, root.Inputs[1].Binding.Prefix).ToBe("-XXX")
 	Expect(t, root.Inputs[2].ID).ToBe("#args.py")
 	Expect(t, root.Inputs[2].Types[0].Type).ToBe("File")
-	Expect(t, root.Inputs[2].Default.Class).ToBe("File")
-	Expect(t, root.Inputs[2].Default.Location).ToBe("args.py")
+	Expect(t, root.Inputs[2].Default.Kind).ToBe(reflect.Map)
 	Expect(t, root.Inputs[2].Binding.Position).ToBe(-1)
 
 	Expect(t, root.Outputs[0].ID).ToBe("args")
@@ -105,8 +104,7 @@ func TestDecode_tmap_tool(t *testing.T) {
 	Expect(t, root.Inputs[1].Binding.Position).ToBe(1)
 	Expect(t, root.Inputs[2].ID).ToBe("#args.py")
 	Expect(t, root.Inputs[2].Types[0].Type).ToBe("File")
-	Expect(t, root.Inputs[2].Default.Class).ToBe("File")
-	Expect(t, root.Inputs[2].Default.Location).ToBe("args.py")
+	Expect(t, root.Inputs[2].Default.Kind).ToBe(reflect.Map)
 	Expect(t, root.Inputs[2].Binding.Position).ToBe(-1)
 
 	Expect(t, root.Outputs[0].ID).ToBe("sam")
@@ -251,8 +249,7 @@ func TestDecode_cat1_testcli(t *testing.T) {
 	Expect(t, root.Inputs[1].Types[1].Type).ToBe("boolean")
 	Expect(t, root.Inputs[2].ID).ToBe("args.py")
 	Expect(t, root.Inputs[2].Types[0].Type).ToBe("File")
-	Expect(t, root.Inputs[2].Default.Class).ToBe("File")
-	Expect(t, root.Inputs[2].Default.Location).ToBe("args.py")
+	Expect(t, root.Inputs[2].Default.Kind).ToBe(reflect.Map)
 	Expect(t, root.Inputs[2].Binding.Position).ToBe(-1)
 
 	Expect(t, root.Outputs[0].ID).ToBe("args")
@@ -424,8 +421,7 @@ func TestDecode_count_lines5_wf(t *testing.T) {
 
 	Expect(t, root.Inputs[0].ID).ToBe("file1")
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Inputs[0].Default.Class).ToBe("File")
-	Expect(t, root.Inputs[0].Default.Location).ToBe("hello.txt")
+	Expect(t, root.Inputs[0].Default.Kind).ToBe(reflect.Map)
 	Expect(t, root.Outputs[0].ID).ToBe("count_output")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("int")
 	Expect(t, root.Outputs[0].Source).ToBe([]string{"step1/output"})
@@ -537,8 +533,7 @@ func TestDecode_count_lines9_wf(t *testing.T) {
 	Expect(t, root.Steps[0].ID).ToBe("step1")
 	Expect(t, root.Steps[0].Run.ID).ToBe("wc-tool.cwl")
 	Expect(t, root.Steps[0].In[0].ID).ToBe("file1")
-	Expect(t, root.Steps[0].In[0].Default.Class).ToBe("File")
-	Expect(t, root.Steps[0].In[0].Default.Location).ToBe("whale.txt")
+	Expect(t, root.Steps[0].In[0].Default.Kind).ToBe(reflect.Map)
 	Expect(t, root.Steps[0].Out[0].ID).ToBe("output")
 
 	Expect(t, root.Steps[1].ID).ToBe("step2")
@@ -607,8 +602,7 @@ func TestDecode_count_lines11_wf(t *testing.T) {
 	Expect(t, root.Steps[0].ID).ToBe("step1")
 	Expect(t, root.Steps[0].Run.ID).ToBe("wc-tool.cwl")
 	Expect(t, root.Steps[0].In[0].ID).ToBe("file1")
-	Expect(t, root.Steps[0].In[0].Default.Class).ToBe("File")
-	Expect(t, root.Steps[0].In[0].Default.Location).ToBe("whale.txt")
+	Expect(t, root.Steps[0].In[0].Default.Kind).ToBe(reflect.Map)
 	Expect(t, root.Steps[0].Out[0].ID).ToBe("output")
 
 	Expect(t, root.Steps[1].ID).ToBe("step2")
@@ -1343,8 +1337,7 @@ func TestDecode_inline_js(t *testing.T) {
 	Expect(t, len(root.Inputs)).ToBe(1)
 	Expect(t, root.Inputs[0].ID).ToBe("args.py")
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Inputs[0].Default.Class).ToBe("File")
-	Expect(t, root.Inputs[0].Default.Location).ToBe("args.py")
+	Expect(t, root.Inputs[0].Default.Kind).ToBe(reflect.Map)
 	Expect(t, root.Inputs[0].Binding.Position).ToBe(-1)
 	Expect(t, len(root.Outputs)).ToBe(1)
 	Expect(t, root.Outputs[0].ID).ToBe("args")

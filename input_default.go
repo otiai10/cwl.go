@@ -1,24 +1,15 @@
 package cwl
 
+import "reflect"
+
 // InputDefault represents "default" field in an element of "inputs".
 type InputDefault struct {
-	Class    string
-	Location string
+	Self interface{}
+	Kind reflect.Kind
 }
 
 // New constructs new "InputDefault".
 func (_ InputDefault) New(i interface{}) *InputDefault {
-	dest := new(InputDefault)
-	switch x := i.(type) {
-	case map[string]interface{}:
-		for key, val := range x {
-			switch key {
-			case "class":
-				dest.Class = val.(string)
-			case "location":
-				dest.Location = val.(string)
-			}
-		}
-	}
+	dest := &InputDefault{Self: i, Kind: reflect.TypeOf(i).Kind()}
 	return dest
 }
