@@ -85,18 +85,6 @@ func (root *Root) UnmarshalMap(docs map[string]interface{}) error {
 	return nil
 }
 
-//
-/*
-func NewCWL() *Root {
-	root := new(Root)
-	root.BaseCommands = BaseCommands{}
-	root.Hints = Hints{}
-	root.Inputs = Inputs{}
-	// root.ProvidedInputs = ProvidedInputs{}
-	return root
-}
-*/
-
 // UnmarshalJSON ...
 func (root *Root) UnmarshalJSON(b []byte) error {
 	docs := map[string]interface{}{}
