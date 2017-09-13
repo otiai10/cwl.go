@@ -22,11 +22,10 @@ if [ -n "${1}" ]; then
   targets+=($1)
 else
   for filename in `ls xtest_*.go`; do
-    targets+=(`echo xtest_basename_fields_test.go | sed -e s/xtest_// | sed -e s/\.go//`)
+    targets+=(`echo ${filename} | sed -e s/xtest_// | sed -e s/_test\.go//`)
   done
 fi
 
-for t in $targets; do
-  echo $t
+for t in ${targets[@]} ; do
   exec_test $t
 done
