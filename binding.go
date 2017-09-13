@@ -36,6 +36,10 @@ func (binding Binding) New(i interface{}) *Binding {
 				dest.LoadContents = v.(bool)
 			case "glob":
 				dest.Glob = StringArrayable(v)
+			case "shellQuote":
+				dest.ShellQuote = v.(bool)
+			case "valueFrom":
+				dest.ValueFrom = v.(string)
 			}
 		}
 	}
