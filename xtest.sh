@@ -1,12 +1,12 @@
 
 total=0
+count=1
 
 limit_for_each=10
 function exec_test() {
 
     total=`expr $total + 1`
 
-    count=1
     target=$1
 
     if go test -run $1; then
