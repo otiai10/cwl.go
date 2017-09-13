@@ -21,9 +21,3 @@ func (_ Graphs) New(i interface{}) Graphs {
 	}
 	return dest
 }
-
-// New constructs "Step" from interface.
-func (graph Graph) New(i interface{}) Graph {
-	dest := Graph{}
-	return dest
-}
