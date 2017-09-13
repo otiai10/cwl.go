@@ -1,7 +1,7 @@
 package cwl
 
 // Graphs represents "$graph" field in CWL.
-type Graphs []Graph
+type Graphs []*Root
 
 // Graph represents an element of "steps"
 type Graph struct {
@@ -15,8 +15,8 @@ func (steps Graphs) New(i interface{}) Graphs {
 	case []interface{}:
 		// TODO;
 		for _, v := range x {
-			g := Graph{}
-			g.Run = g.Run.AsStep(v)
+			g := new(Root)
+			g = g.AsStep(v)
 			dest = append(dest, g)
 		}
 	}
