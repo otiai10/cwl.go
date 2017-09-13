@@ -1290,7 +1290,6 @@ func TestDecode_initialwork_path(t *testing.T) {
 	Expect(t, root.Requirements[0].Listing[0].Name).ToBe("bob.txt")
 	Expect(t, root.Requirements[0].Listing[0].Entry).ToBe(`$(inputs.file1)`)
 	Expect(t, root.Requirements[1].Class).ToBe("ShellCommandRequirement")
-	fmt.Println(root.Arguments[0])
 	a := root.Arguments[0].CommandLineBinding
 	Expect(t, a["shellQuote"]).ToBe(false)
 	str := a["valueFrom"].(string)[0 : utf8.RuneCountInString(a["valueFrom"].(string))-1]
