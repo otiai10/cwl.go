@@ -33,7 +33,7 @@ func TestDecode_bwa_mem_tool(t *testing.T) {
 	Expect(t, root.Hints[0].CoresMin).ToBe(2)
 
 	Expect(t, len(root.Inputs)).ToBe(5)
-	Expect(t, root.Inputs[0]).TypeOf("cwl.RequiredInput")
+	Expect(t, root.Inputs[0]).TypeOf("cwl.Input")
 	Expect(t, root.Inputs[0].ID).ToBe("reference")
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
 	Expect(t, root.Inputs[0].Binding.Position).ToBe(2)

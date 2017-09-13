@@ -36,8 +36,8 @@ then
   Version:     "v1.0",
   Class:       "CommandLineTool",
   BaseCommand: "echo",
-  Inputs:      map[string]RequiredInput{
-    "message": RequiredInput{
+  Inputs:      map[string]Input{
+    "message": Input{
       Name:    "message",
       Type:    reflect.String,
       Binding: InputBinding{
