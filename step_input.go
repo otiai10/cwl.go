@@ -61,6 +61,12 @@ func (_ StepInput) NewList(i interface{}) []StepInput {
 		for _, v := range x {
 			dest = append(dest, StepInput{}.New(v))
 		}
+	case map[string]interface{}:
+		for key, v := range x {
+			item := make(map[string]interface{})
+			item[key] = v
+			dest = append(dest, StepInput{}.New(item))
+		}
 	default:
 		dest = append(dest, StepInput{}.New(x))
 	}
