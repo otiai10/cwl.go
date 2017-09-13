@@ -5,4 +5,4 @@ go:
 before_script:
   - go get ./...
 script:
-  - ./test.sh
+  - ./xtest.sh
