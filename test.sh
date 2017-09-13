@@ -1,6 +1,6 @@
 
 count=0
-limit=200
+limit=600
 
 function exec_test() {
     if go test ; then
