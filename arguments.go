@@ -1,34 +1,37 @@
 package cwl
 
-// Arguments ...
-type Arguments []Argument
+// Argument represents an element of "arguments" of CWL
+// @see http://www.commonwl.org/v1.0/CommandLineTool.html#CommandLineTool
+type Argument struct {
+	Value   string
+	Binding *Binding
+}
 
-// New constructs "Arguments" struct.
-func (baseCommands Arguments) New(i interface{}) Arguments {
-	dest := Arguments{}
+// New constructs an "Argument" struct from any interface.
+func (_ Argument) New(i interface{}) Argument {
+	dest := Argument{}
 	switch x := i.(type) {
 	case string:
-		argument := Argument{}
-		argument.Value = x
-		dest = append(dest, argument)
-	case []interface{}:
-		for _, elm := range x {
-			argument := Argument{}
-			switch val := elm.(type) {
-			case string:
-				argument.Value = val
-			case map[string]interface{}:
-				argument.CommandLineBinding = val
-			}
-			dest = append(dest, argument)
-		}
+		dest.Value = x
+	case map[string]interface{}:
+		dest.Binding = Binding{}.New(x)
 	}
 	return dest
 }
 
-// Argument
-type Argument struct {
-	Value              string
-	CommandLineBinding map[string]interface{}
-	// TODO support Expression
+// Arguments represents a list of "Argument"
+type Arguments []Argument
+
+// New constructs "Arguments" struct.
+func (_ Arguments) New(i interface{}) Arguments {
+	dest := Arguments{}
+	switch x := i.(type) {
+	case []interface{}:
+		for _, v := range x {
+			dest = append(dest, Argument{}.New(v))
+		}
+	default:
+		dest = append(dest, Argument{}.New(x))
+	}
+	return dest
 }
