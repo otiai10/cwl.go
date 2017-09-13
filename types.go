@@ -36,14 +36,19 @@ func (_ Type) New(i interface{}) Type {
 	case string:
 		dest.Type = x
 	case map[string]interface{}:
-		if val, ok := x["type"]; ok {
-			dest.Type = val.(string)
-		}
-		if val, ok := x["items"]; ok {
-			dest.Items = Type{}.NewList(val)
-		}
-		if val, ok := x["inputBinding"]; ok {
-			dest.Binding = Binding{}.New(val)
+		for key, v := range x {
+			switch key {
+			case "type":
+				dest.Type = v.(string)
+			case "items":
+				dest.Items = Type{}.NewList(v)
+			case "inputBinding":
+				dest.Binding = Binding{}.New(v)
+			case "fields":
+				dest.Fields = Field{}.NewList(v)
+			case "symbols":
+				dest.Symbols = StringArrayable(v)
+			}
 		}
 	}
 	return dest
