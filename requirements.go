@@ -24,6 +24,7 @@ func (requirements Requirements) New(i interface{}) Requirements {
 // Requirement represent an element of "requirements".
 type Requirement struct {
 	Class         string
+	DockerPull    string
 	Types         []RequirementType
 	ExpressionLib []RequirementExpression // For InlineJavascriptRequirement
 	Listing       []RequirementEntry      // For InitialWorkDirRequirement
@@ -39,6 +40,8 @@ func (requirement Requirement) New(i interface{}) Requirement {
 			switch key {
 			case "class":
 				dest.Class = val.(string)
+			case "dockerPull":
+				dest.DockerPull = val.(string)
 			case "types":
 				dest.Types = RequirementType{}.NewList(val)
 			case "expressionLib":
@@ -249,6 +252,8 @@ func (list RequirementEntry) NewList(i interface{}) []RequirementEntry {
 func (list RequirementEntry) New(i interface{}) RequirementEntry {
 	dest := RequirementEntry{}
 	switch x := i.(type) {
+	case string:
+		dest.Entry = x
 	case map[string]interface{}:
 		for key, v := range x {
 			switch key {
