@@ -15,6 +15,10 @@ func (_ StepInput) New(i interface{}) StepInput {
 	switch x := i.(type) {
 	case map[string]interface{}:
 		for key, v := range x {
+			if( dest.ID == "" ){
+				dest.ID = key
+			}
+
 			if key == "id" {
 				dest.ID = v.(string)
 			} else {

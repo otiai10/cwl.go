@@ -1,19 +1,25 @@
 
-count=0
-limit=600
+total=0
+count=1
 
+limit_for_each=10
 function exec_test() {
+
+    total=`expr $total + 1`
+
+    target=$1
+
     if go test -run $1; then
-        echo "[OK: ${1}]"
+        echo "[OK: ${count}] $target"
     else
-        if [ $count -gt $limit ]; then
-            echo "[FAILED: TIMEOUT!]"
+        if [ $count -gt ${limit_for_each} ]; then
+            echo "[FAILED: TIMEOUT: ${count} : total ${total}] $target"
             exit 1
         fi
-        count=`expr $count + 1`
-        echo "[NG: TRY AGAIN: ${1}] ${count}"
+        echo "[NG: TRY AGAIN: ${count}] ${target}"
         echo "-"
-        exec_test $1
+        count=`expr $count + 1`
+        exec_test $target
     fi
 }
 
@@ -29,3 +35,5 @@ fi
 for t in ${targets[@]} ; do
   exec_test $t
 done
+
+echo "[COMPLETED: total ${total} times]"
