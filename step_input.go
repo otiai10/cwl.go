@@ -15,27 +15,32 @@ func (_ StepInput) New(i interface{}) StepInput {
 	switch x := i.(type) {
 	case map[string]interface{}:
 		for key, v := range x {
-			dest.ID = key
-			switch e := v.(type) {
-			case string:
-				dest.Source = []string{e}
-			case []interface{}:
-				for _, s := range e {
-					dest.Source = append(dest.Source, s.(string))
-				}
-			case map[string]interface{}:
-				for key, v := range e {
-					switch key {
-					case "source":
-						if list, ok := v.([]interface{}); ok {
-							for _, s := range list {
-								dest.Source = append(dest.Source, s.(string))
+			if key == "id" {
+				dest.ID = v.(string)
+			} else {
+				switch e := v.(type) {
+				case string:
+					dest.Source = []string{e}
+				case []interface{}:
+					for _, s := range e {
+						dest.Source = append(dest.Source, s.(string))
+					}
+				case map[string]interface{}:
+					for key, v := range e {
+						switch key {
+						case "id":
+							dest.ID = v.(string)
+						case "source":
+							if list, ok := v.([]interface{}); ok {
+								for _, s := range list {
+									dest.Source = append(dest.Source, s.(string))
+								}
 							}
+						case "linkMerge":
+							dest.LinkMerge = v.(string)
+						case "default":
+							dest.Default = InputDefault{}.New(v)
 						}
-					case "linkMerge":
-						dest.LinkMerge = v.(string)
-					case "default":
-						dest.Default = InputDefault{}.New(v)
 					}
 				}
 			}
