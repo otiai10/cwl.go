@@ -312,12 +312,12 @@ func TestDecode_count_lines1_wf(t *testing.T) {
 	Expect(t, root.Steps[0].Run.ID).ToBe("wc-tool.cwl")
 	Expect(t, root.Steps[0].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].Source).ToBe([]string{"file1"})
-	Expect(t, root.Steps[0].Out[0].Name).ToBe("output")
+	Expect(t, root.Steps[0].Out[0].ID).ToBe("output")
 	Expect(t, root.Steps[1].ID).ToBe("step2")
 	Expect(t, root.Steps[1].Run.ID).ToBe("parseInt-tool.cwl")
 	Expect(t, root.Steps[1].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[1].In[0].Source).ToBe([]string{"step1/output"})
-	Expect(t, root.Steps[1].Out[0].Name).ToBe("output")
+	Expect(t, root.Steps[1].Out[0].ID).ToBe("output")
 }
 
 func TestDecode_count_lines2_wf(t *testing.T) {
@@ -338,7 +338,7 @@ func TestDecode_count_lines2_wf(t *testing.T) {
 
 	Expect(t, root.Steps[0].In[0].ID).ToBe("wc_file1")
 	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("file1")
-	Expect(t, root.Steps[0].Out[0].Name).ToBe("wc_output")
+	Expect(t, root.Steps[0].Out[0].ID).ToBe("wc_output")
 	Expect(t, root.Steps[0].Run).TypeOf("*cwl.Root")
 	Expect(t, root.Steps[0].Run.ID).ToBe("wc")
 	Expect(t, root.Steps[0].Run.Class).ToBe("CommandLineTool")
@@ -351,7 +351,7 @@ func TestDecode_count_lines2_wf(t *testing.T) {
 	Expect(t, root.Steps[0].Run.BaseCommands[0]).ToBe("wc")
 	Expect(t, root.Steps[1].In[0].ID).ToBe("parseInt_file1")
 	Expect(t, root.Steps[1].In[0].Source[0]).ToBe("step1/wc_output")
-	Expect(t, root.Steps[1].Out[0].Name).ToBe("parseInt_output")
+	Expect(t, root.Steps[1].Out[0].ID).ToBe("parseInt_output")
 	Expect(t, root.Steps[1].Run.Class).ToBe("ExpressionTool")
 	Expect(t, root.Steps[1].Run.Inputs[0].ID).ToBe("parseInt_file1")
 	Expect(t, root.Steps[1].Run.Inputs[0].Types[0].Type).ToBe("File")
@@ -382,7 +382,7 @@ func TestDecode_count_lines3_wf(t *testing.T) {
 	Expect(t, root.Steps[0].Scatter).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("file1")
-	Expect(t, root.Steps[0].Out[0].Name).ToBe("output")
+	Expect(t, root.Steps[0].Out[0].ID).ToBe("output")
 }
 
 func TestDecode_count_lines4_wf(t *testing.T) {
@@ -410,7 +410,7 @@ func TestDecode_count_lines4_wf(t *testing.T) {
 	Expect(t, root.Steps[0].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].Source[1]).ToBe("file2")
-	Expect(t, root.Steps[0].Out[0].Name).ToBe("output")
+	Expect(t, root.Steps[0].Out[0].ID).ToBe("output")
 }
 
 func TestDecode_count_lines5_wf(t *testing.T) {
@@ -434,7 +434,7 @@ func TestDecode_count_lines5_wf(t *testing.T) {
 	Expect(t, root.Steps[0].Run.ID).ToBe("wc2-tool.cwl")
 	Expect(t, root.Steps[0].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("file1")
-	Expect(t, root.Steps[0].Out[0].Name).ToBe("output")
+	Expect(t, root.Steps[0].Out[0].ID).ToBe("output")
 }
 
 func TestDecode_count_lines6_wf(t *testing.T) {
@@ -464,7 +464,7 @@ func TestDecode_count_lines6_wf(t *testing.T) {
 	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].Source[1]).ToBe("file2")
 	Expect(t, root.Steps[0].In[0].LinkMerge).ToBe("merge_nested")
-	Expect(t, root.Steps[0].Out[0].Name).ToBe("output")
+	Expect(t, root.Steps[0].Out[0].ID).ToBe("output")
 }
 
 func TestDecode_count_lines7_wf(t *testing.T) {
@@ -492,7 +492,7 @@ func TestDecode_count_lines7_wf(t *testing.T) {
 	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].Source[1]).ToBe("file2")
 	Expect(t, root.Steps[0].In[0].LinkMerge).ToBe("merge_flattened")
-	Expect(t, root.Steps[0].Out[0].Name).ToBe("output")
+	Expect(t, root.Steps[0].Out[0].ID).ToBe("output")
 }
 
 func TestDecode_count_lines8_wf(t *testing.T) {
@@ -516,7 +516,7 @@ func TestDecode_count_lines8_wf(t *testing.T) {
 	Expect(t, root.Steps[0].Run.ID).ToBe("count-lines1-wf.cwl")
 	Expect(t, root.Steps[0].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("file1")
-	Expect(t, root.Steps[0].Out[0].Name).ToBe("count_output")
+	Expect(t, root.Steps[0].Out[0].ID).ToBe("count_output")
 }
 
 func TestDecode_count_lines9_wf(t *testing.T) {
@@ -539,13 +539,13 @@ func TestDecode_count_lines9_wf(t *testing.T) {
 	Expect(t, root.Steps[0].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].Default.Class).ToBe("File")
 	Expect(t, root.Steps[0].In[0].Default.Location).ToBe("whale.txt")
-	Expect(t, root.Steps[0].Out[0].Name).ToBe("output")
+	Expect(t, root.Steps[0].Out[0].ID).ToBe("output")
 
 	Expect(t, root.Steps[1].ID).ToBe("step2")
 	Expect(t, root.Steps[1].Run.ID).ToBe("parseInt-tool.cwl")
 	Expect(t, root.Steps[1].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[1].In[0].Source[0]).ToBe("step1/output")
-	Expect(t, root.Steps[1].Out[0].Location).ToBe("output")
+	Expect(t, root.Steps[1].Out[0].ID).ToBe("output")
 }
 
 func TestDecode_count_lines10_wf(t *testing.T) {
@@ -568,7 +568,7 @@ func TestDecode_count_lines10_wf(t *testing.T) {
 	Expect(t, root.Steps[0].ID).ToBe("step1")
 	Expect(t, root.Steps[0].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("file1")
-	Expect(t, root.Steps[0].Out[0].Name).ToBe("count_output")
+	Expect(t, root.Steps[0].Out[0].ID).ToBe("count_output")
 
 	Expect(t, root.Steps[0].Run.Class).ToBe("Workflow")
 	Expect(t, root.Steps[0].Run.Inputs[0].ID).ToBe("file1")
@@ -581,12 +581,12 @@ func TestDecode_count_lines10_wf(t *testing.T) {
 	Expect(t, root.Steps[0].Run.Steps[0].Run.ID).ToBe("wc-tool.cwl")
 	Expect(t, root.Steps[0].Run.Steps[0].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[0].Run.Steps[0].In[0].Source[0]).ToBe("file1")
-	Expect(t, root.Steps[0].Run.Steps[0].Out[0].Name).ToBe("output")
+	Expect(t, root.Steps[0].Run.Steps[0].Out[0].ID).ToBe("output")
 	Expect(t, root.Steps[0].Run.Steps[1].ID).ToBe("step2")
 	Expect(t, root.Steps[0].Run.Steps[1].Run.ID).ToBe("parseInt-tool.cwl")
 	Expect(t, root.Steps[0].Run.Steps[1].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[0].Run.Steps[1].In[0].Source[0]).ToBe("step1/output")
-	Expect(t, root.Steps[0].Run.Steps[1].Out[0].Name).ToBe("output")
+	Expect(t, root.Steps[0].Run.Steps[1].Out[0].ID).ToBe("output")
 }
 
 func TestDecode_count_lines11_wf(t *testing.T) {
@@ -609,13 +609,13 @@ func TestDecode_count_lines11_wf(t *testing.T) {
 	Expect(t, root.Steps[0].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].Default.Class).ToBe("File")
 	Expect(t, root.Steps[0].In[0].Default.Location).ToBe("whale.txt")
-	Expect(t, root.Steps[0].Out[0].Name).ToBe("output")
+	Expect(t, root.Steps[0].Out[0].ID).ToBe("output")
 
 	Expect(t, root.Steps[1].ID).ToBe("step2")
 	Expect(t, root.Steps[1].Run.ID).ToBe("parseInt-tool.cwl")
 	Expect(t, root.Steps[1].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[1].In[0].Source[0]).ToBe("step1/output")
-	Expect(t, root.Steps[1].Out[0].Location).ToBe("output")
+	Expect(t, root.Steps[1].Out[0].ID).ToBe("output")
 }
 
 func TestDecode_count_lines12_wf(t *testing.T) {
@@ -645,7 +645,7 @@ func TestDecode_count_lines12_wf(t *testing.T) {
 	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].Source[1]).ToBe("file2")
 	Expect(t, root.Steps[0].In[0].LinkMerge).ToBe("merge_flattened")
-	Expect(t, root.Steps[0].Out[0].Name).ToBe("output")
+	Expect(t, root.Steps[0].Out[0].ID).ToBe("output")
 }
 
 func TestDecode_dir(t *testing.T) {
@@ -1398,8 +1398,7 @@ func TestDecode_js_expr_req_wf(t *testing.T) {
 	Expect(t, len(root.Graphs[1].Steps[0].In)).ToBe(1)
 	// TODO check empty In
 	Expect(t, len(root.Graphs[1].Steps[0].Out)).ToBe(1)
-	Expect(t, root.Graphs[1].Steps[0].Out[0].Name).ToBe("out")
-	Expect(t, root.Graphs[1].Steps[0].Out[0].Location).ToBe("out")
+	Expect(t, root.Graphs[1].Steps[0].Out[0].ID).ToBe("out")
 }
 
 func TestDecode_nameroot(t *testing.T) {

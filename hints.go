@@ -4,7 +4,7 @@ package cwl
 type Hints []Hint
 
 // New constructs "Hints" struct.
-func (hints Hints) New(i interface{}) Hints {
+func (_ Hints) New(i interface{}) Hints {
 	dest := []Hint{}
 	switch x := i.(type) {
 	case []interface{}:
@@ -39,7 +39,7 @@ type Hint struct {
 }
 
 // New constructs Hint from interface.
-func (hint Hint) New(i interface{}) Hint {
+func (_ Hint) New(i interface{}) Hint {
 	dest := Hint{}
 	switch x := i.(type) {
 	case map[string]interface{}:

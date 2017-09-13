@@ -1,10 +1,48 @@
 package cwl
 
+// Requirement represent an element of "requirements".
+type Requirement struct {
+	Class string
+	InlineJavascriptRequirement
+	SchemaDefRequirement
+	DockerRequirement
+	SoftwareRequirement
+	InitialWorkDirRequirement
+	EnvVarRequirement
+	ShellCommandRequirement
+	ResourceRequirement
+}
+
+// New constructs "Requirement" struct from interface.
+func (_ Requirement) New(i interface{}) Requirement {
+	dest := Requirement{}
+	switch x := i.(type) {
+	case map[string]interface{}:
+		for key, v := range x {
+			switch key {
+			case "class":
+				dest.Class = v.(string)
+			case "dockerPull":
+				dest.DockerPull = v.(string)
+			case "types":
+				dest.Types = Type{}.NewList(v)
+			case "expressionLib":
+				dest.ExpressionLib = JavascriptExpression{}.NewList(v)
+			case "envDef":
+				dest.EnvDef = EnvDef{}.NewList(v)
+			case "listing":
+				dest.Listing = Entry{}.NewList(v)
+			}
+		}
+	}
+	return dest
+}
+
 // Requirements represents "requirements" field in CWL.
 type Requirements []Requirement
 
 // New constructs "Requirements" struct from interface.
-func (requirements Requirements) New(i interface{}) Requirements {
+func (_ Requirements) New(i interface{}) Requirements {
 	dest := Requirements{}
 	switch x := i.(type) {
 	case []interface{}:
@@ -19,19 +57,6 @@ func (requirements Requirements) New(i interface{}) Requirements {
 		}
 	}
 	return dest
-}
-
-// Requirement represent an element of "requirements".
-type Requirement struct {
-	Class string
-	InlineJavascriptRequirement
-	SchemaDefRequirement
-	DockerRequirement
-	SoftwareRequirement
-	InitialWorkDirRequirement
-	EnvVarRequirement
-	ShellCommandRequirement
-	ResourceRequirement
 }
 
 // InlineJavascriptRequirement is supposed to be embeded to Requirement.
@@ -127,29 +152,4 @@ type ShellCommandRequirement struct {
 type ResourceRequirement struct {
 	CoresMin int
 	CoresMax int
-}
-
-// New constructs "Requirement" struct from interface.
-func (requirement Requirement) New(i interface{}) Requirement {
-	dest := Requirement{}
-	switch x := i.(type) {
-	case map[string]interface{}:
-		for key, v := range x {
-			switch key {
-			case "class":
-				dest.Class = v.(string)
-			case "dockerPull":
-				dest.DockerPull = v.(string)
-			case "types":
-				dest.Types = Type{}.NewList(v)
-			case "expressionLib":
-				dest.ExpressionLib = JavascriptExpression{}.NewList(v)
-			case "envDef":
-				dest.EnvDef = EnvDef{}.NewList(v)
-			case "listing":
-				dest.Listing = Entry{}.NewList(v)
-			}
-		}
-	}
-	return dest
 }

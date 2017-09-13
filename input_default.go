@@ -7,7 +7,7 @@ type InputDefault struct {
 }
 
 // New constructs new "InputDefault".
-func (def InputDefault) New(i interface{}) *InputDefault {
+func (_ InputDefault) New(i interface{}) *InputDefault {
 	dest := new(InputDefault)
 	switch x := i.(type) {
 	case map[string]interface{}:
