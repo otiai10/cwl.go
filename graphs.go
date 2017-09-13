@@ -13,7 +13,6 @@ func (_ Graphs) New(i interface{}) Graphs {
 	dest := Graphs{}
 	switch x := i.(type) {
 	case []interface{}:
-		// TODO;
 		for _, v := range x {
 			g := new(Root)
 			g = g.AsStep(v)
