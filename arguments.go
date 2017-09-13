@@ -1,6 +1,7 @@
 package cwl
 
-// Argument represents ""
+// Argument represents an element of "arguments" of CWL
+// @see http://www.commonwl.org/v1.0/CommandLineTool.html#CommandLineTool
 type Argument struct {
 	Value   string
 	Binding *Binding
@@ -18,7 +19,7 @@ func (_ Argument) New(i interface{}) Argument {
 	return dest
 }
 
-// Arguments ...
+// Arguments represents a list of "Argument"
 type Arguments []Argument
 
 // New constructs "Arguments" struct.
