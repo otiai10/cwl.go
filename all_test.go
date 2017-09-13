@@ -1365,3 +1365,40 @@ func TestDecode_inline_js(t *testing.T) {
 }
 `)
 }
+
+func TestDecode_js_expr_req_wf(t *testing.T) {
+	f := cwl("js-expr-req-wf.cwl")
+	root := NewCWL()
+	Expect(t, root).TypeOf("*cwl.Root")
+	err := root.Decode(f)
+	Expect(t, err).ToBe(nil)
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, len(root.Graphs)).ToBe(2)
+	// 0
+	Expect(t, root.Graphs[0].Run.ID).ToBe("tool")
+	Expect(t, root.Graphs[0].Run.Class).ToBe("CommandLineTool")
+	Expect(t, root.Graphs[0].Run.Requirements[0].Class).ToBe("InlineJavascriptRequirement")
+	Expect(t, root.Graphs[0].Run.Requirements[0].ExpressionLib[0].Execute).ToBe("function foo() { return 2; }")
+	Expect(t, len(root.Graphs[0].Run.Inputs)).ToBe(0)
+	Expect(t, root.Graphs[0].Run.Arguments[0].Value).ToBe("echo")
+	Expect(t, root.Graphs[0].Run.Stdout).ToBe("whatever.txt")
+	Expect(t, len(root.Graphs[0].Run.Outputs)).ToBe(1)
+	Expect(t, root.Graphs[0].Run.Outputs[0].ID).ToBe("out")
+	Expect(t, root.Graphs[0].Run.Outputs[0].Types[0].Type).ToBe("stdout")
+	// 1
+	Expect(t, root.Graphs[1].Run.ID).ToBe("wf")
+	Expect(t, root.Graphs[1].Run.Class).ToBe("Workflow")
+	Expect(t, root.Graphs[1].Run.Requirements[0].Class).ToBe("InlineJavascriptRequirement")
+	Expect(t, root.Graphs[1].Run.Requirements[0].ExpressionLib[0].Execute).ToBe("function bar() { return 1; }")
+	Expect(t, len(root.Graphs[1].Run.Inputs)).ToBe(0)
+	Expect(t, root.Graphs[1].Run.Outputs[0].ID).ToBe("out")
+	Expect(t, root.Graphs[1].Run.Outputs[0].Types[0].Type).ToBe("File")
+	Expect(t, root.Graphs[1].Run.Outputs[0].Source[0]).ToBe("tool/out")
+	Expect(t, root.Graphs[1].Run.Steps[0].ID).ToBe("tool")
+	Expect(t, root.Graphs[1].Run.Steps[0].Run.ID).ToBe("#tool")
+	Expect(t, len(root.Graphs[1].Run.Steps[0].In)).ToBe(1)
+	// TODO check empty In
+	Expect(t, len(root.Graphs[1].Run.Steps[0].Out)).ToBe(1)
+	Expect(t, root.Graphs[1].Run.Steps[0].Out[0].Name).ToBe("out")
+	Expect(t, root.Graphs[1].Run.Steps[0].Out[0].Location).ToBe("out")
+}
