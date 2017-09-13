@@ -1365,3 +1365,78 @@ func TestDecode_inline_js(t *testing.T) {
 }
 `)
 }
+
+func TestDecode_js_expr_req_wf(t *testing.T) {
+	f := cwl("js-expr-req-wf.cwl")
+	root := NewCWL()
+	err := root.Decode(f)
+	Expect(t, err).ToBe(nil)
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, len(root.Graphs)).ToBe(2)
+	// 0
+	Expect(t, root.Graphs[0].ID).ToBe("tool")
+	Expect(t, root.Graphs[0].Class).ToBe("CommandLineTool")
+	Expect(t, root.Graphs[0].Requirements[0].Class).ToBe("InlineJavascriptRequirement")
+	Expect(t, root.Graphs[0].Requirements[0].ExpressionLib[0].Value).ToBe("function foo() { return 2; }")
+	Expect(t, len(root.Graphs[0].Inputs)).ToBe(0)
+	Expect(t, root.Graphs[0].Arguments[0].Value).ToBe("echo")
+	Expect(t, root.Graphs[0].Stdout).ToBe("whatever.txt")
+	Expect(t, len(root.Graphs[0].Outputs)).ToBe(1)
+	Expect(t, root.Graphs[0].Outputs[0].ID).ToBe("out")
+	Expect(t, root.Graphs[0].Outputs[0].Types[0].Type).ToBe("stdout")
+	// 1
+	Expect(t, root.Graphs[1].ID).ToBe("wf")
+	Expect(t, root.Graphs[1].Class).ToBe("Workflow")
+	Expect(t, root.Graphs[1].Requirements[0].Class).ToBe("InlineJavascriptRequirement")
+	Expect(t, root.Graphs[1].Requirements[0].ExpressionLib[0].Value).ToBe("function bar() { return 1; }")
+	Expect(t, len(root.Graphs[1].Inputs)).ToBe(0)
+	Expect(t, root.Graphs[1].Outputs[0].ID).ToBe("out")
+	Expect(t, root.Graphs[1].Outputs[0].Types[0].Type).ToBe("File")
+	Expect(t, root.Graphs[1].Outputs[0].Source[0]).ToBe("tool/out")
+	Expect(t, root.Graphs[1].Steps[0].ID).ToBe("tool")
+	Expect(t, root.Graphs[1].Steps[0].Run.ID).ToBe("#tool")
+	Expect(t, len(root.Graphs[1].Steps[0].In)).ToBe(1)
+	// TODO check empty In
+	Expect(t, len(root.Graphs[1].Steps[0].Out)).ToBe(1)
+	Expect(t, root.Graphs[1].Steps[0].Out[0].Name).ToBe("out")
+	Expect(t, root.Graphs[1].Steps[0].Out[0].Location).ToBe("out")
+}
+
+func TestDecode_nameroot(t *testing.T) {
+	f := cwl("nameroot.cwl")
+	root := NewCWL()
+	err := root.Decode(f)
+	Expect(t, err).ToBe(nil)
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, root.Class).ToBe("CommandLineTool")
+	Expect(t, len(root.Inputs)).ToBe(1)
+	Expect(t, root.Inputs[0].ID).ToBe("file1")
+	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
+	Expect(t, len(root.Outputs)).ToBe(1)
+	Expect(t, root.Outputs[0].ID).ToBe("b")
+	Expect(t, len(root.BaseCommands)).ToBe(0)
+	Expect(t, len(root.Arguments)).ToBe(4)
+	Expect(t, root.Arguments[0].Value).ToBe("echo")
+	Expect(t, root.Arguments[1].Value).ToBe("$(inputs.file1.basename)")
+	Expect(t, root.Arguments[2].Value).ToBe("$(inputs.file1.nameroot)")
+	Expect(t, root.Arguments[3].Value).ToBe("$(inputs.file1.nameext)")
+}
+
+func TestDecode_nested_array(t *testing.T) {
+	f := cwl("nested-array.cwl")
+	root := NewCWL()
+	err := root.Decode(f)
+	Expect(t, err).ToBe(nil)
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, root.Class).ToBe("CommandLineTool")
+	Expect(t, root.BaseCommands[0]).ToBe("echo")
+	Expect(t, len(root.Inputs)).ToBe(1)
+	Expect(t, root.Inputs[0].ID).ToBe("letters")
+	Expect(t, root.Inputs[0].Types[0].Type).ToBe("array")
+	Expect(t, root.Inputs[0].Types[0].Items[0].Type).ToBe("array")
+	Expect(t, root.Inputs[0].Types[0].Items[0].Items[0].Type).ToBe("string")
+	Expect(t, root.Inputs[0].Binding.Position).ToBe(1)
+	Expect(t, root.Stdout).ToBe("echo.txt")
+	Expect(t, root.Outputs[0].ID).ToBe("echo")
+	Expect(t, root.Outputs[0].Types[0].Type).ToBe("stdout")
+}

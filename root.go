@@ -26,6 +26,7 @@ type Root struct {
 	Class        string
 	Hints        Hints
 	Doc          string
+	Graphs       Graphs
 	BaseCommands BaseCommands
 	Arguments    Arguments
 	Namespaces   Namespaces
@@ -61,6 +62,8 @@ func (root *Root) UnmarshalMap(docs map[string]interface{}) error {
 			root.Namespaces = root.Namespaces.New(val)
 		case "$schemas":
 			root.Schemas = root.Schemas.New(val)
+		case "$graph":
+			root.Graphs = root.Graphs.New(val)
 		case "stdin":
 			root.Stdin = val.(string)
 		case "stdout":
