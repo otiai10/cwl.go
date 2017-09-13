@@ -23,11 +23,12 @@ func (outputs Outputs) New(i interface{}) Outputs {
 
 // Output represents an element of "outputs".
 type Output struct {
-	ID      string
-	Types   []OutputType // Possible types
-	Binding *OutputBinding
-	Source  string
-	Format  string
+	ID             string
+	Types          []OutputType // Possible types
+	Binding        *OutputBinding
+	SecondaryFiles []SecondaryFile
+	Source         string
+	Format         string
 }
 
 // New constructs "Output" struct from interface.
@@ -43,6 +44,8 @@ func (output Output) New(i interface{}) Output {
 				dest.Types = OutputType{}.NewList(val)
 			case "outputBinding":
 				dest.Binding = OutputBinding{}.New(val)
+			case "secondaryFiles":
+				dest.SecondaryFiles = SecondaryFile{}.NewList(val)
 			case "outputSource":
 				dest.Source = val.(string)
 			case "format":
@@ -83,6 +86,23 @@ func (typ OutputType) NewList(i interface{}) []OutputType {
 	case string: // If it's simple dictionary, the value represents Type.
 		t := OutputType{Type: x}
 		dest = append(dest, t)
+	}
+	return dest
+}
+
+// SecondaryFile represents an element of "secondaryFiles".
+type SecondaryFile struct {
+	Entry string
+}
+
+// NewList constructs list of "SecondaryFile".
+func (typ SecondaryFile) NewList(i interface{}) []SecondaryFile {
+	dest := []SecondaryFile{}
+	switch x := i.(type) {
+	case []interface{}:
+		for _, elm := range x {
+			dest = append(dest, SecondaryFile{Entry: elm.(string)})
+		}
 	}
 	return dest
 }
