@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"testing"
-	"unicode/utf8"
 
 	. "github.com/otiai10/mint"
 )
@@ -1292,6 +1291,6 @@ func TestDecode_initialwork_path(t *testing.T) {
 	Expect(t, root.Requirements[1].Class).ToBe("ShellCommandRequirement")
 	a := root.Arguments[0].CommandLineBinding
 	Expect(t, a["shellQuote"]).ToBe(false)
-	str := a["valueFrom"].(string)[0 : utf8.RuneCountInString(a["valueFrom"].(string))-1]
-	Expect(t, str).ToBe("test \"$(inputs.file1.path)\" = \"$(runtime.outdir)/bob.txt\"")
+	Expect(t, a["valueFrom"]).ToBe(`test "$(inputs.file1.path)" = "$(runtime.outdir)/bob.txt"
+`)
 }
