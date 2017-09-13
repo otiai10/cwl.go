@@ -1,6 +1,7 @@
 package cwl
 
 import (
+	"fmt"
 	"testing"
 
 	. "github.com/otiai10/mint"
@@ -24,25 +25,27 @@ func TestDecode_count_lines10_wf(t *testing.T) {
 	Expect(t, root.Requirements[0].Class).ToBe("SubworkflowFeatureRequirement")
 
 	Expect(t, root.Steps[0].ID).ToBe("step1")
+	fmt.Println(root.Steps[0].In[0])
+	Expect(t, root.Steps[0].In[0]).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("file1")
 	Expect(t, root.Steps[0].Out[0].ID).ToBe("count_output")
 
-	Expect(t, root.Steps[0].Run.Class).ToBe("Workflow")
-	Expect(t, root.Steps[0].Run.Inputs[0].ID).ToBe("file1")
-	Expect(t, root.Steps[0].Run.Inputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Steps[0].Run.Outputs[0].ID).ToBe("count_output")
-	Expect(t, root.Steps[0].Run.Outputs[0].Types[0].Type).ToBe("int")
-	Expect(t, root.Steps[0].Run.Outputs[0].Source).ToBe([]string{"step2/output"})
+	Expect(t, root.Steps[0].Run.Workflow.Class).ToBe("Workflow")
+	Expect(t, root.Steps[0].Run.Workflow.Inputs[0].ID).ToBe("file1")
+	Expect(t, root.Steps[0].Run.Workflow.Inputs[0].Types[0].Type).ToBe("File")
+	Expect(t, root.Steps[0].Run.Workflow.Outputs[0].ID).ToBe("count_output")
+	Expect(t, root.Steps[0].Run.Workflow.Outputs[0].Types[0].Type).ToBe("int")
+	Expect(t, root.Steps[0].Run.Workflow.Outputs[0].Source).ToBe([]string{"step2/output"})
 	// Recursive steps
-	Expect(t, root.Steps[0].Run.Steps[0].ID).ToBe("step1")
-	Expect(t, root.Steps[0].Run.Steps[0].Run.ID).ToBe("wc-tool.cwl")
-	Expect(t, root.Steps[0].Run.Steps[0].In[0].ID).ToBe("file1")
-	Expect(t, root.Steps[0].Run.Steps[0].In[0].Source[0]).ToBe("file1")
-	Expect(t, root.Steps[0].Run.Steps[0].Out[0].ID).ToBe("output")
-	Expect(t, root.Steps[0].Run.Steps[1].ID).ToBe("step2")
-	Expect(t, root.Steps[0].Run.Steps[1].Run.ID).ToBe("parseInt-tool.cwl")
-	Expect(t, root.Steps[0].Run.Steps[1].In[0].ID).ToBe("file1")
-	Expect(t, root.Steps[0].Run.Steps[1].In[0].Source[0]).ToBe("step1/output")
-	Expect(t, root.Steps[0].Run.Steps[1].Out[0].ID).ToBe("output")
+	Expect(t, root.Steps[0].Run.Workflow.Steps[0].ID).ToBe("step1")
+	Expect(t, root.Steps[0].Run.Workflow.Steps[0].Run.Value).ToBe("wc-tool.cwl")
+	Expect(t, root.Steps[0].Run.Workflow.Steps[0].In[0].ID).ToBe("file1")
+	Expect(t, root.Steps[0].Run.Workflow.Steps[0].In[0].Source[0]).ToBe("file1")
+	Expect(t, root.Steps[0].Run.Workflow.Steps[0].Out[0].ID).ToBe("output")
+	Expect(t, root.Steps[0].Run.Workflow.Steps[1].ID).ToBe("step2")
+	Expect(t, root.Steps[0].Run.Workflow.Steps[1].Run.Value).ToBe("parseInt-tool.cwl")
+	Expect(t, root.Steps[0].Run.Workflow.Steps[1].In[0].ID).ToBe("file1")
+	Expect(t, root.Steps[0].Run.Workflow.Steps[1].In[0].Source[0]).ToBe("step1/output")
+	Expect(t, root.Steps[0].Run.Workflow.Steps[1].Out[0].ID).ToBe("output")
 }

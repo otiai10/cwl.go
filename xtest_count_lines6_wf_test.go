@@ -27,7 +27,7 @@ func TestDecode_count_lines6_wf(t *testing.T) {
 	Expect(t, root.Requirements[1].Class).ToBe("MultipleInputFeatureRequirement")
 
 	Expect(t, root.Steps[0].ID).ToBe("step1")
-	Expect(t, root.Steps[0].Run.ID).ToBe("wc3-tool.cwl")
+	Expect(t, root.Steps[0].Run.Value).ToBe("wc3-tool.cwl")
 	Expect(t, root.Steps[0].Scatter).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("file1")

@@ -30,6 +30,8 @@ func (_ Output) New(i interface{}) Output {
 				dest.Binding = Binding{}.New(v)
 			case "outputSource":
 				dest.Source = StringArrayable(v)
+			case "doc":
+				dest.Doc = StringArrayable(v)
 			case "format":
 				dest.Format = v.(string)
 			case "secondaryFiles":
