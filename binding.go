@@ -15,8 +15,9 @@ type Binding struct {
 	ShellQuote bool   `json:"shellQuote"`
 	ValueFrom  string `json:"valueFrom"`
 	// CommandOutputBinding
-	Glob []string `json:"glob"`
-	Eval string   `json:"eval"`
+	Glob     []string `json:"glob"`
+	Eval     string   `json:"outputEval"`
+	Contents bool     `json:"loadContents"`
 }
 
 // New constructs new "Binding".
@@ -40,6 +41,8 @@ func (binding Binding) New(i interface{}) *Binding {
 				dest.ShellQuote = v.(bool)
 			case "valueFrom":
 				dest.ValueFrom = v.(string)
+			case "outputEval":
+				dest.Eval = v.(string)
 			}
 		}
 	}
