@@ -15,6 +15,7 @@ type Type struct {
 }
 
 // NewList constructs a list of Type from any interface.
+// It only handles []interface{}
 func (_ Type) NewList(i interface{}) []Type {
 	dest := []Type{}
 	switch x := i.(type) {

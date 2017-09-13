@@ -1,27 +1,5 @@
 package cwl
 
-// Inputs represents "inputs" field in CWL.
-type Inputs []Input
-
-// New constructs new "Inputs" struct.
-func (inputs Inputs) New(i interface{}) Inputs {
-	dest := Inputs{}
-	switch x := i.(type) {
-	case []interface{}:
-		for _, elm := range x {
-			input := Input{}.New(elm)
-			dest = append(dest, input)
-		}
-	case map[string]interface{}:
-		for key, val := range x {
-			input := Input{}.New(val)
-			input.ID = key
-			dest = append(dest, input)
-		}
-	}
-	return dest
-}
-
 // Input represents an element of "inputs" in "CWL".
 type Input struct {
 	ID      string
@@ -34,43 +12,54 @@ type Input struct {
 }
 
 // New constructs "Input" struct from interface{}.
-func (input Input) New(i interface{}) Input {
+func (_ Input) New(i interface{}) Input {
 	dest := Input{}
 	switch x := i.(type) {
 	case map[string]interface{}:
-		dest = input.NewFromDict(x)
+		for key, v := range x {
+			switch key {
+			case "id":
+				dest.ID = v.(string)
+			case "type":
+				dest.Types = Type{}.NewList(v)
+			case "label":
+				dest.Label = v.(string)
+			case "doc":
+				dest.Doc = v.(string)
+			case "inputBinding":
+				dest.Binding = Binding{}.New(v)
+			case "default":
+				dest.Default = InputDefault{}.New(v)
+			case "format":
+				dest.Format = v.(string)
+			}
+		}
 	case string:
 		dest.Types = Type{}.NewList(x)
-	case []interface{}: // count-lines12-wf.cwl suggests it can be array with length 1.
-		if len(x) == 0 {
-			return dest
-		}
-		if dict, ok := x[0].(map[string]interface{}); ok {
-			dest.Types = Type{}.NewList(dict)
+	case []interface{}:
+		for _, v := range x {
+			dest.Types = append(dest.Types, Type{}.New(v))
 		}
 	}
 	return dest
 }
 
-// NewFromDict constructs "Input" from dictionary formed map.
-func (input Input) NewFromDict(dict map[string]interface{}) Input {
-	dest := Input{}
-	for key, val := range dict {
-		switch key {
-		case "id":
-			dest.ID = val.(string)
-		case "type":
-			dest.Types = Type{}.NewList(val)
-		case "label":
-			dest.Label = val.(string)
-		case "doc":
-			dest.Doc = val.(string)
-		case "inputBinding":
-			dest.Binding = Binding{}.New(val)
-		case "default":
-			dest.Default = InputDefault{}.New(val)
-		case "format":
-			dest.Format = val.(string)
+// Inputs represents "inputs" field in CWL.
+type Inputs []Input
+
+// New constructs new "Inputs" struct.
+func (_ Inputs) New(i interface{}) Inputs {
+	dest := Inputs{}
+	switch x := i.(type) {
+	case []interface{}:
+		for _, v := range x {
+			dest = append(dest, Input{}.New(v))
+		}
+	case map[string]interface{}:
+		for key, v := range x {
+			input := Input{}.New(v)
+			input.ID = key
+			dest = append(dest, input)
 		}
 	}
 	return dest
