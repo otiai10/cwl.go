@@ -25,12 +25,13 @@ func (_ Steps) New(i interface{}) Steps {
 // Step represents WorkflowStep.
 // @see http://www.commonwl.org/v1.0/Workflow.html#WorkflowStep
 type Step struct {
-	ID           string
-	In           []StepInput
-	Out          []StepOutput
-	Run          Run
-	Requirements []Requirement
-	Scatter      string
+	ID            string
+	In            []StepInput
+	Out           []StepOutput
+	Run           Run
+	Requirements  []Requirement
+	Scatter       []string
+	ScatterMethod string
 }
 
 // Run `run` accept string | CommandLineTool | ExpressionTool | Workflow
@@ -62,7 +63,9 @@ func (_ Step) New(i interface{}) Step {
 			case "requirements":
 				dest.Requirements = Requirements{}.New(v)
 			case "scatter":
-				dest.Scatter = v.(string)
+				dest.Scatter = StringArrayable(v)
+			case "scatterMethod":
+				dest.ScatterMethod = v.(string)
 			}
 		}
 	}
