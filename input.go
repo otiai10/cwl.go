@@ -3,13 +3,14 @@ package cwl
 // Input represents "CommandInputParameter".
 // @see http://www.commonwl.org/v1.0/CommandLineTool.html#CommandInputParameter
 type Input struct {
-	ID      string        `json:"id"`
-	Label   string        `json:"label"`
-	Doc     string        `json:"doc"`
-	Format  string        `json:"format"`
-	Binding *Binding      `json:"inputBinding"`
-	Default *InputDefault `json:"default"`
-	Types   []Type        `json:"type"`
+	ID             string        `json:"id"`
+	Label          string        `json:"label"`
+	Doc            string        `json:"doc"`
+	Format         string        `json:"format"`
+	Binding        *Binding      `json:"inputBinding"`
+	Default        *InputDefault `json:"default"`
+	Types          []Type        `json:"type"`
+	SecondaryFiles []SecondaryFile
 }
 
 // New constructs "Input" struct from interface{}.
@@ -33,6 +34,8 @@ func (_ Input) New(i interface{}) Input {
 				dest.Default = InputDefault{}.New(v)
 			case "format":
 				dest.Format = v.(string)
+			case "secondaryFiles":
+				dest.SecondaryFiles = SecondaryFile{}.NewList(v)
 			}
 		}
 	case string:
