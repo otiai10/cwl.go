@@ -15,7 +15,6 @@ func TestDecode_scatter_valuefrom_wf3(t *testing.T) {
 	Expect(t, root.Version).ToBe("v1.0")
 	Expect(t, root.Graphs[0].ID).ToBe("echo")
 	Expect(t, root.Graphs[0].Class).ToBe("CommandLineTool")
-	Expect(t, root.Graphs[0].Inputs).ToBe("first")
 	Expect(t, root.Graphs[0].Inputs[0].ID).ToBe("first")
 	Expect(t, root.Graphs[0].Inputs[0].Types[0].Type).ToBe("string")
 	Expect(t, root.Graphs[0].Inputs[0].Binding.Position).ToBe(1)
