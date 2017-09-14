@@ -25,6 +25,8 @@ func (_ Requirement) New(i interface{}) Requirement {
 				dest.Class = v.(string)
 			case "dockerPull":
 				dest.DockerPull = v.(string)
+			case "dockerOutputDirectory":
+				dest.DockerOutputDirectory = v.(string)
 			case "types":
 				dest.Types = Type{}.NewList(v)
 			case "expressionLib":
