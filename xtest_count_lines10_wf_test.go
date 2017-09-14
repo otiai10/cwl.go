@@ -1,7 +1,6 @@
 package cwl
 
 import (
-	"fmt"
 	"testing"
 
 	. "github.com/otiai10/mint"
@@ -25,8 +24,6 @@ func TestDecode_count_lines10_wf(t *testing.T) {
 	Expect(t, root.Requirements[0].Class).ToBe("SubworkflowFeatureRequirement")
 
 	Expect(t, root.Steps[0].ID).ToBe("step1")
-	fmt.Println(root.Steps[0].In[0])
-	Expect(t, root.Steps[0].In[0]).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("file1")
 	Expect(t, root.Steps[0].Out[0].ID).ToBe("count_output")

@@ -15,6 +15,10 @@ func (_ StepInput) New(i interface{}) StepInput {
 	switch x := i.(type) {
 	case map[string]interface{}:
 		for key, v := range x {
+			if dest.ID == "" {
+				dest.ID = key
+			}
+
 			if key == "id" {
 				dest.ID = v.(string)
 			} else {
@@ -56,6 +60,12 @@ func (_ StepInput) NewList(i interface{}) []StepInput {
 	case []interface{}:
 		for _, v := range x {
 			dest = append(dest, StepInput{}.New(v))
+		}
+	case map[string]interface{}:
+		for key, v := range x {
+			item := make(map[string]interface{})
+			item[key] = v
+			dest = append(dest, StepInput{}.New(item))
 		}
 	default:
 		dest = append(dest, StepInput{}.New(x))

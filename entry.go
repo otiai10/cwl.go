@@ -60,6 +60,8 @@ func (_ Entry) New(i interface{}) Entry {
 				dest.EntryName = v.(string)
 			case "entry":
 				dest.Entry = v.(string)
+			case "writable":
+				dest.Writable = v.(bool)
 			}
 		}
 	}
