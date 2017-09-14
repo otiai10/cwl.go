@@ -2,7 +2,7 @@
 total=0
 count=1
 
-limit_for_each=100
+limit_for_each=1000
 function exec_test() {
 
     total=`expr $total + 1`
