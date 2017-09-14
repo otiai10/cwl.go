@@ -35,6 +35,8 @@ func (_ Field) New(i interface{}) Field {
 				dest.Types = Type{}.NewList(v)
 			case "inputBinding":
 				dest.Binding = Binding{}.New(v)
+			case "outputBinding":
+				dest.Binding = Binding{}.New(v)
 			}
 		}
 	}

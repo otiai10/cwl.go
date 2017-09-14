@@ -8,7 +8,10 @@ func (_ Steps) New(i interface{}) Steps {
 	dest := Steps{}
 	switch x := i.(type) {
 	case []interface{}:
-		// TODO;
+		for _, v := range x {
+			s := Step{}.New(v)
+			dest = append(dest, s)
+		}
 	case map[string]interface{}:
 		for key, v := range x {
 			s := Step{}.New(v)
@@ -22,12 +25,19 @@ func (_ Steps) New(i interface{}) Steps {
 // Step represents WorkflowStep.
 // @see http://www.commonwl.org/v1.0/Workflow.html#WorkflowStep
 type Step struct {
-	ID           string
-	In           []StepInput
-	Out          []StepOutput
-	Run          *Root
-	Requirements []Requirement
-	Scatter      string
+	ID            string
+	In            []StepInput
+	Out           []StepOutput
+	Run           Run
+	Requirements  []Requirement
+	Scatter       []string
+	ScatterMethod string
+}
+
+// Run `run` accept string | CommandLineTool | ExpressionTool | Workflow
+type Run struct {
+	Value    string
+	Workflow *Root
 }
 
 // New constructs "Step" from interface.
@@ -37,8 +47,15 @@ func (_ Step) New(i interface{}) Step {
 	case map[string]interface{}:
 		for key, v := range x {
 			switch key {
+			case "id":
+				dest.ID = v.(string)
 			case "run":
-				dest.Run = dest.Run.AsStep(v)
+				switch x2 := v.(type) {
+				case string:
+					dest.Run.Value = x2
+				case map[string]interface{}:
+					dest.Run.Workflow = dest.Run.Workflow.AsStep(v)
+				}
 			case "in":
 				dest.In = StepInput{}.NewList(v)
 			case "out":
@@ -46,7 +63,9 @@ func (_ Step) New(i interface{}) Step {
 			case "requirements":
 				dest.Requirements = Requirements{}.New(v)
 			case "scatter":
-				dest.Scatter = v.(string)
+				dest.Scatter = StringArrayable(v)
+			case "scatterMethod":
+				dest.ScatterMethod = v.(string)
 			}
 		}
 	}

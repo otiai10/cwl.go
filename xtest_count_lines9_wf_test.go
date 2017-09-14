@@ -23,13 +23,13 @@ func TestDecode_count_lines9_wf(t *testing.T) {
 	Expect(t, root.Outputs[0].Source).ToBe([]string{"step2/output"})
 
 	Expect(t, root.Steps[0].ID).ToBe("step1")
-	Expect(t, root.Steps[0].Run.ID).ToBe("wc-tool.cwl")
+	Expect(t, root.Steps[0].Run.Value).ToBe("wc-tool.cwl")
 	Expect(t, root.Steps[0].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].Default.Kind).ToBe(reflect.Map)
 	Expect(t, root.Steps[0].Out[0].ID).ToBe("output")
 
 	Expect(t, root.Steps[1].ID).ToBe("step2")
-	Expect(t, root.Steps[1].Run.ID).ToBe("parseInt-tool.cwl")
+	Expect(t, root.Steps[1].Run.Value).ToBe("parseInt-tool.cwl")
 	Expect(t, root.Steps[1].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[1].In[0].Source[0]).ToBe("step1/output")
 	Expect(t, root.Steps[1].Out[0].ID).ToBe("output")

@@ -715,7 +715,7 @@ func TestDecode_js_expr_req_wf(t *testing.T) {
 	Expect(t, root.Graphs[1].Outputs[0].Types[0].Type).ToBe("File")
 	Expect(t, root.Graphs[1].Outputs[0].Source[0]).ToBe("tool/out")
 	Expect(t, root.Graphs[1].Steps[0].ID).ToBe("tool")
-	Expect(t, root.Graphs[1].Steps[0].Run.ID).ToBe("#tool")
+	Expect(t, root.Graphs[1].Steps[0].Run.Workflow.ID).ToBe("#tool")
 	Expect(t, len(root.Graphs[1].Steps[0].In)).ToBe(1)
 	// TODO check empty In
 	Expect(t, len(root.Graphs[1].Steps[0].Out)).ToBe(1)
@@ -782,4 +782,24 @@ func TestDecode_null_defined(t *testing.T) {
 	Expect(t, len(root.Arguments)).ToBe(2)
 	Expect(t, root.Arguments[0].Value).ToBe("echo")
 	Expect(t, root.Arguments[1].Value).ToBe(`$(inputs.file1 === null ? "t" : "f")`)
+}
+
+func TestDecode_null_expression1_tool(t *testing.T) {
+	f := cwl("null-expression1-tool.cwl")
+	root := NewCWL()
+	err := root.Decode(f)
+	Expect(t, err).ToBe(nil)
+	Expect(t, root.Version).ToBe("v1.0")
+	Expect(t, root.Class).ToBe("ExpressionTool")
+	Expect(t, len(root.Requirements)).ToBe(1)
+	Expect(t, root.Requirements[0].Class).ToBe("InlineJavascriptRequirement")
+	Expect(t, len(root.Inputs)).ToBe(1)
+	Expect(t, root.Inputs[0].ID).ToBe("i1")
+	Expect(t, root.Inputs[0].Types[0].Type).ToBe("Any")
+	// TODO input default
+	//Expect(t, root.Inputs[0].Default.Class).ToBe("File")
+	//fmt.Println(t, root.Inputs[0].Default)
+	Expect(t, root.Outputs[0].ID).ToBe("output")
+	Expect(t, root.Outputs[0].Types[0].Type).ToBe("int")
+	Expect(t, root.Expression).ToBe(`$({'output': (inputs.i1 == 'the-default' ? 1 : 2)})`)
 }

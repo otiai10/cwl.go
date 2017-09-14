@@ -7,6 +7,7 @@ type StepInput struct {
 	Source    []string
 	LinkMerge string
 	Default   *InputDefault
+	ValueFrom string
 }
 
 // New constructs a StepInput struct from any interface.
@@ -15,27 +16,40 @@ func (_ StepInput) New(i interface{}) StepInput {
 	switch x := i.(type) {
 	case map[string]interface{}:
 		for key, v := range x {
-			dest.ID = key
-			switch e := v.(type) {
-			case string:
-				dest.Source = []string{e}
-			case []interface{}:
-				for _, s := range e {
-					dest.Source = append(dest.Source, s.(string))
-				}
-			case map[string]interface{}:
-				for key, v := range e {
-					switch key {
-					case "source":
-						if list, ok := v.([]interface{}); ok {
-							for _, s := range list {
-								dest.Source = append(dest.Source, s.(string))
+			if dest.ID == "" {
+				dest.ID = key
+			}
+
+			if key == "id" {
+				dest.ID = v.(string)
+			} else {
+				switch e := v.(type) {
+				case string:
+					dest.Source = []string{e}
+				case []interface{}:
+					for _, s := range e {
+						dest.Source = append(dest.Source, s.(string))
+					}
+				case map[string]interface{}:
+					for key, v := range e {
+						switch key {
+						case "id":
+							dest.ID = v.(string)
+						case "source":
+							if list, ok := v.([]interface{}); ok {
+								for _, s := range list {
+									dest.Source = append(dest.Source, s.(string))
+								}
+							} else {
+								dest.Source = append(dest.Source, v.(string))
 							}
+						case "linkMerge":
+							dest.LinkMerge = v.(string)
+						case "default":
+							dest.Default = InputDefault{}.New(v)
+						case "valueFrom":
+							dest.ValueFrom = v.(string)
 						}
-					case "linkMerge":
-						dest.LinkMerge = v.(string)
-					case "default":
-						dest.Default = InputDefault{}.New(v)
 					}
 				}
 			}
@@ -51,6 +65,12 @@ func (_ StepInput) NewList(i interface{}) []StepInput {
 	case []interface{}:
 		for _, v := range x {
 			dest = append(dest, StepInput{}.New(v))
+		}
+	case map[string]interface{}:
+		for key, v := range x {
+			item := make(map[string]interface{})
+			item[key] = v
+			dest = append(dest, StepInput{}.New(item))
 		}
 	default:
 		dest = append(dest, StepInput{}.New(x))

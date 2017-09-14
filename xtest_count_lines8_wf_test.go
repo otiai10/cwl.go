@@ -24,7 +24,7 @@ func TestDecode_count_lines8_wf(t *testing.T) {
 	Expect(t, root.Requirements[0].Class).ToBe("SubworkflowFeatureRequirement")
 
 	Expect(t, root.Steps[0].ID).ToBe("step1")
-	Expect(t, root.Steps[0].Run.ID).ToBe("count-lines1-wf.cwl")
+	Expect(t, root.Steps[0].Run.Value).ToBe("count-lines1-wf.cwl")
 	Expect(t, root.Steps[0].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("file1")
 	Expect(t, root.Steps[0].Out[0].ID).ToBe("count_output")

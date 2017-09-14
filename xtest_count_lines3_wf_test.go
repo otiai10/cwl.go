@@ -23,8 +23,8 @@ func TestDecode_count_lines3_wf(t *testing.T) {
 
 	Expect(t, root.Requirements[0].Class).ToBe("ScatterFeatureRequirement")
 	Expect(t, root.Steps[0].ID).ToBe("step1")
-	Expect(t, root.Steps[0].Run.ID).ToBe("wc2-tool.cwl")
-	Expect(t, root.Steps[0].Scatter).ToBe("file1")
+	Expect(t, root.Steps[0].Run.Value).ToBe("wc2-tool.cwl")
+	Expect(t, root.Steps[0].Scatter[0]).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("file1")
 	Expect(t, root.Steps[0].Out[0].ID).ToBe("output")
