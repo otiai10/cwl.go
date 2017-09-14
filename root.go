@@ -33,6 +33,7 @@ type Root struct {
 	Schemas      Schemas
 	Stdin        string
 	Stdout       string
+	Stderr       string
 	Inputs       Inputs `json:"inputs"`
 	// ProvidedInputs ProvidedInputs `json:"-"`
 	Outputs      Outputs
@@ -68,6 +69,8 @@ func (root *Root) UnmarshalMap(docs map[string]interface{}) error {
 			root.Stdin = val.(string)
 		case "stdout":
 			root.Stdout = val.(string)
+		case "stderr":
+			root.Stderr = val.(string)
 		case "inputs":
 			root.Inputs = root.Inputs.New(val)
 		case "outputs":
