@@ -7,6 +7,7 @@ type StepInput struct {
 	Source    []string
 	LinkMerge string
 	Default   *InputDefault
+	ValueFrom string
 }
 
 // New constructs a StepInput struct from any interface.
@@ -39,11 +40,15 @@ func (_ StepInput) New(i interface{}) StepInput {
 								for _, s := range list {
 									dest.Source = append(dest.Source, s.(string))
 								}
+							} else {
+								dest.Source = append(dest.Source, v.(string))
 							}
 						case "linkMerge":
 							dest.LinkMerge = v.(string)
 						case "default":
 							dest.Default = InputDefault{}.New(v)
+						case "valueFrom":
+							dest.ValueFrom = v.(string)
 						}
 					}
 				}
