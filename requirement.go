@@ -11,6 +11,7 @@ type Requirement struct {
 	EnvVarRequirement
 	ShellCommandRequirement
 	ResourceRequirement
+	Import string
 }
 
 // New constructs "Requirement" struct from interface.
@@ -32,6 +33,8 @@ func (_ Requirement) New(i interface{}) Requirement {
 				dest.EnvDef = EnvDef{}.NewList(v)
 			case "listing":
 				dest.Listing = Entry{}.NewList(v)
+			case "$import":
+				dest.Import = v.(string)
 			}
 		}
 	}
