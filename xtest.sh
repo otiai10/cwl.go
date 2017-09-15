@@ -9,7 +9,7 @@ function exec_test() {
     total=`expr ${total} + 1`
     TESTCASE=${1}
     count_for_case=`expr ${count_for_case} + 1`
-    if go test -run ${TESTCASE} ; then
+    if go test ./tests -run ${TESTCASE} ; then
         echo "--- OK ${count_for_case}: ${TESTCASE}"
         report+=("${count_for_case}	${TESTCASE}")
         count_for_case=0
@@ -26,12 +26,12 @@ function exec_test() {
 function gather_testcases() {
   targets=()
   if [ -n "${1}" ]; then
-    list=`ls xtest_*${1}*_test.go`
+    list=`ls ./tests/*${1}*_test.go`
   else
-    list=`ls xtest_*.go`
+    list=`ls ./tests/*_test.go`
   fi
   for filename in ${list} ; do
-    targets+=(`echo ${filename} | sed -e s/xtest_// | sed -e s/_test\.go//`)
+    targets+=(`echo ${filename} | sed -e s/\.\\\/tests\\\/xtest_// | sed -e s/_test\.go//`)
   done
   echo ${targets[@]}
 }
