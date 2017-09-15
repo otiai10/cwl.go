@@ -31,7 +31,7 @@ function gather_testcases() {
     list=`ls ./tests/*_test.go`
   fi
   for filename in ${list} ; do
-    targets+=(`echo ${filename} | sed -e s/\.\\\/tests\\\/xtest_// | sed -e s/_test\.go//`)
+    targets+=(`echo ${filename} | sed -e s/\.\\\/tests\\\/// | sed -e s/_test\.go//`)
   done
   echo ${targets[@]}
 }
