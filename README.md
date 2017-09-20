@@ -25,3 +25,34 @@ func main() {
 	fmt.Printf("%+v\n", doc)
 }
 ```
+
+# How to test (mainly for developer)
+
+## Do all test
+
+This executes all test case.
+Each test is retried until result status is SUCCESS
+
+```
+./xtest.sh
+```
+
+## Do 1 test with xtest.sh
+
+This is only one test case , it repeats result is SUCCESS.
+Because of parse order is not always same,
+ so some tests requires several retry. 
+
+```
+./xtest.sh _wf3
+```
+
+## Do 1 test with go test
+
+This is only one test case and execute only one time.
+
+```
+cd tests
+go test -run _wf3
+```
+
