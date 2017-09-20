@@ -26,33 +26,24 @@ func main() {
 }
 ```
 
-# How to test (mainly for developer)
+# Tests
 
-## Do all test
+Because there are both array and dictionary in CWL specification, and as you know Golang can't keep order of map keys, the test fails sometimes by order problem. Therefore, [`./xtest.sh`](https://github.com/otiai10/cwl.go/blob/master/xtest.sh) tries testing each case several times eagerly unless it passes.
 
-This executes all test case.
-Each test is retried until result status is SUCCESS
+For all cases,
 
-```
+```sh
 ./xtest.sh
 ```
 
-## Do 1 test with xtest.sh
+For only 1 case which matches `_wf3`,
 
-This is only one test case , it repeats result is SUCCESS.
-Because of parse order is not always same,
- so some tests requires several retry. 
-
-```
+```sh
 ./xtest.sh _wf3
 ```
 
-## Do 1 test with go test
+Or if you want to execute single test for just 1 time (NOT eagerly),
 
-This is only one test case and execute only one time.
-
+```sh
+go test ./tests -run _wf3
 ```
-cd tests
-go test -run _wf3
-```
-
