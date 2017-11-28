@@ -81,8 +81,8 @@ func (input Input) Flatten() []string {
 					for _, e := range arr {
 						switch v := e.(type) {
 						case map[interface{}]interface{}:
-							if repr.Binding != nil
-								separated = app
+							if repr.Binding != nil && repr.Binding.Prefix != "" {
+								separated = append(separated, repr.Binding.Prefix)
 							}
 							separated = append(separated, fmt.Sprintf("%v", v["location"]))
 						default:
