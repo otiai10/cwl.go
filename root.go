@@ -41,6 +41,9 @@ type Root struct {
 	Steps        Steps
 	ID           string // ID only appears if this Root is a step in "steps"
 	Expression   string // appears only if Class is "ExpressionTool"
+
+	// Path
+	Path string `json:"-"`
 }
 
 // UnmarshalMap decode map[string]interface{} to *Root.
@@ -97,7 +100,7 @@ func (root *Root) UnmarshalJSON(b []byte) error {
 	return root.UnmarshalMap(docs)
 }
 
-// Decode decodes specified io.Reader to this root
+// Decode decodes specified file to this root
 func (root *Root) Decode(r io.Reader) (err error) {
 	defer func() {
 		if e := recover(); e != nil {

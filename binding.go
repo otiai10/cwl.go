@@ -13,7 +13,7 @@ type Binding struct {
 	Separate   bool   `json:"separate"`
 	Separator  string `json:"separator"`
 	ShellQuote bool   `json:"shellQuote"`
-	ValueFrom  string `json:"valueFrom"`
+	ValueFrom  *Alias `json:"valueFrom"`
 	// CommandOutputBinding
 	Glob     []string `json:"glob"`
 	Eval     string   `json:"outputEval"`
@@ -40,7 +40,7 @@ func (binding Binding) New(i interface{}) *Binding {
 			case "shellQuote":
 				dest.ShellQuote = v.(bool)
 			case "valueFrom":
-				dest.ValueFrom = v.(string)
+				dest.ValueFrom = &Alias{v.(string)}
 			case "outputEval":
 				dest.Eval = v.(string)
 			}
