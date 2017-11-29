@@ -55,6 +55,43 @@ func (_ Input) New(i interface{}) Input {
 	return dest
 }
 
+// flatten
+func (input Input) flatten(typ Type, binding *Binding) []string {
+	flattened := []string{}
+	switch typ.Type {
+	case "int": // Array of Int
+		tobejoined := []string{}
+		for _, e := range input.Provided.([]interface{}) {
+			tobejoined = append(tobejoined, fmt.Sprintf("%v", e))
+		}
+		flattened = append(flattened, strings.Join(tobejoined, input.Binding.Separator))
+	case "File": // Array of Files
+		switch arr := input.Provided.(type) {
+		case []string:
+			// TODO:
+		case []interface{}:
+			separated := []string{}
+			for _, e := range arr {
+				switch v := e.(type) {
+				case map[interface{}]interface{}:
+					if binding != nil && binding.Prefix != "" {
+						separated = append(separated, binding.Prefix)
+					}
+					separated = append(separated, fmt.Sprintf("%v", v["location"]))
+				default:
+					// TODO:
+				}
+			}
+			// In case it's Array of Files, unlike array of int,
+			// it's NOT gonna be joined with .Binding.Separator.
+			flattened = append(flattened, separated...)
+		}
+	default:
+		// TODO:
+	}
+	return flattened
+}
+
 // Flatten ...
 func (input Input) Flatten() []string {
 	if input.Provided == nil {
@@ -65,37 +102,7 @@ func (input Input) Flatten() []string {
 	if repr := input.Types[0]; len(input.Types) == 1 {
 		switch repr.Type {
 		case "array":
-			switch repr.Items[0].Type {
-			case "int": // Array of Int
-				tobejoined := []string{}
-				for _, e := range input.Provided.([]interface{}) {
-					tobejoined = append(tobejoined, fmt.Sprintf("%v", e))
-				}
-				flattened = append(flattened, strings.Join(tobejoined, input.Binding.Separator))
-			case "File": // Array of Files
-				switch arr := input.Provided.(type) {
-				case []string:
-					// TODO:
-				case []interface{}:
-					separated := []string{}
-					for _, e := range arr {
-						switch v := e.(type) {
-						case map[interface{}]interface{}:
-							if repr.Binding != nil && repr.Binding.Prefix != "" {
-								separated = append(separated, repr.Binding.Prefix)
-							}
-							separated = append(separated, fmt.Sprintf("%v", v["location"]))
-						default:
-							// TODO:
-						}
-					}
-					// In case it's Array of Files, unlike array of int,
-					// it's NOT gonna be joined with .Binding.Separator.
-					flattened = append(flattened, separated...)
-				}
-			default:
-				// TODO:
-			}
+			flattened = append(flattened, input.flatten(repr.Items[0], repr.Binding)...)
 		case "int":
 			flattened = append(flattened, fmt.Sprintf("%v", input.Provided.(int)))
 		case "File":
