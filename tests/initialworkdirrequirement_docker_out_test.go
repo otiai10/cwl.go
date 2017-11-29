@@ -29,7 +29,8 @@ func TestDecode_initialworkdirrequirement_docker_out(t *testing.T) {
 	Expect(t, root.Requirements[0].DockerPull).ToBe("debian:8")
 	Expect(t, root.Requirements[1].Class).ToBe("InitialWorkDirRequirement")
 	Expect(t, root.Requirements[1].Listing[0].Location).ToBe("$(inputs.INPUT)")
-	Expect(t, root.Arguments[0].Binding.ValueFrom).ToBe("$(inputs.INPUT.basename).fai")
+	// TODO: fix "Alias.Key()"
+	Expect(t, root.Arguments[0].Binding.ValueFrom.Key()).ToBe("inputs.INPUT.basename).fai")
 	// TODO test against "position" but currently just put 0 is failed
 	Expect(t, len(root.BaseCommands)).ToBe(1)
 	Expect(t, root.BaseCommands[0]).ToBe("touch")

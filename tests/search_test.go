@@ -17,7 +17,7 @@ func TestDecode_search(t *testing.T) {
 	Expect(t, root.Graphs[0].ID).ToBe("index")
 	Expect(t, root.Graphs[0].Class).ToBe("CommandLineTool")
 	Expect(t, root.Graphs[0].BaseCommands[0]).ToBe("python")
-	Expect(t, root.Graphs[0].Arguments[0].Binding.ValueFrom).ToBe("input.txt")
+	Expect(t, root.Graphs[0].Arguments[0].Binding.ValueFrom.Key()).ToBe("input.txt")
 	Expect(t, root.Graphs[0].Arguments[0].Binding.Position).ToBe(1)
 	Expect(t, root.Graphs[0].Requirements[0].Class).ToBe("InitialWorkDirRequirement")
 	Expect(t, root.Graphs[0].Requirements[0].Listing[0].EntryName).ToBe("input.txt")

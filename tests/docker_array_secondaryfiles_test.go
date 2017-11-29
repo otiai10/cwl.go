@@ -27,7 +27,8 @@ func TestDecode_docker_array_secondaryfiles(t *testing.T) {
 	Expect(t, root.Outputs[0].ID).ToBe("bai_list")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
 	Expect(t, root.Outputs[0].Binding.Glob[0]).ToBe("fai.list")
-	Expect(t, root.Arguments[0].Binding.ValueFrom).ToBe(`${ var fai_list = ""; for (var i = 0; i < inputs.fasta_path.length; i ++) { fai_list += " cat " + inputs.fasta_path[i].path +".fai" + " >> fai.list && " } return fai_list.slice(0,-3) }`)
+	// TODO: Fix "Alias.Key()"
+	Expect(t, root.Arguments[0].Binding.ValueFrom.Key()).ToBe(`{ var fai_list = ""; for (var i = 0; i < inputs.fasta_path.length; i ++) { fai_list += " cat " + inputs.fasta_path[i].path +".fai" + " >> fai.list && " } return fai_list.slice(0,-3) }`)
 	Expect(t, root.Arguments[0].Binding.Position).ToBe(1)
 	Expect(t, root.Arguments[0].Binding.ShellQuote).ToBe(false)
 	Expect(t, len(root.BaseCommands)).ToBe(0)

@@ -23,7 +23,7 @@ func TestDecode_recursive_input_directory(t *testing.T) {
 	Expect(t, root.Requirements[2].Class).ToBe("ShellCommandRequirement")
 	Expect(t, root.Stdout).ToBe("output.txt")
 	Expect(t, root.Arguments[0].Binding.ShellQuote).ToBe(false)
-	Expect(t, root.Arguments[0].Binding.ValueFrom).ToBe(`touch work_dir/e;
+	Expect(t, root.Arguments[0].Binding.ValueFrom.Key()).ToBe(`touch work_dir/e;
 if [ ! -w work_dir ]; then echo work_dir not writable; fi;
 if [ -L work_dir ]; then echo work_dir is a symlink; fi;
 if [ ! -w work_dir/a ]; then echo work_dir/a not writable; fi;

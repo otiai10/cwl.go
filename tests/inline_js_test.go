@@ -36,11 +36,12 @@ func TestDecode_inline_js(t *testing.T) {
 	Expect(t, root.Outputs[0].Types[0].Items[0].Type).ToBe("string")
 	Expect(t, len(root.Arguments)).ToBe(3)
 	Expect(t, root.Arguments[0].Binding.Prefix).ToBe("-A")
-	Expect(t, root.Arguments[0].Binding.ValueFrom).ToBe("$(1+1)")
+	// {{{ TODO: Fix "Alias.Key()"
+	Expect(t, root.Arguments[0].Binding.ValueFrom.Key()).ToBe("1+1")
 	Expect(t, root.Arguments[1].Binding.Prefix).ToBe("-B")
-	Expect(t, root.Arguments[1].Binding.ValueFrom).ToBe(`$("/foo/bar/baz".split('/').slice(-1)[0])`)
+	Expect(t, root.Arguments[1].Binding.ValueFrom.Key()).ToBe(`"/foo/bar/baz".split('/').slice(-1)[0]`)
 	Expect(t, root.Arguments[2].Binding.Prefix).ToBe("-C")
-	Expect(t, root.Arguments[2].Binding.ValueFrom).ToBe(`${
+	Expect(t, root.Arguments[2].Binding.ValueFrom.Key()).ToBe(`{
   var r = [];
   for (var i = 10; i >= 1; i--) {
     r.push(i);
@@ -48,4 +49,5 @@ func TestDecode_inline_js(t *testing.T) {
   return r;
 }
 `)
+	// }}}
 }

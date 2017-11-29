@@ -25,11 +25,11 @@ func TestDecode_dir6(t *testing.T) {
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
 	Expect(t, root.Outputs[0].Binding.Glob).ToBe([]string{"output.txt"})
 	Expect(t, root.Arguments[0].Binding.ShellQuote).ToBe(false)
-	Expect(t, root.Arguments[0].Binding.ValueFrom).ToBe("&&")
+	Expect(t, root.Arguments[0].Binding.ValueFrom.Key()).ToBe("&&")
 	Expect(t, root.Arguments[1].Value).ToBe("find")
 	Expect(t, root.Arguments[2].Value).ToBe(".")
 	Expect(t, root.Arguments[3].Binding.ShellQuote).ToBe(false)
-	Expect(t, root.Arguments[3].Binding.ValueFrom).ToBe("|")
+	Expect(t, root.Arguments[3].Binding.ValueFrom.Key()).ToBe("|")
 	Expect(t, root.Arguments[4].Value).ToBe("sort")
 	Expect(t, root.Stdout).ToBe("output.txt")
 }

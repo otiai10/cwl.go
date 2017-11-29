@@ -25,7 +25,7 @@ func TestDecode_dir5(t *testing.T) {
 	Expect(t, root.Arguments[1].Value).ToBe("-L")
 	Expect(t, root.Arguments[2].Value).ToBe(".")
 	Expect(t, root.Arguments[3].Binding.ShellQuote).ToBe(false)
-	Expect(t, root.Arguments[3].Binding.ValueFrom).ToBe("|")
+	Expect(t, root.Arguments[3].Binding.ValueFrom.Key()).ToBe("|")
 	Expect(t, root.Arguments[4].Value).ToBe("sort")
 	Expect(t, root.Stdout).ToBe("output.txt")
 }

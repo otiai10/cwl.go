@@ -30,6 +30,6 @@ func TestDecode_shellchar(t *testing.T) {
 	}
 	Expect(t, count).ToBe(2)
 	Expect(t, root.BaseCommands[0]).ToBe("echo")
-	Expect(t, root.Arguments[0].Binding.ValueFrom).ToBe("foo 1>&2")
+	Expect(t, root.Arguments[0].Binding.ValueFrom.Key()).ToBe("foo 1>&2")
 	Expect(t, root.Arguments[0].Binding.ShellQuote).ToBe(false)
 }

@@ -21,7 +21,7 @@ func TestDecode_test_cwl_out2(t *testing.T) {
 	// TODO check specification for this test ID and Type
 	Expect(t, root.Outputs[0].ID).ToBe("foo")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Arguments[0].Binding.ValueFrom).ToBe(`echo foo > foo && echo '{"foo": {"location": "file://$(runtime.outdir)/foo", "class": "File"} }' > cwl.output.json
+	Expect(t, root.Arguments[0].Binding.ValueFrom.Key()).ToBe(`echo foo > foo && echo '{"foo": {"location": "file://$(runtime.outdir)/foo", "class": "File"} }' > cwl.output.json
 `)
 	Expect(t, root.Arguments[0].Binding.ShellQuote).ToBe(false)
 }

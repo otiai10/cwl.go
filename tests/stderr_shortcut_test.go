@@ -20,6 +20,6 @@ func TestDecode_stderr_shortcut(t *testing.T) {
 	Expect(t, len(root.Outputs)).ToBe(1)
 	Expect(t, root.Outputs[0].ID).ToBe("output_file")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("stderr")
-	Expect(t, root.Arguments[0].Binding.ValueFrom).ToBe("echo foo 1>&2")
+	Expect(t, root.Arguments[0].Binding.ValueFrom.Key()).ToBe("echo foo 1>&2")
 	Expect(t, root.Arguments[0].Binding.ShellQuote).ToBe(false)
 }

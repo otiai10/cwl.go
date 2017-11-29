@@ -22,11 +22,11 @@ func TestDecode_dir4(t *testing.T) {
 	Expect(t, root.Arguments[0].Value).ToBe("cd")
 	Expect(t, root.Arguments[1].Value).ToBe("$(inputs.inf.dirname)/xtestdir")
 	Expect(t, root.Arguments[2].Binding.ShellQuote).ToBe(false)
-	Expect(t, root.Arguments[2].Binding.ValueFrom).ToBe("&&")
+	Expect(t, root.Arguments[2].Binding.ValueFrom.Key()).ToBe("&&")
 	Expect(t, root.Arguments[3].Value).ToBe("find")
 	Expect(t, root.Arguments[4].Value).ToBe(".")
 	Expect(t, root.Arguments[5].Binding.ShellQuote).ToBe(false)
-	Expect(t, root.Arguments[5].Binding.ValueFrom).ToBe("|")
+	Expect(t, root.Arguments[5].Binding.ValueFrom.Key()).ToBe("|")
 	Expect(t, root.Arguments[6].Value).ToBe("sort")
 	Expect(t, root.Stdout).ToBe("output.txt")
 }

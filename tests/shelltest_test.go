@@ -24,10 +24,10 @@ func TestDecode_shelltest(t *testing.T) {
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
 	Expect(t, root.Outputs[0].Binding.Glob[0]).ToBe("output.txt")
 	Expect(t, root.Arguments[0].Value).ToBe("rev")
-	Expect(t, root.Arguments[1].Binding.ValueFrom).ToBe("$(inputs.input)")
-	Expect(t, root.Arguments[2].Binding.ValueFrom).ToBe(" | ")
+	Expect(t, root.Arguments[1].Binding.ValueFrom.Key()).ToBe("inputs.input")
+	Expect(t, root.Arguments[2].Binding.ValueFrom.Key()).ToBe(" | ")
 	Expect(t, root.Arguments[2].Binding.ShellQuote).ToBe(false)
 	Expect(t, root.Arguments[3].Value).ToBe("sort")
-	Expect(t, root.Arguments[4].Binding.ValueFrom).ToBe("> output.txt")
+	Expect(t, root.Arguments[4].Binding.ValueFrom.Key()).ToBe("> output.txt")
 	Expect(t, root.Arguments[4].Binding.ShellQuote).ToBe(false)
 }

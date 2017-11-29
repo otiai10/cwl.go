@@ -24,7 +24,7 @@ func TestDecode_initialwork_path(t *testing.T) {
 	Expect(t, root.Requirements[0].Listing[0].Entry).ToBe(`$(inputs.file1)`)
 	Expect(t, root.Requirements[1].Class).ToBe("ShellCommandRequirement")
 	Expect(t, root.Arguments[0].Binding.ShellQuote).ToBe(false)
-	Expect(t, root.Arguments[0].Binding.ValueFrom).ToBe(`test "$(inputs.file1.path)" = "$(runtime.outdir)/bob.txt"
+	Expect(t, root.Arguments[0].Binding.ValueFrom.Key()).ToBe(`test "$(inputs.file1.path)" = "$(runtime.outdir)/bob.txt"
 `)
 	// TODO write basecommand
 }
