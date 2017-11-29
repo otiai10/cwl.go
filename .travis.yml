@@ -8,4 +8,4 @@ before_script:
 script:
   - ./xtest.sh
 after_script:
-  - cigger -s travis -p otiai10/yacle
+  - cigger -s travis -p otiai10/yacle -t ${TRAVIS_API_TOKEN}
