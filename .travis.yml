@@ -4,5 +4,8 @@ go:
   - tip
 before_script:
   - go get ./...
+  - go get github.com/otiai10/cigger
 script:
   - ./xtest.sh
+after_script:
+  - cigger -s travis -p otiai10/yacle
