@@ -26,7 +26,7 @@ func (_ Steps) New(i interface{}) Steps {
 // @see http://www.commonwl.org/v1.0/Workflow.html#WorkflowStep
 type Step struct {
 	ID            string
-	In            []StepInput
+	In            StepInputs
 	Out           []StepOutput
 	Run           Run
 	Requirements  []Requirement
@@ -70,4 +70,19 @@ func (_ Step) New(i interface{}) Step {
 		}
 	}
 	return dest
+}
+
+// Len for sorting
+func (steps Steps) Len() int {
+	return len(steps)
+}
+
+// Less for sorting
+func (steps Steps) Less(i, j int) bool {
+	return steps[i].ID < steps[j].ID
+}
+
+// Swap for sorting
+func (steps Steps) Swap(i, j int) {
+	steps[i], steps[j] = steps[j], steps[i]
 }

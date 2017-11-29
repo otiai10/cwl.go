@@ -1,6 +1,7 @@
 package cwlgotest
 
 import (
+	"sort"
 	"testing"
 
 	cwl "github.com/otiai10/cwl.go"
@@ -19,6 +20,7 @@ func TestDecode_dir4(t *testing.T) {
 	Expect(t, root.Outputs[0].ID).ToBe("outlist")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
 	Expect(t, root.Outputs[0].Binding.Glob).ToBe([]string{"output.txt"})
+	sort.Sort(root.Arguments)
 	Expect(t, root.Arguments[0].Value).ToBe("cd")
 	Expect(t, root.Arguments[1].Value).ToBe("$(inputs.inf.dirname)/xtestdir")
 	Expect(t, root.Arguments[2].Binding.ShellQuote).ToBe(false)

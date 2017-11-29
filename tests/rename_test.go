@@ -1,6 +1,7 @@
 package cwlgotest
 
 import (
+	"sort"
 	"testing"
 
 	cwl "github.com/otiai10/cwl.go"
@@ -20,6 +21,7 @@ func TestDecode_rename(t *testing.T) {
 	Expect(t, root.Requirements[0].Listing[0].EntryName).ToBe("$(inputs.newname)")
 	Expect(t, root.Requirements[0].Listing[0].Entry).ToBe(`$(inputs.srcfile)`)
 	Expect(t, len(root.Inputs)).ToBe(2)
+	sort.Sort(root.Inputs)
 	Expect(t, root.Inputs[0].ID).ToBe("srcfile")
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
 	Expect(t, root.Inputs[1].ID).ToBe("newname")

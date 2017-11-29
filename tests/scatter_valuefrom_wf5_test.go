@@ -1,6 +1,7 @@
 package cwlgotest
 
 import (
+	"sort"
 	"testing"
 
 	cwl "github.com/otiai10/cwl.go"
@@ -28,6 +29,7 @@ func TestDecode_scatter_valuefrom_wf5(t *testing.T) {
 	Expect(t, root.Requirements[0].Class).ToBe("ScatterFeatureRequirement")
 	Expect(t, root.Requirements[1].Class).ToBe("StepInputExpressionRequirement")
 	Expect(t, root.Steps[0].ID).ToBe("step1")
+	sort.Sort(root.Steps[0].In)
 	Expect(t, root.Steps[0].In[0].ID).ToBe("echo_in")
 	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("inp")
 	Expect(t, root.Steps[0].In[0].ValueFrom).ToBe("$(self.instr)")
@@ -37,6 +39,7 @@ func TestDecode_scatter_valuefrom_wf5(t *testing.T) {
 	Expect(t, root.Steps[0].Out[0].ID).ToBe("echo_out")
 	Expect(t, root.Steps[0].Scatter[0]).ToBe("echo_in")
 	Expect(t, root.Steps[0].Run.Workflow.Class).ToBe("CommandLineTool")
+	sort.Sort(root.Steps[0].Run.Workflow.Inputs)
 	Expect(t, root.Steps[0].Run.Workflow.Inputs[0].ID).ToBe("first")
 	Expect(t, root.Steps[0].Run.Workflow.Inputs[0].Types[0].Type).ToBe("string")
 	Expect(t, root.Steps[0].Run.Workflow.Inputs[0].Binding.Position).ToBe(1)

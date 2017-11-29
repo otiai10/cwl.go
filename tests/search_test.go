@@ -1,6 +1,7 @@
 package cwlgotest
 
 import (
+	"sort"
 	"testing"
 
 	cwl "github.com/otiai10/cwl.go"
@@ -99,12 +100,13 @@ func TestDecode_search(t *testing.T) {
 		}
 	}
 	Expect(t, count2).ToBe(3)
-	Expect(t, root.Graphs[2].Outputs[0].ID).ToBe("outfile")
+	sort.Sort(root.Graphs[2].Outputs)
+	Expect(t, root.Graphs[2].Outputs[0].ID).ToBe("indexedfile")
 	Expect(t, root.Graphs[2].Outputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Graphs[2].Outputs[0].Source[0]).ToBe("search/result")
-	Expect(t, root.Graphs[2].Outputs[1].ID).ToBe("indexedfile")
+	Expect(t, root.Graphs[2].Outputs[0].Source[0]).ToBe("index/result")
+	Expect(t, root.Graphs[2].Outputs[1].ID).ToBe("outfile")
 	Expect(t, root.Graphs[2].Outputs[1].Types[0].Type).ToBe("File")
-	Expect(t, root.Graphs[2].Outputs[1].Source[0]).ToBe("index/result")
+	Expect(t, root.Graphs[2].Outputs[1].Source[0]).ToBe("search/result")
 	Expect(t, root.Graphs[2].Steps[0].ID).ToBe("index")
 	Expect(t, root.Graphs[2].Steps[0].Run.Value).ToBe("#index")
 	Expect(t, root.Graphs[2].Steps[0].In[0].ID).ToBe("file")

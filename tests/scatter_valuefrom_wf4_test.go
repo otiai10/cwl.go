@@ -1,6 +1,7 @@
 package cwlgotest
 
 import (
+	"sort"
 	"testing"
 
 	cwl "github.com/otiai10/cwl.go"
@@ -16,6 +17,7 @@ func TestDecode_scatter_valuefrom_wf4(t *testing.T) {
 	Expect(t, root.Version).ToBe("v1.0")
 	Expect(t, root.Graphs[0].ID).ToBe("echo")
 	Expect(t, root.Graphs[0].Class).ToBe("CommandLineTool")
+	sort.Sort(root.Graphs[0].Inputs)
 	Expect(t, root.Graphs[0].Inputs[0].ID).ToBe("first")
 	Expect(t, root.Graphs[0].Inputs[0].Types[0].Type).ToBe("string")
 	Expect(t, root.Graphs[0].Inputs[0].Binding.Position).ToBe(1)
@@ -51,6 +53,7 @@ func TestDecode_scatter_valuefrom_wf4(t *testing.T) {
 	Expect(t, root.Graphs[1].Steps[0].Scatter[1]).ToBe("echo_in2")
 	Expect(t, root.Graphs[1].Steps[0].ScatterMethod).ToBe("dotproduct")
 	Expect(t, root.Graphs[1].Steps[0].ID).ToBe("step1")
+	sort.Sort(root.Graphs[1].Steps[0].In)
 	Expect(t, root.Graphs[1].Steps[0].In[0].ID).ToBe("echo_in1")
 	Expect(t, root.Graphs[1].Steps[0].In[0].Source[0]).ToBe("inp1")
 	Expect(t, root.Graphs[1].Steps[0].In[0].ValueFrom).ToBe("$(self.instr)")

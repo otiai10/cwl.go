@@ -2,6 +2,7 @@ package cwlgotest
 
 import (
 	"reflect"
+	"sort"
 	"testing"
 
 	cwl "github.com/otiai10/cwl.go"
@@ -21,16 +22,18 @@ func TestDecode_cat1_testcli(t *testing.T) {
 	Expect(t, root.Hints[0].Class).ToBe("DockerRequirement")
 	Expect(t, root.Hints[0].DockerPull).ToBe("python:2-slim")
 
-	Expect(t, root.Inputs[0].ID).ToBe("file1")
+	sort.Sort(root.Inputs)
+
+	Expect(t, root.Inputs[0].ID).ToBe("args.py")
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
-	Expect(t, root.Inputs[0].Binding.Position).ToBe(1)
+	Expect(t, root.Inputs[0].Default.Kind).ToBe(reflect.Map)
+	Expect(t, root.Inputs[0].Binding.Position).ToBe(-1)
 	Expect(t, root.Inputs[1].ID).ToBe("numbering")
 	Expect(t, root.Inputs[1].Types[0].Type).ToBe("null")
 	Expect(t, root.Inputs[1].Types[1].Type).ToBe("boolean")
-	Expect(t, root.Inputs[2].ID).ToBe("args.py")
+	Expect(t, root.Inputs[2].ID).ToBe("file1")
 	Expect(t, root.Inputs[2].Types[0].Type).ToBe("File")
-	Expect(t, root.Inputs[2].Default.Kind).ToBe(reflect.Map)
-	Expect(t, root.Inputs[2].Binding.Position).ToBe(-1)
+	Expect(t, root.Inputs[2].Binding.Position).ToBe(1)
 
 	Expect(t, root.Outputs[0].ID).ToBe("args")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("string[]")

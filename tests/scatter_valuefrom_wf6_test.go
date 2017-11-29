@@ -1,6 +1,7 @@
 package cwlgotest
 
 import (
+	"sort"
 	"testing"
 
 	cwl "github.com/otiai10/cwl.go"
@@ -26,9 +27,10 @@ func TestDecode_scatter_valuefrom_wf6(t *testing.T) {
 	Expect(t, root.Steps[0].Run.Value).ToBe("scatter-valueFrom-tool.cwl")
 	Expect(t, root.Steps[0].Scatter[0]).ToBe("scattered_message")
 	Expect(t, root.Steps[0].ScatterMethod).ToBe("dotproduct")
-	Expect(t, root.Steps[0].In[0].ID).ToBe("scattered_message")
-	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("scattered_messages")
-	Expect(t, root.Steps[0].In[1].ID).ToBe("message")
-	Expect(t, root.Steps[0].In[1].ValueFrom).ToBe("Hello")
+	sort.Sort(root.Steps[0].In)
+	Expect(t, root.Steps[0].In[1].ID).ToBe("scattered_message")
+	Expect(t, root.Steps[0].In[1].Source[0]).ToBe("scattered_messages")
+	Expect(t, root.Steps[0].In[0].ID).ToBe("message")
+	Expect(t, root.Steps[0].In[0].ValueFrom).ToBe("Hello")
 	Expect(t, root.Steps[0].Out[0].ID).ToBe("out_message")
 }

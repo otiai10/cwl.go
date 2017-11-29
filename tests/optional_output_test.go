@@ -1,6 +1,7 @@
 package cwlgotest
 
 import (
+	"sort"
 	"testing"
 
 	cwl "github.com/otiai10/cwl.go"
@@ -22,6 +23,7 @@ func TestDecode_optional_output(t *testing.T) {
 	Expect(t, root.Inputs[0].Label).ToBe("Input File")
 	Expect(t, root.Inputs[0].Doc).ToBe("The file that will be copied using 'cat'")
 	Expect(t, root.Inputs[0].Binding.Position).ToBe(1)
+	sort.Sort(root.Outputs)
 	Expect(t, root.Outputs[0].ID).ToBe("output_file")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("File")
 	Expect(t, root.Outputs[0].Binding.Glob[0]).ToBe("output.txt")

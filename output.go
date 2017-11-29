@@ -64,3 +64,28 @@ func (_ Outputs) New(i interface{}) Outputs {
 	}
 	return dest
 }
+
+// Len for sorting
+func (o Outputs) Len() int {
+	return len(o)
+}
+
+// Less for sorting
+func (o Outputs) Less(i, j int) bool {
+	prev, next := o[i].Binding, o[j].Binding
+	switch [2]bool{prev == nil, next == nil} {
+	case [2]bool{true, true}:
+		return false
+	case [2]bool{false, true}:
+		return prev.Position < 0
+	case [2]bool{true, false}:
+		return next.Position > 0
+	default:
+		return prev.Position <= next.Position
+	}
+}
+
+// Swap for sorting
+func (o Outputs) Swap(i, j int) {
+	o[i], o[j] = o[j], o[i]
+}

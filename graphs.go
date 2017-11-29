@@ -21,3 +21,18 @@ func (_ Graphs) New(i interface{}) Graphs {
 	}
 	return dest
 }
+
+// Len for sorting
+func (g Graphs) Len() int {
+	return len(g)
+}
+
+// Less for sorting
+func (g Graphs) Less(i, j int) bool {
+	return g[i].ID < g[j].ID
+}
+
+// Swap for sorting
+func (g Graphs) Swap(i, j int) {
+	g[i], g[j] = g[j], g[i]
+}

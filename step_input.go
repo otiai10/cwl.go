@@ -58,9 +58,12 @@ func (_ StepInput) New(i interface{}) StepInput {
 	return dest
 }
 
+// StepInputs represents []StepInput
+type StepInputs []StepInput
+
 // NewList constructs a list of StepInput from interface.
-func (_ StepInput) NewList(i interface{}) []StepInput {
-	dest := []StepInput{}
+func (_ StepInput) NewList(i interface{}) StepInputs {
+	dest := StepInputs{}
 	switch x := i.(type) {
 	case []interface{}:
 		for _, v := range x {
@@ -76,4 +79,19 @@ func (_ StepInput) NewList(i interface{}) []StepInput {
 		dest = append(dest, StepInput{}.New(x))
 	}
 	return dest
+}
+
+// Len for sorting
+func (s StepInputs) Len() int {
+	return len(s)
+}
+
+// Less for sorting
+func (s StepInputs) Less(i, j int) bool {
+	return s[i].ID < s[j].ID
+}
+
+// Swap for sorting
+func (s StepInputs) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
 }

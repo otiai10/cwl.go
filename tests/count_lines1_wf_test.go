@@ -1,6 +1,7 @@
 package cwlgotest
 
 import (
+	"sort"
 	"testing"
 
 	cwl "github.com/otiai10/cwl.go"
@@ -22,6 +23,7 @@ func TestDecode_count_lines1_wf(t *testing.T) {
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("int")
 	Expect(t, root.Outputs[0].Source).ToBe([]string{"step2/output"})
 
+	sort.Sort(root.Steps)
 	Expect(t, root.Steps[0].ID).ToBe("step1")
 	Expect(t, root.Steps[0].Run.Value).ToBe("wc-tool.cwl")
 	Expect(t, root.Steps[0].In[0].ID).ToBe("file1")

@@ -1,6 +1,7 @@
 package cwlgotest
 
 import (
+	"sort"
 	"testing"
 
 	cwl "github.com/otiai10/cwl.go"
@@ -16,6 +17,7 @@ func TestDecode_scatter_valuefrom_wf3(t *testing.T) {
 	Expect(t, root.Version).ToBe("v1.0")
 	Expect(t, root.Graphs[0].ID).ToBe("echo")
 	Expect(t, root.Graphs[0].Class).ToBe("CommandLineTool")
+	sort.Sort(root.Graphs[0].Inputs)
 	Expect(t, root.Graphs[0].Inputs[0].ID).ToBe("first")
 	Expect(t, root.Graphs[0].Inputs[0].Types[0].Type).ToBe("string")
 	Expect(t, root.Graphs[0].Inputs[0].Binding.Position).ToBe(1)
@@ -37,20 +39,22 @@ func TestDecode_scatter_valuefrom_wf3(t *testing.T) {
 
 	Expect(t, root.Graphs[1].ID).ToBe("main")
 	Expect(t, root.Graphs[1].Class).ToBe("Workflow")
-	Expect(t, root.Graphs[1].Inputs[0].ID).ToBe("inp1")
+	sort.Sort(root.Graphs[1].Inputs)
+	Expect(t, root.Graphs[1].Inputs[0].ID).ToBe("inp2")
 	Expect(t, root.Graphs[1].Inputs[0].Types[0].Type).ToBe("array")
-	Expect(t, root.Graphs[1].Inputs[0].Types[0].Items[0].Type).ToBe("record")
-	Expect(t, root.Graphs[1].Inputs[0].Types[0].Items[0].Fields[0].Name).ToBe("instr")
-	Expect(t, root.Graphs[1].Inputs[0].Types[0].Items[0].Fields[0].Types[0].Type).ToBe("string")
-	Expect(t, root.Graphs[1].Inputs[1].ID).ToBe("inp2")
+	Expect(t, root.Graphs[1].Inputs[0].Types[0].Items[0].Type).ToBe("string")
+	Expect(t, root.Graphs[1].Inputs[1].ID).ToBe("inp1")
 	Expect(t, root.Graphs[1].Inputs[1].Types[0].Type).ToBe("array")
-	Expect(t, root.Graphs[1].Inputs[1].Types[0].Items[0].Type).ToBe("string")
+	Expect(t, root.Graphs[1].Inputs[1].Types[0].Items[0].Type).ToBe("record")
+	Expect(t, root.Graphs[1].Inputs[1].Types[0].Items[0].Fields[0].Name).ToBe("instr")
+	Expect(t, root.Graphs[1].Inputs[1].Types[0].Items[0].Fields[0].Types[0].Type).ToBe("string")
 	Expect(t, root.Graphs[1].Requirements[0].Class).ToBe("ScatterFeatureRequirement")
 	Expect(t, root.Graphs[1].Requirements[1].Class).ToBe("StepInputExpressionRequirement")
 	Expect(t, root.Graphs[1].Steps[0].Scatter[0]).ToBe("echo_in1")
 	Expect(t, root.Graphs[1].Steps[0].Scatter[1]).ToBe("echo_in2")
 	Expect(t, root.Graphs[1].Steps[0].ScatterMethod).ToBe("flat_crossproduct")
 	Expect(t, root.Graphs[1].Steps[0].ID).ToBe("step1")
+	sort.Sort(root.Graphs[1].Steps[0].In)
 	Expect(t, root.Graphs[1].Steps[0].In[0].ID).ToBe("echo_in1")
 	Expect(t, root.Graphs[1].Steps[0].In[0].Source[0]).ToBe("inp1")
 	Expect(t, root.Graphs[1].Steps[0].In[0].ValueFrom).ToBe("$(self.instr)")

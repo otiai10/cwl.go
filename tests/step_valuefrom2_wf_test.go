@@ -1,6 +1,7 @@
 package cwlgotest
 
 import (
+	"sort"
 	"testing"
 
 	cwl "github.com/otiai10/cwl.go"
@@ -17,10 +18,11 @@ func TestDecode_step_valuefrom2_wf(t *testing.T) {
 	Expect(t, root.Requirements[0].Class).ToBe("StepInputExpressionRequirement")
 	Expect(t, root.Requirements[1].Class).ToBe("InlineJavascriptRequirement")
 	Expect(t, root.Requirements[2].Class).ToBe("MultipleInputFeatureRequirement")
-	Expect(t, root.Inputs[0].ID).ToBe("a")
-	Expect(t, root.Inputs[0].Types[0].Type).ToBe("int")
-	Expect(t, root.Inputs[1].ID).ToBe("b")
+	sort.Sort(root.Inputs)
+	Expect(t, root.Inputs[1].ID).ToBe("a")
 	Expect(t, root.Inputs[1].Types[0].Type).ToBe("int")
+	Expect(t, root.Inputs[0].ID).ToBe("b")
+	Expect(t, root.Inputs[0].Types[0].Type).ToBe("int")
 	Expect(t, root.Outputs[0].ID).ToBe("val")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("string")
 	Expect(t, root.Outputs[0].Source[0]).ToBe("step1/echo_out")

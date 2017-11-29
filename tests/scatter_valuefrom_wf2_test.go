@@ -1,6 +1,7 @@
 package cwlgotest
 
 import (
+	"sort"
 	"testing"
 
 	cwl "github.com/otiai10/cwl.go"
@@ -45,6 +46,7 @@ func TestDecode_scatter_valuefrom_wf2(t *testing.T) {
 	Expect(t, root.Steps[0].Scatter[1]).ToBe("echo_in2")
 	Expect(t, root.Steps[0].ScatterMethod).ToBe("nested_crossproduct")
 	Expect(t, root.Steps[0].Run.Workflow.Class).ToBe("CommandLineTool")
+	sort.Sort(root.Steps[0].Run.Workflow.Inputs)
 	Expect(t, root.Steps[0].Run.Workflow.Inputs[0].ID).ToBe("first")
 	Expect(t, root.Steps[0].Run.Workflow.Inputs[0].Types[0].Type).ToBe("string")
 	Expect(t, root.Steps[0].Run.Workflow.Inputs[0].Binding.Position).ToBe(1)
