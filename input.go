@@ -18,6 +18,8 @@ type Input struct {
 	SecondaryFiles []SecondaryFile `json:"secondary_files"`
 	// Input.Provided is what provided by parameters.(json|yaml)
 	Provided interface{} `json:"-"`
+	// Requirement ..
+	RequiredType *Type
 }
 
 // New constructs "Input" struct from interface{}.
@@ -87,7 +89,48 @@ func (input Input) flatten(typ Type, binding *Binding) []string {
 			flattened = append(flattened, separated...)
 		}
 	default:
-		// TODO:
+		if input.RequiredType != nil {
+			flattened = append(flattened, input.flattenWithRequiredType()...)
+		} else {
+			// TODO
+		}
+	}
+	return flattened
+}
+
+func (input Input) flattenWithRequiredType() []string {
+	flattened := []string{}
+	key, needed := input.Types[0].NeedRequirement()
+	if !needed {
+		return flattened
+	}
+	if input.RequiredType.Name != key {
+		return flattened
+	}
+	switch provided := input.Provided.(type) {
+	case []interface{}:
+		for _, e := range provided {
+			switch v := e.(type) {
+			case map[interface{}]interface{}:
+				for _, field := range input.RequiredType.Fields {
+					if val, ok := v[field.Name]; ok {
+						if field.Binding == nil {
+							// Without thinking anything, just append it!!!
+							flattened = append(flattened, fmt.Sprintf("%v", val))
+						} else {
+							if field.Binding.Prefix != "" {
+								if field.Binding.Separate {
+									flattened = append(flattened, field.Binding.Prefix, fmt.Sprintf("%v", val))
+								} else {
+									// TODO: Join if .Separator is given
+									flattened = append(flattened, fmt.Sprintf("%s%v", field.Binding.Prefix, val))
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	return flattened
 }
