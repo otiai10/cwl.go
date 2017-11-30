@@ -2,6 +2,7 @@ package cwl
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -20,6 +21,7 @@ type Input struct {
 	Provided interface{} `json:"-"`
 	// Requirement ..
 	RequiredType *Type
+	Requirements Requirements
 }
 
 // New constructs "Input" struct from interface{}.
@@ -124,6 +126,52 @@ func (input Input) flattenWithRequiredType() []string {
 								} else {
 									// TODO: Join if .Separator is given
 									flattened = append(flattened, fmt.Sprintf("%s%v", field.Binding.Prefix, val))
+								}
+							} else {
+								switch v2 := val.(type) {
+								case []interface{}:
+									for _, val2 := range v2 {
+										switch v3 := val2.(type) {
+										case []interface{}:
+										case map[interface{}]interface{}:
+											for _, types := range input.Requirements[0].SchemaDefRequirement.Types {
+												val3array := []string{}
+												var val3count int = 0
+												sort.Sort(types.Fields)
+												for _, fields := range types.Fields {
+													for key3, val3 := range v3 {
+														if fields.Name == key3 {
+															for _, val3type := range fields.Types {
+																if val3type.Type == "" {
+																} else {
+																	switch val3type.Type {
+																	case "enum":
+																		for _, symbol := range val3type.Symbols {
+																			if symbol == val3 {
+																				val3array = append(val3array, fmt.Sprintf("%v", val3))
+																				val3count = val3count + 1
+																			}
+																		}
+																	case "int":
+																		if fields.Binding.Prefix != "" {
+																			val3array = append(val3array, fields.Binding.Prefix, fmt.Sprintf("%v", val3))
+																			val3count = val3count + 1
+																		} else {
+																			val3array = append(val3array, fmt.Sprintf("%v", val3))
+																			val3count = val3count + 1
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+												if len(v3) == val3count {
+													flattened = append(flattened, val3array...)
+												}
+											}
+										}
+									}
 								}
 							}
 						}
