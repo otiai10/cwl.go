@@ -11,7 +11,7 @@ type Type struct {
 	Type    string
 	Label   string
 	Binding *Binding
-	Fields  []Field  // from CommandInputRecordSchema
+	Fields  Fields   // from CommandInputRecordSchema
 	Symbols []string // from CommandInputEnumSchema
 	Items   []Type   // from CommandInputArraySchema
 	Name    string
@@ -48,7 +48,7 @@ func (_ Type) New(i interface{}) Type {
 			case "inputBinding":
 				dest.Binding = Binding{}.New(v)
 			case "fields":
-				dest.Fields = Field{}.NewList(v)
+				dest.Fields = Fields{}.New(v)
 			case "symbols":
 				dest.Symbols = StringArrayable(v)
 			case "name":
