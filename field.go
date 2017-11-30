@@ -10,18 +10,6 @@ type Field struct {
 	Label   string
 }
 
-// NewList constructs a list of Field from any interface.
-func (_ Field) NewList(i interface{}) []Field {
-	dest := []Field{}
-	switch x := i.(type) {
-	case []interface{}:
-		for _, v := range x {
-			dest = append(dest, Field{}.New(v))
-		}
-	}
-	return dest
-}
-
 // New constructs a Field struct from any interface.
 func (_ Field) New(i interface{}) Field {
 	dest := Field{}
