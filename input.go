@@ -187,7 +187,11 @@ func (input Input) flattenWithRequiredType() []string {
 func (input Input) Flatten() []string {
 	if input.Provided == nil {
 		// In case "input.Default == nil" should be validated by usage layer.
-		return input.Default.Flatten(input.Binding)
+		if input.Default != nil {
+			return input.Default.Flatten(input.Binding)
+		} else {
+			return []string{}
+		}
 	}
 	flattened := []string{}
 	if repr := input.Types[0]; len(input.Types) == 1 {
