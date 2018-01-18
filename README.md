@@ -28,6 +28,18 @@ func main() {
 
 # Tests
 
+## Prerequisite
+
+`xtest.sh` requires Go package `github.com/otiai10/mint` 
+
+To install it.
+
+```
+go get -u github.com/otiai10/mint
+```
+
+## Why xtest.sh and How to do test with it.
+
 Because there are both array and dictionary in CWL specification, and as you know Golang can't keep order of map keys, the test fails sometimes by order problem. Therefore, [`./xtest.sh`](https://github.com/otiai10/cwl.go/blob/master/xtest.sh) tries testing each case several times eagerly unless it passes.
 
 For all cases,
