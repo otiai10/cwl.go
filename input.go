@@ -2,6 +2,7 @@ package cwl
 
 import (
 	"fmt"
+	"io/ioutil"
 	"sort"
 	"strings"
 )
@@ -204,7 +205,16 @@ func (input Input) Flatten() []string {
 			switch provided := input.Provided.(type) {
 			case map[interface{}]interface{}:
 				// TODO: more strict type casting
-				flattened = append(flattened, fmt.Sprintf("%v", provided["location"]))
+				if provided["location"] != nil {
+					flattened = append(flattened, fmt.Sprintf("%v", provided["location"]))
+				} else {
+					fp, _ := ioutil.TempFile("", "ioutil")
+					fpath := fp.Name()
+					flattened = append(flattened, fpath)
+					fp.Write([]byte(fmt.Sprintf("%v", provided["contents"])))
+					// TODO: remove after finish program
+					defer fp.Close()
+				}
 			default:
 			}
 		default:
