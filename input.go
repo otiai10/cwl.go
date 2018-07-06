@@ -61,7 +61,7 @@ func (_ Input) New(i interface{}) Input {
 }
 
 // flatten
-func (input Input) flatten(typ Type, binding *Binding) []string {
+func (input Input) flatten(typ Type, binding *Binding, prov interface{}) []string {
 	flattened := []string{}
 	switch typ.Type {
 	case "int": // Array of Int
@@ -90,6 +90,32 @@ func (input Input) flatten(typ Type, binding *Binding) []string {
 			// In case it's Array of Files, unlike array of int,
 			// it's NOT gonna be joined with .Binding.Separator.
 			flattened = append(flattened, separated...)
+		}
+	case "string": // Array of string
+		switch arr := prov.(type) {
+		case []interface{}:
+			separated := []string{}
+			for _, e := range arr {
+				switch v := e.(type) {
+				case string:
+					if binding != nil && binding.Prefix != "" {
+						separated = append(separated, binding.Prefix)
+					}
+					separated = append(separated, fmt.Sprintf("%v", v))
+				default:
+					// TODO
+				}
+			}
+			flattened = append(flattened, separated...)
+		default:
+			// TODO
+		}
+	case "array":
+		switch arr := prov.(type) {
+		case []interface{}:
+			flattened = append(flattened, input.flatten(typ.Items[0], typ.Binding, arr[0])...)
+		default:
+			// TODO
 		}
 	default:
 		if input.RequiredType != nil {
@@ -198,7 +224,7 @@ func (input Input) Flatten() []string {
 	if repr := input.Types[0]; len(input.Types) == 1 {
 		switch repr.Type {
 		case "array":
-			flattened = append(flattened, input.flatten(repr.Items[0], repr.Binding)...)
+			flattened = append(flattened, input.flatten(repr.Items[0], repr.Binding, input.Provided)...)
 		case "int":
 			flattened = append(flattened, fmt.Sprintf("%v", input.Provided.(int)))
 		case "File":
