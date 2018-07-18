@@ -145,17 +145,39 @@ func (outs Outputs) LoadContents(srcdir string) (*otto.Otto, error) {
 // Dump ...
 func (outs Outputs) Dump(vm *otto.Otto, dir string, stdout, stderr string, w io.Writer) error {
 
-	dest := map[string]map[string]interface{}{}
+	dest := map[string]interface{}{}
 	for _, o := range outs {
+		if o.Binding != nil && o.Binding.Eval != nil && vm != nil {
+			js, err := o.Binding.Eval.ToJavaScriptString()
+			if err != nil {
+				return err
+			}
+			v, err := vm.Run(js)
+			if err != nil {
+				return err
+			}
+			switch {
+			case v.IsNumber():
+				dest[o.ID], err = v.ToInteger()
+				if err != nil {
+					return err
+				}
+			default:
+				// TODO: more type switch
+			}
+			// TODO: do we need integrate all the outputs?
+			return jsonindent.NewEncoder(w).Encode(dest)
+		}
 		if err := o.DumpFileMeta(dest, dir, stdout, stderr, w); err != nil {
 			return err
 		}
 	}
+
 	return nil
 }
 
 // DumpFileMeta ...
-func (o Output) DumpFileMeta(dest map[string]map[string]interface{}, dir string, stdout, stderr string, w io.Writer) error {
+func (o Output) DumpFileMeta(dest map[string]interface{}, dir string, stdout, stderr string, w io.Writer) error {
 
 	// This output should not be dumped
 	if o.Binding != nil && o.Binding.LoadContents {
