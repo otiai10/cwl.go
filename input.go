@@ -19,7 +19,7 @@ type Input struct {
 	Types          []Type          `json:"type"`
 	SecondaryFiles []SecondaryFile `json:"secondary_files"`
 	// Input.Provided is what provided by parameters.(json|yaml)
-	Provided interface{} `json:"-"`
+	Provided Provided `json:"-"`
 	// Requirement ..
 	RequiredType *Type
 	Requirements Requirements
@@ -66,12 +66,12 @@ func (input *Input) flatten(typ Type, binding *Binding, prov interface{}) []stri
 	switch typ.Type {
 	case "int": // Array of Int
 		tobejoined := []string{}
-		for _, e := range input.Provided.([]interface{}) {
+		for _, e := range input.Provided.Raw.([]interface{}) {
 			tobejoined = append(tobejoined, fmt.Sprintf("%v", e))
 		}
 		flattened = append(flattened, strings.Join(tobejoined, input.Binding.Separator))
 	case "File": // Array of Files
-		switch arr := input.Provided.(type) {
+		switch arr := input.Provided.Raw.(type) {
 		case []string:
 			// TODO:
 		case []interface{}:
@@ -136,7 +136,7 @@ func (input *Input) flattenWithRequiredType() []string {
 	if input.RequiredType.Name != key {
 		return flattened
 	}
-	switch provided := input.Provided.(type) {
+	switch provided := input.Provided.Raw.(type) {
 	case []interface{}:
 		for _, e := range provided {
 			switch v := e.(type) {
@@ -212,7 +212,7 @@ func (input *Input) flattenWithRequiredType() []string {
 
 // Flatten ...
 func (input *Input) Flatten() []string {
-	if input.Provided == nil {
+	if input.Provided.Raw == nil {
 		// In case "input.Default == nil" should be validated by usage layer.
 		if input.Default != nil {
 			return input.Default.Flatten(input.Binding)
@@ -224,11 +224,11 @@ func (input *Input) Flatten() []string {
 	if repr := input.Types[0]; len(input.Types) == 1 {
 		switch repr.Type {
 		case "array":
-			flattened = append(flattened, input.flatten(repr.Items[0], repr.Binding, input.Provided)...)
+			flattened = append(flattened, input.flatten(repr.Items[0], repr.Binding, input.Provided.Raw)...)
 		case "int":
-			flattened = append(flattened, fmt.Sprintf("%v", input.Provided.(int)))
+			flattened = append(flattened, fmt.Sprintf("%v", input.Provided.Raw.(int)))
 		case "File":
-			switch provided := input.Provided.(type) {
+			switch provided := input.Provided.Raw.(type) {
 			case map[interface{}]interface{}:
 				// TODO: more strict type casting
 				if provided["location"] != nil {
