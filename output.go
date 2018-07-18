@@ -1,5 +1,15 @@
 package cwl
 
+import (
+	"crypto/sha1"
+	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+
+	"github.com/otiai10/jsonindent"
+)
+
 // Output represents and conbines "CommandOutputParameter" and "WorkflowOutputParameter"
 // @see
 // - http://www.commonwl.org/v1.0/CommandLineTool.html#CommandOutputParameter
@@ -88,4 +98,56 @@ func (o Outputs) Less(i, j int) bool {
 // Swap for sorting
 func (o Outputs) Swap(i, j int) {
 	o[i], o[j] = o[j], o[i]
+}
+
+// DumpFileMeta ...
+func (o Output) DumpFileMeta(dir string, w io.Writer) error {
+
+	dest := map[string]map[string]interface{}{}
+
+	switch o.Types[0].Type {
+	case "File":
+		for _, glob := range o.Binding.Glob {
+			metadata, err := getFileMetaData(filepath.Join(dir, glob))
+			if err != nil {
+				return err
+			}
+			dest[o.ID] = metadata
+		}
+	case "stdout":
+		metadata, err := getFileMetaData(filepath.Join(dir, o.ID))
+		if err != nil {
+			return err
+		}
+		dest[o.ID] = metadata
+	default:
+		return nil // do nothing
+	}
+
+	return jsonindent.NewEncoder(w).Encode(dest)
+}
+
+// getFileMetaData
+func getFileMetaData(targetfilepath string) (map[string]interface{}, error) {
+	targetfile, err := os.Open(targetfilepath)
+	if err != nil {
+		return nil, err
+	}
+	defer targetfile.Close()
+	info, err := os.Stat(targetfilepath)
+	if err != nil {
+		return nil, err
+	}
+	h := sha1.New()
+	if _, err := io.Copy(h, targetfile); err != nil {
+		return nil, err
+	}
+	return map[string]interface{}{
+		"checksum": fmt.Sprintf("sha1$%x", string(h.Sum(nil))),
+		"basename": filepath.Base(targetfilepath),
+		"location": fmt.Sprintf("file://%s", targetfilepath),
+		"path":     targetfilepath,
+		"class":    "File",
+		"size":     info.Size(),
+	}, nil
 }
