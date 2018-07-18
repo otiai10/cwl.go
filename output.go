@@ -105,8 +105,10 @@ func (outs Outputs) Swap(i, j int) {
 
 // Dump ...
 func (outs Outputs) Dump(dir string, stdout, stderr string, w io.Writer) error {
+
+	dest := map[string]map[string]interface{}{}
 	for _, o := range outs {
-		if err := o.DumpFileMeta(dir, stdout, stderr, w); err != nil {
+		if err := o.DumpFileMeta(dest, dir, stdout, stderr, w); err != nil {
 			return err
 		}
 	}
@@ -114,14 +116,12 @@ func (outs Outputs) Dump(dir string, stdout, stderr string, w io.Writer) error {
 }
 
 // DumpFileMeta ...
-func (o Output) DumpFileMeta(dir string, stdout, stderr string, w io.Writer) error {
+func (o Output) DumpFileMeta(dest map[string]map[string]interface{}, dir string, stdout, stderr string, w io.Writer) error {
 
 	// This output should not be dumped
 	if o.Binding != nil && o.Binding.LoadContents {
 		return nil
 	}
-
-	dest := map[string]map[string]interface{}{}
 
 	switch o.Types[0].Type {
 	case "File":
