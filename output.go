@@ -101,7 +101,7 @@ func (o Outputs) Swap(i, j int) {
 }
 
 // DumpFileMeta ...
-func (o Output) DumpFileMeta(dir string, w io.Writer) error {
+func (o Output) DumpFileMeta(dir, stdoutproxy string, w io.Writer) error {
 
 	dest := map[string]map[string]interface{}{}
 
@@ -115,7 +115,11 @@ func (o Output) DumpFileMeta(dir string, w io.Writer) error {
 			dest[o.ID] = metadata
 		}
 	case "stdout":
-		metadata, err := getFileMetaData(filepath.Join(dir, o.ID))
+		name := o.ID
+		if stdoutproxy != "" && name != stdoutproxy {
+			name = stdoutproxy
+		}
+		metadata, err := getFileMetaData(filepath.Join(dir, name))
 		if err != nil {
 			return err
 		}
