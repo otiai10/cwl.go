@@ -26,7 +26,7 @@ func TestDecode_initialworkdirrequirement_docker_out(t *testing.T) {
 	// TODO outputs
 	Expect(t, len(root.Requirements)).ToBe(2)
 	Expect(t, root.Requirements[0].Class).ToBe("DockerRequirement")
-	Expect(t, root.Requirements[0].DockerPull).ToBe("debian:8")
+	Expect(t, root.Requirements[0].DockerPull).ToBe("debian:stretch-slim")
 	Expect(t, root.Requirements[1].Class).ToBe("InitialWorkDirRequirement")
 	Expect(t, root.Requirements[1].Listing[0].Location).ToBe("$(inputs.INPUT)")
 	// TODO: fix "Alias.Key()"

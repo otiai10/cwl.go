@@ -16,7 +16,7 @@ func TestDecode_test_cwl_out(t *testing.T) {
 	Expect(t, root.Class).ToBe("CommandLineTool")
 	Expect(t, root.Requirements[0].Class).ToBe("ShellCommandRequirement")
 	Expect(t, root.Hints[0].Class).ToBe("DockerRequirement")
-	Expect(t, root.Hints[0].DockerPull).ToBe("debian:wheezy")
+	Expect(t, root.Hints[0].DockerPull).ToBe("debian:stretch-slim")
 	Expect(t, len(root.Inputs)).ToBe(0)
 	// TODO check specification for this test ID and Type
 	Expect(t, root.Outputs[0].ID).ToBe("foo")

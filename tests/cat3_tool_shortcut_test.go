@@ -20,7 +20,7 @@ func TestDecode_cat3_tool_shortcut(t *testing.T) {
 	Expect(t, root.BaseCommands[0]).ToBe("cat")
 	Expect(t, root.Hints).TypeOf("cwl.Hints")
 	Expect(t, root.Hints[0].Class).ToBe("DockerRequirement")
-	Expect(t, root.Hints[0].DockerPull).ToBe("debian:wheezy")
+	Expect(t, root.Hints[0].DockerPull).ToBe("debian:stretch-slim")
 	Expect(t, len(root.Inputs)).ToBe(1)
 	Expect(t, root.Inputs[0].ID).ToBe("file1")
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")

@@ -17,7 +17,7 @@ func TestDecode_optional_output(t *testing.T) {
 	Expect(t, root.Class).ToBe("CommandLineTool")
 	Expect(t, root.Doc).ToBe("Print the contents of a file to stdout using 'cat' running in a docker container.")
 	Expect(t, root.Hints[0].Class).ToBe("DockerRequirement")
-	Expect(t, root.Hints[0].DockerPull).ToBe("debian:wheezy")
+	Expect(t, root.Hints[0].DockerPull).ToBe("debian:stretch-slim")
 	Expect(t, root.Inputs[0].ID).ToBe("file1")
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
 	Expect(t, root.Inputs[0].Label).ToBe("Input File")

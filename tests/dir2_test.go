@@ -18,7 +18,7 @@ func TestDecode_dir2(t *testing.T) {
 	Expect(t, root.Class).ToBe("CommandLineTool")
 
 	Expect(t, root.Hints[0].Class).ToBe("DockerRequirement")
-	Expect(t, root.Hints[0].DockerPull).ToBe("debian:8")
+	Expect(t, root.Hints[0].DockerPull).ToBe("debian:stretch-slim")
 	Expect(t, root.Hints[1].Class).ToBe("ShellCommandRequirement")
 	Expect(t, root.Inputs[0].ID).ToBe("indir")
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("Directory")

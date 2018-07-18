@@ -34,7 +34,7 @@ func TestDecode_inline_js(t *testing.T) {
 	Expect(t, root.Outputs[0].ID).ToBe("args")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("array")
 	Expect(t, root.Outputs[0].Types[0].Items[0].Type).ToBe("string")
-	Expect(t, len(root.Arguments)).ToBe(3)
+	Expect(t, len(root.Arguments)).ToBe(5)
 	Expect(t, root.Arguments[0].Binding.Prefix).ToBe("-A")
 	// {{{ TODO: Fix "Alias.Key()"
 	Expect(t, root.Arguments[0].Binding.ValueFrom.Key()).ToBe("1+1")

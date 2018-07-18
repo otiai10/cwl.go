@@ -20,7 +20,7 @@ func TestDecode_envvar2(t *testing.T) {
 	Expect(t, len(root.Requirements)).ToBe(1)
 	Expect(t, root.Requirements[0].Class).ToBe("ShellCommandRequirement")
 	Expect(t, root.Hints[0].Class).ToBe("DockerRequirement")
-	Expect(t, root.Hints[0].DockerPull).ToBe("debian:8")
+	Expect(t, root.Hints[0].DockerPull).ToBe("debian:stretch-slim")
 	Expect(t, len(root.Arguments)).ToBe(12)
 	Expect(t, root.Arguments[0].Value).ToBe("echo")
 	Expect(t, root.Arguments[1].Binding.ValueFrom.Key()).ToBe("\"HOME=$HOME\"")

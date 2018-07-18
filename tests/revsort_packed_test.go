@@ -19,7 +19,7 @@ func TestDecode_revsort_packed(t *testing.T) {
 	Expect(t, root.Graphs[0].ID).ToBe("#main")
 	Expect(t, root.Graphs[0].Doc).ToBe("Reverse the lines in a document, then sort those lines.")
 	Expect(t, root.Graphs[0].Hints[0].Class).ToBe("DockerRequirement")
-	Expect(t, root.Graphs[0].Hints[0].DockerPull).ToBe("debian:8")
+	Expect(t, root.Graphs[0].Hints[0].DockerPull).ToBe("debian:stretch-slim")
 	Expect(t, len(root.Graphs[0].Inputs)).ToBe(2)
 	Expect(t, root.Graphs[0].Inputs[0].Types[0].Type).ToBe("File")
 	Expect(t, root.Graphs[0].Inputs[0].ID).ToBe("#main/input")

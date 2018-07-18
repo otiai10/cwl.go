@@ -18,14 +18,14 @@ func TestDecode_template_tool(t *testing.T) {
 
 	Expect(t, root.Requirements[0].Class).ToBe("InlineJavascriptRequirement")
 	Expect(t, root.Requirements[0].ExpressionLib[0].Value).ToBe("underscore.js")
-	Expect(t, root.Requirements[0].ExpressionLib[1].Value).ToBe("var t = function(s) { return _.template(s)({'inputs': inputs}); };")
+	Expect(t, root.Requirements[0].ExpressionLib[1].Value).ToBe("var t = function(s) { return _.template(s, {variable: 'data'})({'inputs': inputs}); };")
 
 	Expect(t, root.Requirements[1].Class).ToBe("InitialWorkDirRequirement")
 	Expect(t, root.Requirements[1].Listing[0].EntryName).ToBe("foo.txt")
-	Expect(t, root.Requirements[1].Listing[0].Entry).ToBe(`$(t("The file is <%= inputs.file1.path.split('/').slice(-1)[0] %>\n"))`)
+	Expect(t, root.Requirements[1].Listing[0].Entry).ToBe(`$(t("The file is <%= data.inputs.file1.path.split('/').slice(-1)[0] %>\n"))`)
 
 	Expect(t, root.Hints[0].Class).ToBe("DockerRequirement")
-	Expect(t, root.Hints[0].DockerPull).ToBe("debian:8")
+	Expect(t, root.Hints[0].DockerPull).ToBe("debian:stretch-slim")
 
 	Expect(t, root.Inputs[0].ID).ToBe("file1")
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")

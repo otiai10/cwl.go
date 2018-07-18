@@ -19,7 +19,7 @@ func TestDecode_metadata(t *testing.T) {
 	Expect(t, len(root.Hints)).ToBe(1)
 	Expect(t, root.Hints).TypeOf("cwl.Hints")
 	Expect(t, root.Hints[0].Class).ToBe("DockerRequirement")
-	Expect(t, root.Hints[0].DockerPull).ToBe("debian:wheezy")
+	Expect(t, root.Hints[0].DockerPull).ToBe("debian:stretch-slim")
 	Expect(t, len(root.Inputs)).ToBe(2)
 	Expect(t, root.Inputs[0].ID).ToBe("file1")
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")

@@ -50,6 +50,9 @@ func (d *InputDefault) EntryFromDictionary(dict map[string]interface{}) (*Entry,
 	if dict == nil {
 		return nil, nil
 	}
+	if dict["class"] == nil {
+		return nil, nil
+	}
 	class := dict["class"].(string)
 	location := dict["location"]
 	contents := dict["contents"]

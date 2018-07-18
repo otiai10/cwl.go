@@ -14,7 +14,7 @@ func TestDecode_stderr(t *testing.T) {
 	Expect(t, err).ToBe(nil)
 	Expect(t, root.Version).ToBe("v1.0")
 	Expect(t, root.Class).ToBe("CommandLineTool")
-	Expect(t, root.Doc).ToBe("Test of capturing stderr output in a docker container.")
+	Expect(t, root.Doc).ToBe("Test of capturing stderr output.")
 	Expect(t, root.Requirements[0].Class).ToBe("ShellCommandRequirement")
 	Expect(t, len(root.Inputs)).ToBe(0)
 	Expect(t, len(root.Outputs)).ToBe(1)

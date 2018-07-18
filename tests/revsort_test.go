@@ -16,7 +16,7 @@ func TestDecode_revsort(t *testing.T) {
 	Expect(t, root.Class).ToBe("Workflow")
 	Expect(t, root.Doc).ToBe("Reverse the lines in a document, then sort those lines.")
 	Expect(t, root.Hints[0].Class).ToBe("DockerRequirement")
-	Expect(t, root.Hints[0].DockerPull).ToBe("debian:8")
+	Expect(t, root.Hints[0].DockerPull).ToBe("debian:stretch-slim")
 	Expect(t, len(root.Inputs)).ToBe(2)
 	Expect(t, root.Inputs[0].ID).ToBe("input")
 	Expect(t, root.Inputs[0].Doc).ToBe("The input file to be processed.")

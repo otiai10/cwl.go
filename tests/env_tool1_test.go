@@ -15,7 +15,7 @@ func TestDecode_env_tool1(t *testing.T) {
 	Expect(t, err).ToBe(nil)
 	Expect(t, root.Version).ToBe("v1.0")
 	Expect(t, len(root.BaseCommands)).ToBe(3)
-	Expect(t, root.BaseCommands[0]).ToBe("/bin/bash")
+	Expect(t, root.BaseCommands[0]).ToBe("/bin/sh")
 	Expect(t, root.BaseCommands[1]).ToBe("-c")
 	Expect(t, root.BaseCommands[2]).ToBe("echo $TEST_ENV")
 	Expect(t, len(root.Inputs)).ToBe(1)

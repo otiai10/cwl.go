@@ -16,7 +16,7 @@ func TestDecode_docker_array_secondaryfiles(t *testing.T) {
 	Expect(t, root.Class).ToBe("CommandLineTool")
 	Expect(t, len(root.Requirements)).ToBe(3)
 	Expect(t, root.Requirements[0].Class).ToBe("DockerRequirement")
-	Expect(t, root.Requirements[0].DockerPull).ToBe("debian:8")
+	Expect(t, root.Requirements[0].DockerPull).ToBe("debian:stretch-slim")
 	Expect(t, root.Requirements[1].Class).ToBe("InlineJavascriptRequirement")
 	Expect(t, root.Requirements[2].Class).ToBe("ShellCommandRequirement")
 	Expect(t, len(root.Inputs)).ToBe(1)

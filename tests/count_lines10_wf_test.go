@@ -21,11 +21,11 @@ func TestDecode_count_lines10_wf(t *testing.T) {
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
 	Expect(t, root.Outputs[0].ID).ToBe("count_output")
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("int")
-	Expect(t, root.Outputs[0].Source).ToBe([]string{"step1/count_output"})
+	Expect(t, root.Outputs[0].Source).ToBe([]string{"step0/count_output"})
 
 	Expect(t, root.Requirements[0].Class).ToBe("SubworkflowFeatureRequirement")
 
-	Expect(t, root.Steps[0].ID).ToBe("step1")
+	Expect(t, root.Steps[0].ID).ToBe("step0")
 	Expect(t, root.Steps[0].In[0].ID).ToBe("file1")
 	Expect(t, root.Steps[0].In[0].Source[0]).ToBe("file1")
 	Expect(t, root.Steps[0].Out[0].ID).ToBe("count_output")

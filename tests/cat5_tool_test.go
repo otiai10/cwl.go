@@ -19,7 +19,7 @@ func TestDecode_cat5_tool(t *testing.T) {
 	Expect(t, len(root.Hints)).ToBe(2)
 	Expect(t, root.Hints).TypeOf("cwl.Hints")
 	Expect(t, root.Hints[0].Class).ToBe("DockerRequirement")
-	Expect(t, root.Hints[0].DockerPull).ToBe("debian:wheezy")
+	Expect(t, root.Hints[0].DockerPull).ToBe("debian:stretch-slim")
 	Expect(t, root.Hints[1].Class).ToBe("ex:BlibberBlubberFakeRequirement")
 	Expect(t, root.Hints[1].FakeField).ToBe("fraggleFroogle")
 	Expect(t, len(root.Inputs)).ToBe(1)

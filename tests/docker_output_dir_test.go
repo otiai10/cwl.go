@@ -15,7 +15,7 @@ func TestDecode_docker_output_dir(t *testing.T) {
 	Expect(t, root.Version).ToBe("v1.0")
 	Expect(t, root.Class).ToBe("CommandLineTool")
 	Expect(t, root.Requirements[0].Class).ToBe("DockerRequirement")
-	Expect(t, root.Requirements[0].DockerPull).ToBe("debian:8")
+	Expect(t, root.Requirements[0].DockerPull).ToBe("debian:stretch-slim")
 	Expect(t, root.Requirements[0].DockerOutputDirectory).ToBe("/other")
 	Expect(t, len(root.Inputs)).ToBe(0)
 	Expect(t, len(root.Outputs)).ToBe(1)

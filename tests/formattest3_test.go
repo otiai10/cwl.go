@@ -25,7 +25,7 @@ func TestDecode_formattest3(t *testing.T) {
 	Expect(t, root.Schemas[1]).ToBe("gx_edam.ttl")
 	Expect(t, root.Doc).ToBe("Reverse each line using the `rev` command")
 	Expect(t, root.Hints[0].Class).ToBe("DockerRequirement")
-	Expect(t, root.Hints[0].DockerPull).ToBe("debian:wheezy")
+	Expect(t, root.Hints[0].DockerPull).ToBe("debian:stretch-slim")
 	Expect(t, len(root.Inputs)).ToBe(1)
 	Expect(t, root.Inputs[0].ID).ToBe("input")
 	Expect(t, root.Inputs[0].Types[0].Type).ToBe("File")
