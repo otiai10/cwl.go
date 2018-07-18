@@ -18,11 +18,11 @@ type Provided struct {
 }
 
 // New constructs new "Provided" struct.
-func (provided Provided) New(id string, i interface{}) Provided {
-	dest := Provided{ID: id, Raw: i}
+func (provided Provided) New(id string, i interface{}) *Provided {
+	dest := &Provided{ID: id, Raw: i}
 	switch v := i.(type) {
 	case nil:
-		return dest // do nothing
+		return nil
 	case int:
 		dest.Int = v
 	case map[interface{}]interface{}: // It's "File" in most cases

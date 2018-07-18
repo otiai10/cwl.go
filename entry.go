@@ -1,5 +1,10 @@
 package cwl
 
+import (
+	"os"
+	"path/filepath"
+)
+
 // Entry represents fs entry, it means [File|Directory|Dirent]
 type Entry struct {
 	Class    string
@@ -66,4 +71,13 @@ func (_ Entry) New(i interface{}) Entry {
 		}
 	}
 	return dest
+}
+
+// LinkTo creates hardlink of this entry under destdir.
+func (entry *Entry) LinkTo(destdir, srcdir string) error {
+	destpath := filepath.Join(destdir, filepath.Base(entry.Location))
+	if filepath.IsAbs(entry.Location) {
+		return os.Link(entry.Location, destpath)
+	}
+	return os.Link(filepath.Join(srcdir, entry.Location), destpath)
 }

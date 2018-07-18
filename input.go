@@ -18,7 +18,7 @@ type Input struct {
 	Types          []Type          `json:"type"`
 	SecondaryFiles []SecondaryFile `json:"secondary_files"`
 	// Input.Provided is what provided by parameters.(json|yaml)
-	Provided Provided `json:"-"`
+	Provided *Provided `json:"-"`
 	// Requirement ..
 	RequiredType *Type
 	Requirements Requirements
@@ -48,6 +48,9 @@ func (input Input) New(i interface{}) *Input {
 			case "secondaryFiles":
 				dest.SecondaryFiles = SecondaryFile{}.NewList(v)
 			}
+		}
+		if dest.Default != nil {
+			dest.Default.ID = dest.ID
 		}
 	case string:
 		dest.Types = Type{}.NewList(x)
@@ -213,7 +216,7 @@ func (input *Input) flattenWithRequiredType() []string {
 
 // Flatten ...
 func (input *Input) Flatten() []string {
-	if input.Provided.Raw == nil {
+	if input.Provided == nil {
 		// In case "input.Default == nil" should be validated by usage layer.
 		if input.Default != nil {
 			return input.Default.Flatten(input.Binding)
