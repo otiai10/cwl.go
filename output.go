@@ -166,14 +166,12 @@ func (outs Outputs) Dump(vm *otto.Otto, dir string, stdout, stderr string, w io.
 				// TODO: more type switch
 			}
 			// TODO: do we need integrate all the outputs?
-			return jsonindent.NewEncoder(w).Encode(dest)
 		}
 		if err := o.DumpFileMeta(dest, dir, stdout, stderr, w); err != nil {
 			return err
 		}
 	}
-
-	return nil
+	return jsonindent.NewEncoder(w).Encode(dest)
 }
 
 // DumpFileMeta ...
@@ -242,7 +240,7 @@ func (o Output) DumpFileMeta(dest map[string]interface{}, dir string, stdout, st
 		return nil // do nothing
 	}
 
-	return jsonindent.NewEncoder(w).Encode(dest)
+	return nil
 }
 
 // getFileMetaData
