@@ -185,6 +185,31 @@ func (o Output) DumpFileMeta(dest map[string]interface{}, dir string, stdout, st
 	}
 
 	switch o.Types[0].Type {
+	case "Directory":
+		dir := filepath.Clean(filepath.Clean(filepath.Join(dir, o.Binding.Glob[0])))
+		filelist, err := ioutil.ReadDir(dir)
+		if err != nil {
+			return err
+		}
+		out := map[string]interface{}{
+			"class": "Directory",
+		}
+		listing := []map[string]interface{}{}
+		for _, info := range filelist {
+			// {{{ TODO: filter "inputs" files
+			if filepath.Ext(info.Name()) == ".tar" {
+				continue
+			}
+			// }}}
+			targetfilepath := filepath.Join(dir, info.Name())
+			metadata, err := getFileMetaData(targetfilepath)
+			if err != nil {
+				return err
+			}
+			listing = append(listing, metadata)
+		}
+		out["listing"] = listing
+		dest[o.ID] = out
 	case "File":
 		for _, glob := range o.Binding.Glob {
 			metadata, err := getFileMetaData(filepath.Join(dir, glob))
