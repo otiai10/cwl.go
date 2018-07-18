@@ -16,7 +16,7 @@ type Binding struct {
 	ValueFrom  *Alias `json:"valueFrom"`
 	// CommandOutputBinding
 	Glob     []string `json:"glob"`
-	Eval     string   `json:"outputEval"`
+	Eval     Eval     `json:"outputEval"`
 	Contents bool     `json:"loadContents"`
 }
 
@@ -42,7 +42,7 @@ func (binding Binding) New(i interface{}) *Binding {
 			case "valueFrom":
 				dest.ValueFrom = &Alias{v.(string)}
 			case "outputEval":
-				dest.Eval = v.(string)
+				dest.Eval = Eval{v.(string)}
 			}
 		}
 	}
