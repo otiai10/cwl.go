@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/robertkrimen/otto"
+
 	"github.com/otiai10/jsonindent"
 )
 
@@ -103,8 +105,13 @@ func (outs Outputs) Swap(i, j int) {
 	outs[i], outs[j] = outs[j], outs[i]
 }
 
+// LoadContents ...
+func (outs Outputs) LoadContents() (*otto.Otto, error) {
+	return nil, nil
+}
+
 // Dump ...
-func (outs Outputs) Dump(dir string, stdout, stderr string, w io.Writer) error {
+func (outs Outputs) Dump(vm *otto.Otto, dir string, stdout, stderr string, w io.Writer) error {
 
 	dest := map[string]map[string]interface{}{}
 	for _, o := range outs {
