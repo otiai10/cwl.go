@@ -4,6 +4,7 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -106,8 +107,39 @@ func (outs Outputs) Swap(i, j int) {
 }
 
 // LoadContents ...
-func (outs Outputs) LoadContents() (*otto.Otto, error) {
-	return nil, nil
+func (outs Outputs) LoadContents(srcdir string) (*otto.Otto, error) {
+
+	self := []map[string]interface{}{}
+	for _, o := range outs {
+		if o.Binding == nil {
+			continue
+		}
+		if !o.Binding.LoadContents {
+			continue
+		}
+		f, err := os.Open(filepath.Join(srcdir, o.Binding.Glob[0]))
+		if err != nil {
+			return nil, err
+		}
+		b, err := ioutil.ReadAll(f)
+		if err != nil {
+			return nil, err
+		}
+		self = append(self, map[string]interface{}{
+			"contents": string(b),
+		})
+	}
+
+	// No contents to load
+	if len(self) == 0 {
+		return nil, nil
+	}
+
+	vm := otto.New()
+	if err := vm.Set("self", self); err != nil {
+		return nil, err
+	}
+	return vm, nil
 }
 
 // Dump ...
