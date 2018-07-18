@@ -23,7 +23,7 @@ func TestDecode_null_defined(t *testing.T) {
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("string")
 	Expect(t, root.Outputs[0].Binding.Glob[0]).ToBe("out.txt")
 	Expect(t, root.Outputs[0].Binding.Contents).ToBe(false)
-	Expect(t, root.Outputs[0].Binding.Eval).ToBe("$(self[0].contents)")
+	Expect(t, root.Outputs[0].Binding.Eval.Raw).ToBe("$(self[0].contents)")
 	Expect(t, root.Stdout).ToBe("out.txt")
 	Expect(t, len(root.Arguments)).ToBe(2)
 	Expect(t, root.Arguments[0].Value).ToBe("echo")

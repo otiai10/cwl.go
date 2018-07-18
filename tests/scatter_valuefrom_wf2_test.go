@@ -60,7 +60,7 @@ func TestDecode_scatter_valuefrom_wf2(t *testing.T) {
 	Expect(t, root.Steps[0].Run.Workflow.Outputs[0].Types[0].Type).ToBe("string")
 	Expect(t, root.Steps[0].Run.Workflow.Outputs[0].Binding.Glob[0]).ToBe("step1_out")
 	Expect(t, root.Steps[0].Run.Workflow.Outputs[0].Binding.LoadContents).ToBe(true)
-	Expect(t, root.Steps[0].Run.Workflow.Outputs[0].Binding.Eval).ToBe("$(self[0].contents)")
+	Expect(t, root.Steps[0].Run.Workflow.Outputs[0].Binding.Eval.Raw).ToBe("$(self[0].contents)")
 	Expect(t, root.Steps[0].Run.Workflow.BaseCommands[0]).ToBe("echo")
 	Expect(t, root.Steps[0].Run.Workflow.Arguments[0].Value).ToBe("-n")
 	Expect(t, root.Steps[0].Run.Workflow.Arguments[1].Value).ToBe("foo")

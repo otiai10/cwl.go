@@ -22,7 +22,7 @@ func TestDecode_wc4_tool(t *testing.T) {
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("int")
 	Expect(t, root.Outputs[0].Binding.Glob[0]).ToBe("output.txt")
 	Expect(t, root.Outputs[0].Binding.LoadContents).ToBe(true)
-	Expect(t, root.Outputs[0].Binding.Eval).ToBe(`${
+	Expect(t, root.Outputs[0].Binding.Eval.Raw).ToBe(`${
   var s = self[0].contents.split(/\r?\n/);
   return parseInt(s[s.length-2]);
 }

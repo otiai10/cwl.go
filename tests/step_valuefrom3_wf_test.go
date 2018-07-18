@@ -32,7 +32,7 @@ func TestDecode_step_valuefrom3_wf(t *testing.T) {
 	Expect(t, root.Steps[0].Run.Workflow.Outputs[0].Types[0].Type).ToBe("string")
 	Expect(t, root.Steps[0].Run.Workflow.Outputs[0].Binding.Glob[0]).ToBe("step1_out")
 	Expect(t, root.Steps[0].Run.Workflow.Outputs[0].Binding.LoadContents).ToBe(true)
-	Expect(t, root.Steps[0].Run.Workflow.Outputs[0].Binding.Eval).ToBe("$(self[0].contents)")
+	Expect(t, root.Steps[0].Run.Workflow.Outputs[0].Binding.Eval.Raw).ToBe("$(self[0].contents)")
 	Expect(t, root.Steps[0].Run.Workflow.BaseCommands[0]).ToBe("echo")
 	Expect(t, root.Steps[0].Run.Workflow.Stdout).ToBe("step1_out")
 	Expect(t, root.Steps[0].In[0].ID).ToBe("a")

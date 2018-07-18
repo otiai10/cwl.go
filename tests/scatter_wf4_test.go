@@ -24,7 +24,7 @@ func TestDecode_scatter_wf4(t *testing.T) {
 	Expect(t, root.Graphs[0].Outputs[0].Types[0].Type).ToBe("string")
 	Expect(t, root.Graphs[0].Outputs[0].Binding.Glob[0]).ToBe("step1_out")
 	Expect(t, root.Graphs[0].Outputs[0].Binding.LoadContents).ToBe(true)
-	Expect(t, root.Graphs[0].Outputs[0].Binding.Eval).ToBe("$(self[0].contents)")
+	Expect(t, root.Graphs[0].Outputs[0].Binding.Eval.Raw).ToBe("$(self[0].contents)")
 	Expect(t, root.Graphs[0].BaseCommands[0]).ToBe("echo")
 	Expect(t, root.Graphs[0].Arguments[0].Value).ToBe("-n")
 	Expect(t, root.Graphs[0].Arguments[1].Value).ToBe("foo")

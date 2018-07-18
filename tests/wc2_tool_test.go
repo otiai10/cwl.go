@@ -22,7 +22,7 @@ func TestDecode_wc2_tool(t *testing.T) {
 	Expect(t, root.Outputs[0].Types[0].Type).ToBe("int")
 	Expect(t, root.Outputs[0].Binding.Glob[0]).ToBe("output.txt")
 	Expect(t, root.Outputs[0].Binding.LoadContents).ToBe(true)
-	Expect(t, root.Outputs[0].Binding.Eval).ToBe("$(parseInt(self[0].contents))")
+	Expect(t, root.Outputs[0].Binding.Eval.Raw).ToBe("$(parseInt(self[0].contents))")
 	Expect(t, len(root.BaseCommands)).ToBe(1)
 	Expect(t, root.BaseCommands[0]).ToBe("wc")
 	Expect(t, root.Stdout).ToBe("output.txt")
