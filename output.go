@@ -23,10 +23,13 @@ type Output struct {
 	Source         []string `json:"outputSource"`
 	Types          []Type   `json:"type"`
 	SecondaryFiles []SecondaryFile
+
+	// Loaded Contents if Binding.LoadContents == true
+	Contents interface{} `json:"contents"`
 }
 
 // New constructs "Output" struct from interface.
-func (_ Output) New(i interface{}) Output {
+func (o Output) New(i interface{}) Output {
 	dest := Output{}
 	switch x := i.(type) {
 	case map[string]interface{}:
@@ -58,7 +61,7 @@ func (_ Output) New(i interface{}) Output {
 type Outputs []Output
 
 // New constructs "Outputs" struct.
-func (_ Outputs) New(i interface{}) Outputs {
+func (outs Outputs) New(i interface{}) Outputs {
 	dest := Outputs{}
 	switch x := i.(type) {
 	case []interface{}:
@@ -76,13 +79,13 @@ func (_ Outputs) New(i interface{}) Outputs {
 }
 
 // Len for sorting
-func (o Outputs) Len() int {
-	return len(o)
+func (outs Outputs) Len() int {
+	return len(outs)
 }
 
 // Less for sorting
-func (o Outputs) Less(i, j int) bool {
-	prev, next := o[i].Binding, o[j].Binding
+func (outs Outputs) Less(i, j int) bool {
+	prev, next := outs[i].Binding, outs[j].Binding
 	switch [2]bool{prev == nil, next == nil} {
 	case [2]bool{true, true}:
 		return false
@@ -96,12 +99,27 @@ func (o Outputs) Less(i, j int) bool {
 }
 
 // Swap for sorting
-func (o Outputs) Swap(i, j int) {
-	o[i], o[j] = o[j], o[i]
+func (outs Outputs) Swap(i, j int) {
+	outs[i], outs[j] = outs[j], outs[i]
+}
+
+// Dump ...
+func (outs Outputs) Dump(dir string, stdout, stderr string, w io.Writer) error {
+	for _, o := range outs {
+		if err := o.DumpFileMeta(dir, stdout, stderr, w); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // DumpFileMeta ...
 func (o Output) DumpFileMeta(dir string, stdout, stderr string, w io.Writer) error {
+
+	// This output should not be dumped
+	if o.Binding != nil && o.Binding.LoadContents {
+		return nil
+	}
 
 	dest := map[string]map[string]interface{}{}
 
