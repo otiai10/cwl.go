@@ -26,8 +26,8 @@ type Input struct {
 }
 
 // New constructs "Input" struct from interface{}.
-func (_ Input) New(i interface{}) Input {
-	dest := Input{}
+func (input Input) New(i interface{}) *Input {
+	dest := &Input{}
 	switch x := i.(type) {
 	case map[string]interface{}:
 		for key, v := range x {
@@ -61,7 +61,7 @@ func (_ Input) New(i interface{}) Input {
 }
 
 // flatten
-func (input Input) flatten(typ Type, binding *Binding, prov interface{}) []string {
+func (input *Input) flatten(typ Type, binding *Binding, prov interface{}) []string {
 	flattened := []string{}
 	switch typ.Type {
 	case "int": // Array of Int
@@ -127,7 +127,7 @@ func (input Input) flatten(typ Type, binding *Binding, prov interface{}) []strin
 	return flattened
 }
 
-func (input Input) flattenWithRequiredType() []string {
+func (input *Input) flattenWithRequiredType() []string {
 	flattened := []string{}
 	key, needed := input.Types[0].NeedRequirement()
 	if !needed {
@@ -211,7 +211,7 @@ func (input Input) flattenWithRequiredType() []string {
 }
 
 // Flatten ...
-func (input Input) Flatten() []string {
+func (input *Input) Flatten() []string {
 	if input.Provided == nil {
 		// In case "input.Default == nil" should be validated by usage layer.
 		if input.Default != nil {
@@ -255,10 +255,10 @@ func (input Input) Flatten() []string {
 }
 
 // Inputs represents "inputs" field in CWL.
-type Inputs []Input
+type Inputs []*Input
 
 // New constructs new "Inputs" struct.
-func (_ Inputs) New(i interface{}) Inputs {
+func (ins Inputs) New(i interface{}) Inputs {
 	dest := Inputs{}
 	switch x := i.(type) {
 	case []interface{}:
