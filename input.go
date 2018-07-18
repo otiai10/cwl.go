@@ -2,7 +2,6 @@ package cwl
 
 import (
 	"fmt"
-	"io/ioutil"
 	"sort"
 	"strings"
 )
@@ -142,60 +141,62 @@ func (input *Input) flattenWithRequiredType() []string {
 			switch v := e.(type) {
 			case map[interface{}]interface{}:
 				for _, field := range input.RequiredType.Fields {
-					if val, ok := v[field.Name]; ok {
-						if field.Binding == nil {
-							// Without thinking anything, just append it!!!
-							flattened = append(flattened, fmt.Sprintf("%v", val))
-						} else {
-							if field.Binding.Prefix != "" {
-								if field.Binding.Separate {
-									flattened = append(flattened, field.Binding.Prefix, fmt.Sprintf("%v", val))
-								} else {
-									// TODO: Join if .Separator is given
-									flattened = append(flattened, fmt.Sprintf("%s%v", field.Binding.Prefix, val))
-								}
+					val, ok := v[field.Name]
+					if !ok {
+						continue
+					}
+					if field.Binding == nil {
+						// Without thinking anything, just append it!!!
+						flattened = append(flattened, fmt.Sprintf("%v", val))
+					} else {
+						if field.Binding.Prefix != "" {
+							if field.Binding.Separate {
+								flattened = append(flattened, field.Binding.Prefix, fmt.Sprintf("%v", val))
 							} else {
-								switch v2 := val.(type) {
-								case []interface{}:
-									for _, val2 := range v2 {
-										switch v3 := val2.(type) {
-										case []interface{}:
-										case map[interface{}]interface{}:
-											for _, types := range input.Requirements[0].SchemaDefRequirement.Types {
-												val3array := []string{}
-												var val3count int = 0
-												sort.Sort(types.Fields)
-												for _, fields := range types.Fields {
-													for key3, val3 := range v3 {
-														if fields.Name == key3 {
-															for _, val3type := range fields.Types {
-																if val3type.Type == "" {
-																} else {
-																	switch val3type.Type {
-																	case "enum":
-																		for _, symbol := range val3type.Symbols {
-																			if symbol == val3 {
-																				val3array = append(val3array, fmt.Sprintf("%v", val3))
-																				val3count = val3count + 1
-																			}
-																		}
-																	case "int":
-																		if fields.Binding.Prefix != "" {
-																			val3array = append(val3array, fields.Binding.Prefix, fmt.Sprintf("%v", val3))
-																			val3count = val3count + 1
-																		} else {
+								// TODO: Join if .Separator is given
+								flattened = append(flattened, fmt.Sprintf("%s%v", field.Binding.Prefix, val))
+							}
+						} else {
+							switch v2 := val.(type) {
+							case []interface{}:
+								for _, val2 := range v2 {
+									switch v3 := val2.(type) {
+									case []interface{}:
+									case map[interface{}]interface{}:
+										for _, types := range input.Requirements[0].SchemaDefRequirement.Types {
+											val3array := []string{}
+											var val3count int = 0
+											sort.Sort(types.Fields)
+											for _, fields := range types.Fields {
+												for key3, val3 := range v3 {
+													if fields.Name == key3 {
+														for _, val3type := range fields.Types {
+															if val3type.Type == "" {
+															} else {
+																switch val3type.Type {
+																case "enum":
+																	for _, symbol := range val3type.Symbols {
+																		if symbol == val3 {
 																			val3array = append(val3array, fmt.Sprintf("%v", val3))
 																			val3count = val3count + 1
 																		}
+																	}
+																case "int":
+																	if fields.Binding.Prefix != "" {
+																		val3array = append(val3array, fields.Binding.Prefix, fmt.Sprintf("%v", val3))
+																		val3count = val3count + 1
+																	} else {
+																		val3array = append(val3array, fmt.Sprintf("%v", val3))
+																		val3count = val3count + 1
 																	}
 																}
 															}
 														}
 													}
 												}
-												if len(v3) == val3count {
-													flattened = append(flattened, val3array...)
-												}
+											}
+											if len(v3) == val3count {
+												flattened = append(flattened, val3array...)
 											}
 										}
 									}
@@ -226,23 +227,9 @@ func (input *Input) Flatten() []string {
 		case "array":
 			flattened = append(flattened, input.flatten(repr.Items[0], repr.Binding, input.Provided.Raw)...)
 		case "int":
-			flattened = append(flattened, fmt.Sprintf("%v", input.Provided.Raw.(int)))
+			flattened = append(flattened, fmt.Sprintf("%v", input.Provided.Int))
 		case "File":
-			switch provided := input.Provided.Raw.(type) {
-			case map[interface{}]interface{}:
-				// TODO: more strict type casting
-				if provided["location"] != nil {
-					flattened = append(flattened, fmt.Sprintf("%v", provided["location"]))
-				} else {
-					fp, _ := ioutil.TempFile("", "ioutil")
-					fpath := fp.Name()
-					flattened = append(flattened, fpath)
-					fp.Write([]byte(fmt.Sprintf("%v", provided["contents"])))
-					// TODO: remove after finish program
-					defer fp.Close()
-				}
-			default:
-			}
+			flattened = append(flattened, input.Provided.Entry.Location)
 		default:
 			flattened = append(flattened, fmt.Sprintf("%v", input.Provided))
 		}
