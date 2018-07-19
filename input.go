@@ -296,12 +296,12 @@ func (ins Inputs) Swap(i, j int) {
 func (ins Inputs) ToJavaScriptVM(srcdir string) (*otto.Otto, error) {
 	self := map[string]map[string]interface{}{}
 	for _, i := range ins {
-		if i.Default != nil {
+		if i.Default != nil && i.Default.Entry != nil {
 			self[i.ID] = map[string]interface{}{
 				"path": i.Default.Entry.Location,
 			}
 		}
-		if i.Provided != nil {
+		if i.Provided != nil && i.Provided.Entry != nil {
 			self[i.ID] = map[string]interface{}{
 				"path": i.Provided.Entry.Location,
 			}
