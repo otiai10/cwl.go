@@ -293,7 +293,7 @@ func (ins Inputs) Swap(i, j int) {
 }
 
 // CreateVM ...
-func (ins Inputs) ToJavaScriptVM(srcdir string) (*otto.Otto, error) {
+func (ins Inputs) ToJavaScriptVM() (*otto.Otto, error) {
 	self := map[string]map[string]interface{}{}
 	for _, i := range ins {
 		if i.Provided != nil && i.Provided.Entry != nil {
