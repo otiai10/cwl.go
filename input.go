@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+
+	"github.com/robertkrimen/otto"
 )
 
 // Input represents "CommandInputParameter".
@@ -288,4 +290,34 @@ func (ins Inputs) Less(i, j int) bool {
 // Swap for sorting.
 func (ins Inputs) Swap(i, j int) {
 	ins[i], ins[j] = ins[j], ins[i]
+}
+
+// ToJavaScriptVM ...
+func (ins Inputs) ToJavaScriptVM() (*otto.Otto, error) {
+	self := map[string]map[string]interface{}{}
+	for _, i := range ins {
+		if i.Provided != nil && i.Provided.Entry != nil {
+			self[i.ID] = map[string]interface{}{
+				"path": i.Provided.Entry.Location,
+			}
+			continue
+		}
+		if i.Default != nil && i.Default.Entry != nil {
+			self[i.ID] = map[string]interface{}{
+				"path": i.Default.Entry.Location,
+			}
+			continue
+		}
+	}
+
+	// No contents to load
+	if len(self) == 0 {
+		return nil, nil
+	}
+
+	vm := otto.New()
+	if err := vm.Set("inputs", self); err != nil {
+		return nil, err
+	}
+	return vm, nil
 }
