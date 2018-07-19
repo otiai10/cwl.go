@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 
 	"github.com/otiai10/yaml2json"
+	"github.com/robertkrimen/otto"
 )
 
 // NewCWL ...
@@ -44,6 +45,8 @@ type Root struct {
 
 	// Path
 	Path string `json:"-"`
+	// InputsVM
+	InputsVM *otto.Otto
 }
 
 // UnmarshalMap decode map[string]interface{} to *Root.

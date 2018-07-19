@@ -294,13 +294,19 @@ func (ins Inputs) Swap(i, j int) {
 
 // ToJavaScriptVM ...
 func (ins Inputs) ToJavaScriptVM() (*otto.Otto, error) {
-	self := map[string]map[string]interface{}{}
+	self := map[string]interface{}{}
 	for _, i := range ins {
-		if i.Provided != nil && i.Provided.Entry != nil {
-			self[i.ID] = map[string]interface{}{
-				"path": i.Provided.Entry.Location,
+		if i.Provided != nil {
+			if i.Provided.Entry != nil {
+				self[i.ID] = map[string]interface{}{
+					"path": i.Provided.Entry.Location,
+				}
+				continue
 			}
-			continue
+			if i.Types[0].Type == "string" {
+				self[i.ID] = i.Provided.Raw
+				continue
+			}
 		}
 		if i.Default != nil && i.Default.Entry != nil {
 			self[i.ID] = map[string]interface{}{
