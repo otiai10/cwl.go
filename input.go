@@ -292,7 +292,7 @@ func (ins Inputs) Swap(i, j int) {
 	ins[i], ins[j] = ins[j], ins[i]
 }
 
-// CreateVM ...
+// ToJavaScriptVM ...
 func (ins Inputs) ToJavaScriptVM() (*otto.Otto, error) {
 	self := map[string]map[string]interface{}{}
 	for _, i := range ins {
