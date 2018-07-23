@@ -235,6 +235,13 @@ func (input *Input) Flatten() []string {
 			flattened = append(flattened, fmt.Sprintf("%v", input.Provided.Int))
 		case "File":
 			flattened = append(flattened, input.Provided.Entry.Location)
+		case "Any":
+			switch v := input.Provided.Raw.(type) {
+			case string:
+				flattened = append(flattened, v)
+			default:
+				flattened = append(flattened, fmt.Sprintf("%v", v))
+			}
 		default:
 			flattened = append(flattened, fmt.Sprintf("%v", input.Provided))
 		}
