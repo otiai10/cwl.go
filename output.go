@@ -134,7 +134,6 @@ func (outs Outputs) LoadContents(srcdir string) (*otto.Otto, error) {
 	if len(self) == 0 {
 		return nil, nil
 	}
-
 	vm := otto.New()
 	if err := vm.Set("self", self); err != nil {
 		return nil, err
@@ -159,6 +158,11 @@ func (outs Outputs) Dump(vm *otto.Otto, dir string, stdout, stderr string, w io.
 			switch {
 			case v.IsNumber():
 				dest[o.ID], err = v.ToInteger()
+				if err != nil {
+					return err
+				}
+			case v.IsString():
+				dest[o.ID], err = v.ToString()
 				if err != nil {
 					return err
 				}
