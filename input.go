@@ -73,6 +73,9 @@ func (input *Input) flatten(typ Type, binding *Binding, prov interface{}) []stri
 		for _, e := range input.Provided.Raw.([]interface{}) {
 			tobejoined = append(tobejoined, fmt.Sprintf("%v", e))
 		}
+		if len(tobejoined) == 0 {
+			return flattened
+		}
 		flattened = append(flattened, strings.Join(tobejoined, input.Binding.Separator))
 	case "File": // Array of Files
 		switch arr := input.Provided.Raw.(type) {
@@ -245,6 +248,9 @@ func (input *Input) Flatten() []string {
 		default:
 			flattened = append(flattened, fmt.Sprintf("%v", input.Provided))
 		}
+	}
+	if input.Types[0].Type == "array" && len(flattened) == 0 {
+		return flattened
 	}
 	if input.Binding != nil && input.Binding.Prefix != "" {
 		flattened = append([]string{input.Binding.Prefix}, flattened...)
