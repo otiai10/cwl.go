@@ -248,6 +248,9 @@ func (input *Input) Flatten() []string {
 			flattened = append(flattened, fmt.Sprintf("%v", v))
 		}
 	case "null":
+		if len(input.Types) == 1 {
+			return flattened
+		}
 		switch input.Types[1].Type {
 		case "boolean":
 			if input.Provided != nil && input.Provided.Raw == false {
