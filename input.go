@@ -73,6 +73,9 @@ func (input *Input) flatten(typ Type, binding *Binding, prov interface{}) []stri
 		for _, e := range input.Provided.Raw.([]interface{}) {
 			tobejoined = append(tobejoined, fmt.Sprintf("%v", e))
 		}
+		if len(tobejoined) == 0 {
+			return flattened
+		}
 		flattened = append(flattened, strings.Join(tobejoined, input.Binding.Separator))
 	case "File": // Array of Files
 		switch arr := input.Provided.Raw.(type) {
@@ -227,24 +230,37 @@ func (input *Input) Flatten() []string {
 		}
 	}
 	flattened := []string{}
-	if repr := input.Types[0]; len(input.Types) == 1 {
-		switch repr.Type {
-		case "array":
-			flattened = append(flattened, input.flatten(repr.Items[0], repr.Binding, input.Provided.Raw)...)
-		case "int":
-			flattened = append(flattened, fmt.Sprintf("%v", input.Provided.Int))
-		case "File":
-			flattened = append(flattened, input.Provided.Entry.Location)
-		case "Any":
-			switch v := input.Provided.Raw.(type) {
-			case string:
-				flattened = append(flattened, v)
-			default:
-				flattened = append(flattened, fmt.Sprintf("%v", v))
+	switch input.Types[0].Type {
+	case "array":
+		flattened = append(flattened, input.flatten(input.Types[0].Items[0], input.Types[0].Binding, input.Provided.Raw)...)
+		if len(flattened) == 0 {
+			return flattened
+		}
+	case "int":
+		flattened = append(flattened, fmt.Sprintf("%v", input.Provided.Int))
+	case "File":
+		flattened = append(flattened, input.Provided.Entry.Location)
+	case "Any":
+		switch v := input.Provided.Raw.(type) {
+		case string:
+			flattened = append(flattened, v)
+		default:
+			flattened = append(flattened, fmt.Sprintf("%v", v))
+		}
+	case "null":
+		if len(input.Types) == 1 {
+			return flattened
+		}
+		switch input.Types[1].Type {
+		case "boolean":
+			if input.Provided != nil && input.Provided.Raw == false {
+				return flattened
 			}
 		default:
-			flattened = append(flattened, fmt.Sprintf("%v", input.Provided))
+			// TODO other case
 		}
+	default:
+		flattened = append(flattened, fmt.Sprintf("%v", input.Provided))
 	}
 	if input.Binding != nil && input.Binding.Prefix != "" {
 		flattened = append([]string{input.Binding.Prefix}, flattened...)
