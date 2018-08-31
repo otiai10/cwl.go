@@ -1,0 +1,1 @@
+[![Build Status](https://travis-ci.org/otiai10/yaml2json.svg)](https://travis-ci.org/otiai10/yaml2json) [![GoDoc](https://godoc.org/github.com/otiai10/yaml2json?status.svg)](https://godoc.org/github.com/otiai10/yaml2json)
